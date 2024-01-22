@@ -16,7 +16,7 @@ public class Draft {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "draft_id")
-    private Integer draftId;
+    private Long draftId;
 
     @JoinColumn(name = "user_id", nullable = false)
     private User user;

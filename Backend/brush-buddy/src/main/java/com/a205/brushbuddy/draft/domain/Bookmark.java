@@ -15,7 +15,7 @@ public class Bookmark {
     @EmbeddedId
     private BookmarkId bookmarkId;
 
-    @Column(name = "bookmark_timestamp", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    @Column(name = "bookmark_timestamp", nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private Timestamp bookmarkTimestamp;
 
 }

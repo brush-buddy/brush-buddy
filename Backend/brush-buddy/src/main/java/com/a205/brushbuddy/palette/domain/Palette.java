@@ -18,7 +18,7 @@ public class Palette {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "palette_id")
-    private int paletteId;
+    private Long paletteId;
 
     @ManyToOne
     @JoinColumn(name="draft_id")
@@ -34,7 +34,7 @@ public class Palette {
     @Column(name = "palette_color_code", nullable = false, columnDefinition = "JSON")
     private String paletteColorCode;
 
-    @Column(name = "palette_last_modified_time", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    @Column(name = "palette_last_modified_time", nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private Timestamp paletteLastModifiedTime;
 
     @Column(name = "palette_created_at", nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
