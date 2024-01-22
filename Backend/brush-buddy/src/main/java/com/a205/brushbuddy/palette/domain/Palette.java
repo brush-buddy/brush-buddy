@@ -3,10 +3,14 @@ package com.a205.brushbuddy.palette.domain;
 import com.a205.brushbuddy.draft.domain.Draft;
 import com.a205.brushbuddy.user.domain.User;
 import jakarta.persistence.*;
+import lombok.Data;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 
 import java.sql.Timestamp;
 
+@Slf4j
+@Data
 @Entity
 @Table(name = "palette")
 public class Palette {
@@ -14,11 +18,11 @@ public class Palette {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "palette_id")
-    private Long paletteId;
+    private int paletteId;
 
     @ManyToOne
     @JoinColumn(name="draft_id")
-    private Draft draftId;
+    private Draft draft;
 
     @ManyToOne
     @JoinColumn(name="user_id")
@@ -35,9 +39,5 @@ public class Palette {
 
     @Column(name = "palette_created_at", nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private Timestamp paletteCreatedAt;
-    @Getter
-    @Id
-    private Long id;
 
-    // Getters and setters for all fields
 }
