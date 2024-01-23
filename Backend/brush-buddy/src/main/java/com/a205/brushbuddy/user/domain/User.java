@@ -24,9 +24,9 @@ public class User{
     @Column(name = "user_birth", nullable = false, length = 4)
     private String userBirth;
 
-    @Enumerated(EnumType.STRING)
+    @Enumerated(EnumType.ORDINAL)
     @Column(columnDefinition = "enum('male','female')", name = "user_gender", nullable = false)
-    private String userGender;
+    private Gender userGender;
 
     @Column(name = "user_profile", length = 255)
     private String userProfile;

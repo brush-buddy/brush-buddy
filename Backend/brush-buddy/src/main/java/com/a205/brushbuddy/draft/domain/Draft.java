@@ -18,6 +18,7 @@ public class Draft {
     @Column(name = "draft_id")
     private Long draftId;
 
+    @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
