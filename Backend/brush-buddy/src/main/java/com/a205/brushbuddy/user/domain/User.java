@@ -1,5 +1,6 @@
 package com.a205.brushbuddy.user.domain;
 
+
 import lombok.Data;
 
 import jakarta.persistence.*;
@@ -40,4 +41,3 @@ public class User{
     private boolean userIsWithdraw;
 
 }
-
