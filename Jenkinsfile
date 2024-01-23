@@ -79,24 +79,22 @@ pipeline {
                 sshagent (credentials: ['aws_key']) {
                     script{
                         sh "ssh -o StrictHostKeyChecking=no  ${SSH_CONNECTION} uptime"
-                        
-                        // sh "ssh -t ${SSH_CONNECTION} 'docker rm -f ${back_img_name} || true'"
-                        // sh "ssh -t ${SSH_CONNECTION} 'docker rmi -f ${back_repository} || true'"
+                        sh "ssh -t ${SSH_CONNECTION} 'docker container prune -f'" // 오류난 컨테이너 종료
                         
                         script {
-                            def existingContainerId = sh(script: "docker ps -q -f name=${back_img_name}", returnStdout: true).trim()
+                            def existingContainerId = sh(script: "ssh -t ${SSH_CONNECTION} 'docker ps -q -f name=${back_img_name}'", returnStdout: true).trim()
                             if (existingContainerId) {
-                                sh "docker stop ${existingContainerId}"
-                                sh "docker rm ${existingContainerId}"
+                                sh "ssh -t ${SSH_CONNECTION} 'docker stop ${existingContainerId}'"
+                                sh "ssh -t ${SSH_CONNECTION} 'docker rm ${existingContainerId}'"
                             } else {
                                 echo "No existing container with the name ${back_img_name} found."
                             }
                         }
                         script {
                             // 기존 이미지 삭제
-                            def existingImageId = sh(script: "docker images -q ${back_repository}:latest", returnStdout: true).trim()
+                            def existingImageId = sh(script: "ssh -t ${SSH_CONNECTION} 'docker images -q ${back_repository}:latest'", returnStdout: true).trim()
                             if (existingImageId) {
-                                sh "docker rmi ${existingImageId}"
+                                sh "ssh -t ${SSH_CONNECTION} 'docker rmi ${existingImageId}'"
                             } else {
                                 echo "No existing image with the name ${back_repository}:latest found."
                             }
@@ -115,19 +113,19 @@ pipeline {
                     script{
                         sh "ssh -o StrictHostKeyChecking=no  ${SSH_CONNECTION} uptime"
                         script {
-                            def existingContainerId = sh(script: "docker ps -q -f name=${front_img_name}", returnStdout: true).trim()
+                            def existingContainerId = sh(script: "ssh -t ${SSH_CONNECTION} 'docker ps -q -f name=${front_img_name}'", returnStdout: true).trim()
                             if (existingContainerId) {
-                                sh "docker stop ${existingContainerId}"
-                                sh "docker rm ${existingContainerId}"
+                                sh "ssh -t ${SSH_CONNECTION} 'docker stop ${existingContainerId}'"
+                                sh "ssh -t ${SSH_CONNECTION} 'docker rm ${existingContainerId}'"
                             } else {
                                 echo "No existing container with the name ${front_img_name} found."
                             }
                         }
                         script {
                             // 기존 이미지 삭제
-                            def existingImageId = sh(script: "docker images -q ${front_repository}:latest", returnStdout: true).trim()
+                            def existingImageId = sh(script: "ssh -t ${SSH_CONNECTION} 'docker images -q ${front_repository}:latest'", returnStdout: true).trim()
                             if (existingImageId) {
-                                sh "docker rmi ${existingImageId}"
+                                sh "ssh -t ${SSH_CONNECTION} 'docker rmi ${existingImageId}'"
                             } else {
                                 echo "No existing image with the name ${front_repository}:latest found."
                             }
