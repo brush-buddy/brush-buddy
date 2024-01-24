@@ -7,6 +7,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 import lombok.Data;
 
 @Entity
@@ -24,8 +26,9 @@ public class Mileage {
     @Column(name = "workplace_id", nullable = true)
     private int workplaceId;
 
-    @Column(name = "mileage_timtestamp", nullable = true)
-    private Date mileageTimtestamp;
+	@Column(name = "mileage_timestamp", nullable = true)
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date mileageTimestamp;
 
     @Column(name = "mileage_before", nullable = true)
     private int mileageBefore;
