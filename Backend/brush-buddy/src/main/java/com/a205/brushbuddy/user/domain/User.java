@@ -1,5 +1,6 @@
 package com.a205.brushbuddy.user.domain;
 
+
 import lombok.Data;
 
 import jakarta.persistence.*;
@@ -23,9 +24,9 @@ public class User{
     @Column(name = "user_birth", nullable = false, length = 4)
     private String userBirth;
 
-    @Enumerated(EnumType.STRING)
+    @Enumerated(EnumType.ORDINAL)
     @Column(columnDefinition = "enum('male','female')", name = "user_gender", nullable = false)
-    private String userGender;
+    private Gender userGender;
 
     @Column(name = "user_profile", length = 255)
     private String userProfile;
@@ -40,4 +41,3 @@ public class User{
     private boolean userIsWithdraw;
 
 }
-
