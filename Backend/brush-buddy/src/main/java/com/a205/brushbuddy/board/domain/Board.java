@@ -24,7 +24,7 @@ public class Board {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "board_id", nullable = false)
-	private int BoardId;
+	private int boardId;
 
 	@JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false)
 	@ManyToOne // Board(Many) : User(One)
