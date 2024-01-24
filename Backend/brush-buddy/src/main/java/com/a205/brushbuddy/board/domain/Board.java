@@ -1,19 +1,11 @@
 package com.a205.brushbuddy.board.domain;
 
-import java.sql.Timestamp;
-
 import com.a205.brushbuddy.draft.domain.Draft;
 import com.a205.brushbuddy.user.domain.User;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Data;
+
+import java.sql.Timestamp;
 
 @SuppressWarnings("checkstyle:RegexpSinglelineJava")
 @Data
@@ -24,7 +16,7 @@ public class Board {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "board_id", nullable = false)
-	private int BoardId;
+	private Long BoardId;
 
 	@JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false)
 	@ManyToOne // Board(Many) : User(One)
@@ -44,10 +36,10 @@ public class Board {
 	private String boardThumbnail;
 
 	@Column(name = "board_like_number", nullable = false)
-	private int boardLikeNumber;
+	private Integer boardLikeNumber;
 
 	@Column(name = "board_watch", nullable = false)
-	private int boardWatch;
+	private Integer boardWatch;
 
 	@Column(name = "board_timestamp", nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
 	private Timestamp boardTimestamp;
