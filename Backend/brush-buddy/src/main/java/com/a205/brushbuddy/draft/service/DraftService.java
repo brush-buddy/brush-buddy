@@ -21,7 +21,13 @@ public class DraftService{
 
 	public Page<DraftListResponseDto> getDraftList(DraftListRequestDto draftListRequestDto, Pageable pageable) {
 		try {
-			return draftRepository.selectAllDraft(pageable);
+			return draftRepository.findAll(pageable).map(p->DraftListResponseDto.builder()
+					.draftId(p.getDraftId())
+					.draftThumbnail(p.getDraftThumbnail())
+					.draftTimestamp(p.getDraftTimestamp())
+					.draftDownload(p.getDraftDownload())
+					.draftBookmark(p.getDraftBookmark())
+					.build());
 		} catch (Exception e) {
 			return null;
 		}

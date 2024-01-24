@@ -2,6 +2,7 @@ package com.a205.brushbuddy.draft.dto.response;
 
 import java.sql.Timestamp;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -10,6 +11,7 @@ import lombok.ToString;
 @ToString
 @Getter
 @Setter
+@Builder
 public class DraftListResponseDto {
 	private Long draftId;
 	private String draftThumbnail;
