@@ -1,11 +1,11 @@
 package com.a205.brushbuddy.draft.service;
 
+import com.a205.brushbuddy.draft.domain.Draft;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.a205.brushbuddy.draft.dto.request.DraftListRequestDto;
 import com.a205.brushbuddy.draft.dto.response.DraftListResponseDto;
 import com.a205.brushbuddy.draft.repository.DraftRepository;
 
@@ -18,7 +18,6 @@ public class DraftService{
 	@Autowired
 	private DraftRepository draftRepository;
 
-
 	public Page<DraftListResponseDto> getDraftList(Pageable pageable) {
 		try {
 
@@ -30,7 +29,15 @@ public class DraftService{
 					.draftBookmark(p.getDraftBookmark())
 					.build());
 		} catch (Exception e) {
-			System.out.println("===================================="	);
+			System.out.println(e.getMessage());
+			return null;
+		}
+	}
+
+	public Draft getDraftDetail(int draftId) {
+		try {
+			return draftRepository.findByDraftId(Long.valueOf(draftId));
+		} catch (Exception e) {
 			System.out.println(e.getMessage());
 			return null;
 		}

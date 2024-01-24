@@ -2,6 +2,7 @@ package com.a205.brushbuddy.draft.controller;
 
 import java.util.Arrays;
 
+import com.a205.brushbuddy.draft.domain.Draft;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -40,6 +41,12 @@ public class DraftController {
 		System.out.println(draftList);
 		System.out.println("====================================");
 		return new ResponseEntity<>(draftList, HttpStatus.OK);
+	}
+
+	@GetMapping("/detail")
+	public ResponseEntity<Draft> getDraftDetail(@RequestParam int draftId) {
+		Draft draft = draftService.getDraftDetail(draftId);
+		return new ResponseEntity<>(draft, HttpStatus.OK);
 	}
 
 }
