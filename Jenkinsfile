@@ -73,14 +73,33 @@ pipeline {
                 }
             }
         }
-        
+        stage('BE - Remove Stopped Containers') {
+            steps {
+                script {
+
+                    // Find stopped containers with the specified name
+                    def stoppedContainers = sh(script: "ssh -t ${SSH_CONNECTION} \'docker ps -a --filter \"name=${back_img_name}\" --filter \"status=exited\" --format \'{{.ID}}\'\'", returnStdout: true).trim()
+
+                    // Check if there are any stopped containers
+                    if (stoppedContainers) {
+                        // Remove stopped containers
+                        sh "ssh -t ${SSH_CONNECTION} 'docker rm ${stoppedContainers}'"
+                        echo "Stopped containers with name '${back_img_name}' removed."
+                    } else {
+                        echo "No stopped containers with name '${back_img_name}' found."
+                    }
+                }
+            }
+        }
+
         stage('BE - Deploy') {
             steps {
                 sshagent (credentials: ['aws_key']) {
                     script{
                         sh "ssh -o StrictHostKeyChecking=no  ${SSH_CONNECTION} uptime"
-                        sh "ssh -t ${SSH_CONNECTION} 'docker container prune -f'" // 오류난 컨테이너 종료
+                        // sh "ssh -t ${SSH_CONNECTION} 'docker container prune -f'" // 오류난 컨테이너 종료
                         
+                        //실행중인 컨테이너 종료 및 삭제
                         script {
                             def existingContainerId = sh(script: "ssh -t ${SSH_CONNECTION} 'docker ps -q -f name=${back_img_name}'", returnStdout: true).trim()
                             if (existingContainerId) {
@@ -107,11 +126,31 @@ pipeline {
             }     
         }
         
+        stage('FE - Remove Stopped Containers') {
+            steps {
+                script {
+                    // Find stopped containers with the specified name
+                    def stoppedContainers = sh(script: "ssh -t ${SSH_CONNECTION} \'docker ps -a --filter \"name=${front_img_name}\" --filter \"status=exited\" --format \'{{.ID}}\'\'", returnStdout: true).trim()
+
+                    // Check if there are any stopped containers
+                    if (stoppedContainers) {
+                        // Remove stopped containers
+                        sh "ssh -t ${SSH_CONNECTION} 'docker rm ${stoppedContainers}'"
+                        echo "Stopped containers with name '${front_img_name}' removed."
+                    } else {
+                        echo "No stopped containers with name '${front_img_name}' found."
+                    }
+                }
+            }
+        }
+
         stage('FE - Deploy') {
             steps {
                 sshagent (credentials: ['aws_key']) {
                     script{
                         sh "ssh -o StrictHostKeyChecking=no  ${SSH_CONNECTION} uptime"
+
+                        //실행중인 컨테이너 종료 및 삭제
                         script {
                             def existingContainerId = sh(script: "ssh -t ${SSH_CONNECTION} 'docker ps -q -f name=${front_img_name}'", returnStdout: true).trim()
                             if (existingContainerId) {
