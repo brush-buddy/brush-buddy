@@ -9,7 +9,6 @@ import lombok.Data;
 public class Hashtag {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "hashtag_content", nullable = false, length = 50)
 	private String hashtagContent;
 
