@@ -15,4 +15,6 @@ import lombok.NonNull;
 @Repository
 public interface DraftRepository extends JpaRepository<Draft, Long> {
 	@NonNull Page<Draft> findAll(@NonNull Pageable pageable);
+
+	Draft findByDraftId(Long draftId);
 }
