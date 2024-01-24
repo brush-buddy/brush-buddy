@@ -4,6 +4,9 @@ pipeline {
         front_repository = "fangdol888onssafy/brush-buddy-vue"
         back_img_name = "brush-buddy-spring"
         front_img_name ="brush-buddy-vue"
+        docker_compose_back_name = "spring"
+        docker_compose_front_name = "vue"
+
         DOCKERHUB_CREDENTIALS = credentials("my-dockerhub-token")
         dockerImage = ''
         SSH_CONNECTION = "ubuntu@i10a205.p.ssafy.io"
@@ -118,9 +121,10 @@ pipeline {
                                 echo "No existing image with the name ${back_repository}:latest found."
                             }
                         }
-                        sh "ssh -t ${SSH_CONNECTION} 'docker pull ${back_repository}:latest'"
-                        sh "ssh -t ${SSH_CONNECTION} 'docker run -d -p 5000:8080 --name ${back_img_name} ${back_repository}:latest'"
                         
+                        //docker-compose
+                        sh "ssh -t ${SSH_CONNECTION} 'docker-compose pull ${docker_compose_back_name}'"
+                        sh "ssh -t ${SSH_CONNECTION} 'docker-compose up -d ${docker_compose_back_name}'"
                     }
                 }
             }     
@@ -169,8 +173,10 @@ pipeline {
                                 echo "No existing image with the name ${front_repository}:latest found."
                             }
                         }
-                        sh "ssh -t ${SSH_CONNECTION} 'docker pull ${front_repository}:latest'"
-                        sh "ssh -t ${SSH_CONNECTION} 'docker run -d -p 80:80 --name ${front_img_name} ${front_repository}:latest'"
+
+                        //docker-compose
+                        sh "ssh -t ${SSH_CONNECTION} 'docker-compose pull ${docker_compose_front_name}'"
+                        sh "ssh -t ${SSH_CONNECTION} 'docker-compose up -d ${docker_compose_front_name}'"
                     }
                 }
             }     
