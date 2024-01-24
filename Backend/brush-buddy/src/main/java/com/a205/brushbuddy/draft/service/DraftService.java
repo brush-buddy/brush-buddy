@@ -19,8 +19,9 @@ public class DraftService{
 	private DraftRepository draftRepository;
 
 
-	public Page<DraftListResponseDto> getDraftList(DraftListRequestDto draftListRequestDto, Pageable pageable) {
+	public Page<DraftListResponseDto> getDraftList(Pageable pageable) {
 		try {
+
 			return draftRepository.findAll(pageable).map(p->DraftListResponseDto.builder()
 					.draftId(p.getDraftId())
 					.draftThumbnail(p.getDraftThumbnail())
@@ -29,6 +30,8 @@ public class DraftService{
 					.draftBookmark(p.getDraftBookmark())
 					.build());
 		} catch (Exception e) {
+			System.out.println("===================================="	);
+			System.out.println(e.getMessage());
 			return null;
 		}
 	}
