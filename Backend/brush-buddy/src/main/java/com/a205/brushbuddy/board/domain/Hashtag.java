@@ -8,10 +8,10 @@ import lombok.Data;
 @Table(name = "hashtag")
 public class Hashtag {
 
-	@Id
-	@Column(name = "hashtag_content", nullable = false, length = 50)
-	private String hashtagContent;
+	@EmbeddedId
+	private HashtagPK id;
 
+	@MapsId("boardId")
 	@ManyToOne // Hashtag(Many) : Board(One)
 	@JoinColumn(name = "board_id", nullable = false)
 	private Board board;
