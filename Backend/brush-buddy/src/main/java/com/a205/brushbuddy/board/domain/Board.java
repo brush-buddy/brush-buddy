@@ -15,7 +15,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Data;
 
-@SuppressWarnings("checkstyle:RegexpSinglelineJava")
+
 @Data
 @Entity
 @Table(name = "board")
