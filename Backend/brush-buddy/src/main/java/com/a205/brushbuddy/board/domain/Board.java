@@ -3,7 +3,10 @@ package com.a205.brushbuddy.board.domain;
 import com.a205.brushbuddy.draft.domain.Draft;
 import com.a205.brushbuddy.user.domain.User;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.sql.Timestamp;
 
@@ -11,6 +14,9 @@ import java.sql.Timestamp;
 @Data
 @Entity
 @Table(name = "board")
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Board {
 
 	@Id
