@@ -39,6 +39,6 @@ public class Mileage {
     @Column(name = "mileage_amount", nullable = true)
     private int mileageAmount;
 
-    @Column(name = "mileage_content", nullable = true)
+    @Column(name = "mileage_content", nullable = true, length = 100)
     private String mileageContent;
 }
