@@ -12,6 +12,8 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Data;
 
+import java.sql.Timestamp;
+
 @Data
 @Entity
 @Table(name = "reply")
@@ -33,7 +35,7 @@ public class Reply {
 	private String replyContent;
 
 	@Column(name = "reply_timestamp", nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
-	private String replyTimestamp;
+	private Timestamp replyTimestamp;
 
 	@Column(name = "reply_is_deleted", nullable = false)
 	private boolean replyIsDeleted;
