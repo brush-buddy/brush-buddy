@@ -1,11 +1,17 @@
 package com.a205.brushbuddy.board.domain;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Data
 @Table(name = "image")
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Image {
 
 	@Id
