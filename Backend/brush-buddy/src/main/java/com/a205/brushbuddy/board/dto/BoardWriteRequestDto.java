@@ -10,7 +10,6 @@ import java.util.List;
 @Data
 @Builder
 public class BoardWriteRequestDto {
-    private Integer boardId;
     private String title;
     private String contents;
     private List<PhotoDTO> photo;
