@@ -47,7 +47,7 @@ public class Board {
 	@Column(name = "board_watch", nullable = false)
 	private Integer boardWatch;
 
-	@Column(name = "board_timestamp", nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+	@Column(name = "board_timestamp", nullable = false, insertable = false, updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
 	private Timestamp boardTimestamp;
 }
 
