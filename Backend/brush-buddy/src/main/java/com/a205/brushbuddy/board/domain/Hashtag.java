@@ -12,7 +12,7 @@ public class Hashtag {
 	private HashtagPK id;
 
 	@MapsId("boardId")
-	@ManyToOne // Hashtag(Many) : Board(One)
+	@ManyToOne(fetch = FetchType.LAZY) // Hashtag(Many) : Board(One)
 	@JoinColumn(name = "board_id", nullable = false)
 	private Board board;
 

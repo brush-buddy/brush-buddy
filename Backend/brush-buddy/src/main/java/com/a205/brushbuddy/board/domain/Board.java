@@ -19,11 +19,11 @@ public class Board {
 	private Long boardId;
 
 	@JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false)
-	@ManyToOne // Board(Many) : User(One)
+	@ManyToOne(fetch = FetchType.LAZY) // Board(Many) : User(One)
 	private User user;
 
 	@JoinColumn(name = "draft_id")
-	@ManyToOne // Board(Many) : Draft(One)
+	@ManyToOne(fetch = FetchType.LAZY) // Board(Many) : Draft(One)
 	private Draft draft;
 
 	@Column(name = "board_title", nullable = false, length = 200)

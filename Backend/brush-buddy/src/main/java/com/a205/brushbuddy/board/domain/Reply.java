@@ -2,14 +2,7 @@ package com.a205.brushbuddy.board.domain;
 
 import com.a205.brushbuddy.user.domain.User;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Data;
 
 import java.sql.Timestamp;
@@ -23,11 +16,11 @@ public class Reply {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@ManyToOne // Reply(Many) : Board(One)
+	@ManyToOne(fetch = FetchType.LAZY) // Reply(Many) : Board(One)
 	@JoinColumn(name = "board_id", referencedColumnName = "board_id", nullable = false)
 	private Board board;
 
-	@ManyToOne // Reply(Many) : User(One)
+	@ManyToOne(fetch = FetchType.LAZY) // Reply(Many) : User(One)
 	@JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false)
 	private User user;
 
