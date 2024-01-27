@@ -9,5 +9,5 @@ import java.util.List;
 
 @Repository
 public interface ImageRepository extends JpaRepository<Image, Long> {
-    public List<Image> findAllByBoard_BoardId(Long boardId);
+    List<Image> findAllByBoard_BoardId(Long boardId);
 }
