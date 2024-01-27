@@ -1,9 +1,12 @@
 <script setup lang="ts">
-import TheWelcome from '../components/TheWelcome.vue'
+
+import NavigationComponent from "@/components/NavigationComponent.vue";
 </script>
 
 <template>
-  <main>
-    <TheWelcome />
-  </main>
+  <NavigationComponent></NavigationComponent>
 </template>
+
+<style scoped>
+
+</style>
