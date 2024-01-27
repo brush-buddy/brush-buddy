@@ -20,7 +20,7 @@ public class User{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id", nullable = false)
-    private int userId;
+    private Integer userId;
 
     @Column(name = "user_refreshtoken", nullable = false, length = 100)
     private String userRefreshtoken;
@@ -40,7 +40,7 @@ public class User{
 
     @Column(name = "user_mileage", nullable = false)
     @ColumnDefault("0")
-    private int userMileage;
+    private Integer userMileage;
 
     @Column(name = "user_is_admin", nullable = false)
     @ColumnDefault("false")

@@ -2,7 +2,10 @@ package com.a205.brushbuddy.draft.domain;
 
 import com.a205.brushbuddy.user.domain.User;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.sql.Timestamp;
@@ -10,6 +13,9 @@ import java.sql.Timestamp;
 @Slf4j
 @Data
 @Entity
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "draft")
 public class Draft {
 
