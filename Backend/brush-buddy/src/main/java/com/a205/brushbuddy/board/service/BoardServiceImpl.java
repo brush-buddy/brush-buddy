@@ -1,8 +1,10 @@
 package com.a205.brushbuddy.board.service;
 
 import com.a205.brushbuddy.board.domain.Board;
+import com.a205.brushbuddy.board.domain.Hashtag;
+import com.a205.brushbuddy.board.domain.HashtagPK;
 import com.a205.brushbuddy.board.domain.Image;
-import com.a205.brushbuddy.board.dto.BoardWriteRequestDto;
+import com.a205.brushbuddy.board.dto.*;
 import com.a205.brushbuddy.board.repository.*;
 import com.a205.brushbuddy.user.domain.User;
 import com.a205.brushbuddy.util.S3Uploader;
@@ -22,11 +24,13 @@ public class BoardServiceImpl implements BoardService{
     private final ReplyRepository replyRepository;
     private final S3Uploader s3Uploader;
 
+    //게시글 조회 및 검색
     @Override
     public List<Board> getBoardList(Map<String, String> param) {
         return null;
     }
 
+    //게시글 작성
     @Override
     public boolean writeBoard(BoardWriteRequestDto requestDto) {
         try{
@@ -43,6 +47,16 @@ public class BoardServiceImpl implements BoardService{
 
             //게시판 저장
             Board result = boardRepository.save(entity);
+
+            //해시태그 테이블에 해당 게시글의 해시태그를 저장
+            for(String hashtag : requestDto.getHashtags()){ // 각 해시태그에 대해
+                hashtagRepository.save(Hashtag.builder() //저장하라
+                        .id(HashtagPK.builder() // id는
+                                .hashtagContent(hashtag) // hashtag와
+                                .board(result) // 삽입 성공한 board를 복합키로
+                                .build())
+                        .build());
+            }
 
             //게시판에 연관된 이미지 하나씩 저장
             for(BoardWriteRequestDto.PhotoDTO photoDTO : requestDto.getPhoto()){
@@ -74,8 +88,43 @@ public class BoardServiceImpl implements BoardService{
         return true;
     }
 
+
+    //게시글 상세 보기
     @Override
-    public Board getDetail(Long boardId) {
+    public BoardDetailResponseDto getDetail(Long boardId) {
         return null;
+    }
+
+    //게시글 수정
+    @Override
+    public boolean modifyBoard(BoardModifyRequestDto requestDto) {
+        return false;
+    }
+
+    //게시글 삭제
+    @Override
+    public boolean deleteBoard(String userId, Long boardId) {
+        return false;
+    }
+
+    //코멘트 달기
+    @Override
+    public List<CommentListResponseDto> getComments(Long BoardId, CommentWriteRequestDto requestDto) {
+        return null;
+    }
+
+    @Override
+    public boolean writeComment(CommentWriteRequestDto requestDto) {
+        return false;
+    }
+
+    @Override
+    public boolean deleteComment(Long boardId, Long commentId) {
+        return false;
+    }
+
+    @Override
+    public boolean addHeart(String userId, Long commentId) {
+        return false;
     }
 }
