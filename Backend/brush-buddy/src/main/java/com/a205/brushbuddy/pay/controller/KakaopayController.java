@@ -27,12 +27,12 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Controller
-public class PayController {
+public class KakaopayController {
 	@Value("${datetimeformatter.ofpattern}")
 	private static DateTimeFormatter dateTimeFormatter;
 
 	//// 단순히 마이페이지로 통일이 최선으로 판단
-	//// 상황에 따른 반응 추가 여부(성공, 실패, 취소 등) 경우 properties 할당된 KakaopayReadyRequest 변수 사용
+	//// 상황에 따른 반응 추가 여부(성공, 실패, 취소 등) 경우 properties 할당된 (## ready.requset 결과 URL) 변경
 	@Value("${kakaopay.ready.request.url.approval}")
 	private static String redirectUrl;
 
@@ -46,13 +46,13 @@ public class PayController {
 	private int totalAmount;
 	private String tid;
 
-	public PayController(User user, KakaopayService kakaopayService) {
+	public KakaopayController(User user, KakaopayService kakaopayService) {
 		this.user = user;
 		this.kakaopayService = kakaopayService;
 	}
 
 	// 결제 요청 시작
-	@PostMapping("${kakaopay.paycontroller.ready.url}")
+	@PostMapping("${kakaopay.controller.ready.url}")
 	@ResponseBody
 	public KakaopayReadyResponse ready(Model model) {
 		//// 규칙성, 보안 등의 이유로 변경 가능
@@ -78,7 +78,7 @@ public class PayController {
 	}
 
 	// 결제 완료 이후
-	@GetMapping("${kakaopay.paycontroller.completed.url}")
+	@GetMapping("${kakaopay.controller.completed.url}")
 	public String completed(Model model,
 		@RequestParam("pg_token")
 		String pgToken) {

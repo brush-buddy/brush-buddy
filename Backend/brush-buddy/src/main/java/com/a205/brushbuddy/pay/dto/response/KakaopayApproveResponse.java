@@ -2,15 +2,23 @@ package com.a205.brushbuddy.pay.dto.response;
 
 import java.sql.Timestamp;
 
-import lombok.Data;
-import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 /**
  * @author SSAFY
  * https://developers.kakao.com/docs/latest/ko/kakaopay/single-payment#approve-response-body
  */
-@Slf4j
-@Data
+@Getter
+@Setter
+@ToString
+@NoArgsConstructor
+@AllArgsConstructor
 public class KakaopayApproveResponse {
 	private String aid;
 	private String tid;
@@ -27,4 +35,10 @@ public class KakaopayApproveResponse {
 	private Timestamp createdAt;
 	private Timestamp approvedAt;
 	private String payload;
+
+	@Value("${kakaopay.approve.response.size}")
+	public static int size;
+
+	@Value("${kakaopay.approve.response.name}")
+	public static String[] name;
 }
