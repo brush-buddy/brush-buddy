@@ -6,6 +6,8 @@ import com.a205.brushbuddy.board.domain.HashtagPK;
 import com.a205.brushbuddy.board.domain.Image;
 import com.a205.brushbuddy.board.dto.*;
 import com.a205.brushbuddy.board.repository.*;
+import com.a205.brushbuddy.draft.domain.Draft;
+import com.a205.brushbuddy.draft.repository.DraftRepository;
 import com.a205.brushbuddy.user.domain.User;
 import com.a205.brushbuddy.util.S3Uploader;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -22,17 +25,18 @@ public class BoardServiceImpl implements BoardService{
     private final HeartRepository heartRepository;
     private final ImageRepository imageRepository;
     private final ReplyRepository replyRepository;
+    private final DraftRepository draftRepository;
     private final S3Uploader s3Uploader;
 
     //게시글 조회 및 검색
     @Override
-    public List<Board> getBoardList(Map<String, String> param) {
+    public List<Board> getBoardList(Map<String, String> param) throws Exception {
         return null;
     }
 
     //게시글 작성
     @Override
-    public boolean writeBoard(BoardWriteRequestDto requestDto) {
+    public boolean writeBoard(BoardWriteRequestDto requestDto) throws Exception{
         try{
             //Board entity에 필요 데이터 우선 삽입
             Board entity = Board.builder()
@@ -91,40 +95,107 @@ public class BoardServiceImpl implements BoardService{
 
     //게시글 상세 보기
     @Override
-    public BoardDetailResponseDto getDetail(Long boardId) {
-        return null;
-    }
+    public BoardDetailResponseDto getDetail(Long boardId) throws Exception{
+        // id로 보드 찾기
+        Board result = boardRepository.findById(boardId)
+                .orElseThrow(() -> new Exception("couldn't get Board detail by boardId"));
 
+        //해당 보드에 연결된 사진들 가지고 오기
+        List<BoardDetailResponseDto.PhotoDTO> photos =
+                imageRepository.findAllByBoard_BoardId(boardId).stream().map(
+                        m -> BoardDetailResponseDto.PhotoDTO.builder() // 가져온 entity 기반 response dto 형식으로 변경
+                                .order(m.getImageOrder())
+                                .imgUrl(m.getImageUrl())
+                                .build()
+                ).toList();
+
+        //response DTO로 변환 및 반환
+        return BoardDetailResponseDto.builder()
+                .boardId(boardId)
+                .title(result.getBoardTitle())
+                .contents(result.getBoardContent())
+                .createdAt(result.getBoardTimestamp().toString())
+                .likeNumber(result.getBoardLikeNumber())
+                .thumbnail(result.getBoardThumbnail())
+                .views(result.getBoardWatch())
+                .draftId(result.getDraft().getDraftId()) //연결된 거 있으면 넣어주기
+                .photo(photos) // 가져온 사진 넣어주기
+                .build();
+    }
     //게시글 수정
     @Override
-    public boolean modifyBoard(BoardModifyRequestDto requestDto) {
-        return false;
+    public boolean modifyBoard(Long boardId, Integer userId, BoardModifyRequestDto requestDto) throws Exception{
+
+        //보드 정보 가지고 오기
+        Board board = boardRepository.findById(boardId)
+                .orElseThrow(() -> new Exception("invalid boardId"));
+        //User 확인을 통해서 수정권한 확인하기
+        if(board.getUser().getUserId() == userId)
+        {
+            // 변경할 entity의 내용을 작성한다.
+            board.setBoardTitle(requestDto.getTitle());
+            board.setBoardContent(requestDto.getContents());
+
+            //Thumbnail 설정
+            if(!requestDto.getPhoto().isEmpty()){
+                String thumbnail = requestDto.getPhoto().get(0).getImg(); // 첫번째꺼로 기본 설정
+
+                for(BoardModifyRequestDto.PhotoDTO photo : requestDto.getPhoto()){ // 여러개면 조사
+                    if(photo.getOrder() == 1){ // 첫번째 순서라면
+                        thumbnail = photo.getImg(); // 해당 이미지를 썸네일로 설정
+                        break;
+                    }
+                }
+                board.setBoardThumbnail(thumbnail); // 썸네일 변경
+            }
+
+            //도안 변경
+            Draft draft =  draftRepository.findById(requestDto.getDraftId()).orElse(null);
+            board.setDraft(draft);
+
+            //변경 내용을 작성한다.
+            boardRepository.save(board);
+            return true;
+
+        }else{
+            return false;
+        }
+
+
     }
 
     //게시글 삭제
     @Override
-    public boolean deleteBoard(String userId, Long boardId) {
-        return false;
+    public boolean deleteBoard(Integer userId, Long boardId) throws Exception {
+        Board board = boardRepository.findById(boardId)
+                .orElseThrow(() -> new Exception("couldn't find board by boardId"));
+        // 만약 사용자가 작성한 게시글이면 삭제 처리
+        if(board.getUser().getUserId().equals(userId)){
+            boardRepository.delete(board);
+            return true;
+        }else{
+            return false;
+        }
     }
 
     //코멘트 달기
     @Override
-    public List<CommentListResponseDto> getComments(Long BoardId, CommentWriteRequestDto requestDto) {
+    public List<CommentListResponseDto> getComments(Long BoardId, CommentWriteRequestDto requestDto) throws Exception{
         return null;
     }
 
     @Override
-    public boolean writeComment(CommentWriteRequestDto requestDto) {
+    public boolean writeComment(CommentWriteRequestDto requestDto) throws Exception{
         return false;
     }
 
     @Override
-    public boolean deleteComment(Long boardId, Long commentId) {
+    public boolean deleteComment(Long boardId, Long commentId) throws Exception{
         return false;
     }
 
     @Override
-    public boolean addHeart(String userId, Long commentId) {
+    public boolean addHeart(Integer userId, Long commentId) throws Exception{
         return false;
     }
 }

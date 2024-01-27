@@ -9,11 +9,10 @@ import java.util.List;
 @Setter
 @Getter
 public class BoardModifyRequestDto {
-    private Integer boardId;
     private String title;
     private String contents;
     private List<PhotoDTO> photo;
-    private Integer draftId;
+    private Long draftId;
 
 
     @Setter

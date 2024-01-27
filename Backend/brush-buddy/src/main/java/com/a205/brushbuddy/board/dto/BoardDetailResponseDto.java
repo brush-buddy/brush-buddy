@@ -11,11 +11,12 @@ import java.util.List;
 @Data
 @Builder
 public class BoardDetailResponseDto {
-    private Integer boardId;
+    private Long boardId;
     private String title;
     private String contents;
     private String thumbnail;
     private List<PhotoDTO> photo;
+    private Long draftId;
     private Integer likeNumber;
     private Integer views;
     private String createdAt;
@@ -25,6 +26,7 @@ public class BoardDetailResponseDto {
 
     @Getter
     @Setter
+    @Builder
     public static class PhotoDTO {
         private Integer order;
         private String imgUrl;
