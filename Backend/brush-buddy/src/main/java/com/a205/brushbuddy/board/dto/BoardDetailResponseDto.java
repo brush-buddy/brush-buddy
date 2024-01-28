@@ -19,6 +19,7 @@ public class BoardDetailResponseDto {
     private Long draftId;
     private Integer likeNumber;
     private Integer views;
+    private List<String> hashtag;
     private String createdAt;
 
     // 생성자, getter 및 setter 메서드는 필요에 따라 추가할 수 있습니다
