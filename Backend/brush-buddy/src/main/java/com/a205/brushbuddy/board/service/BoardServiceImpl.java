@@ -6,13 +6,15 @@ import com.a205.brushbuddy.board.repository.*;
 import com.a205.brushbuddy.draft.domain.Draft;
 import com.a205.brushbuddy.draft.repository.DraftRepository;
 import com.a205.brushbuddy.user.domain.User;
-import com.a205.brushbuddy.user.repository.UserRepository;
 import com.a205.brushbuddy.util.S3Uploader;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -28,7 +30,11 @@ public class BoardServiceImpl implements BoardService{
 
     //게시글 조회 및 검색
     @Override
-    public List<Board> getBoardList(Map<String, String> param) throws Exception {
+    public List<Board> getBoardList(String search, Pageable pageable) throws Exception {
+        List<Board> result;
+        if(search == null){
+//            result = boardRepository.
+            }
         return null;
     }
 

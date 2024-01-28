@@ -1,12 +1,16 @@
 package com.a205.brushbuddy.board.controller;
 
 
+import com.a205.brushbuddy.board.domain.Board;
 import com.a205.brushbuddy.board.dto.*;
 import com.a205.brushbuddy.board.service.BoardService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -18,7 +22,13 @@ public class BoardController {
     // 게시글 검색 및 리스트 조회
     @GetMapping("/list")
     public ResponseEntity<?> getBoardList(BoardListRequestDto requestDto) throws Exception{
-        return ResponseEntity.ok().build();
+        List<Board> boards = boardService.getBoardList(requestDto.getSearch(),
+                PageRequest.of(requestDto.getPageNum(), //현재 페이지
+                        requestDto.getListNum(), // 페이지 당 개수
+                        requestDto.getDirection(), //오름차순 or 내림차순
+                        requestDto.getOrder())); //정렬 기준
+
+        return ResponseEntity.ok().body(boards);
     }
 
 

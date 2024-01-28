@@ -2,12 +2,12 @@ package com.a205.brushbuddy.board.service;
 
 import com.a205.brushbuddy.board.domain.Board;
 import com.a205.brushbuddy.board.dto.*;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
-import java.util.Map;
 
 public interface BoardService {
-    List<Board> getBoardList(Map<String, String> param) throws Exception; // 게시판 리스트 조회 및 검색 조회
+    List<Board> getBoardList(String search, Pageable pageable) throws Exception; // 게시판 리스트 조회 및 검색 조회
     boolean writeBoard(Integer userId, BoardWriteRequestDto requestDto) throws Exception; // 게시판 작성 메소드
 
     BoardDetailResponseDto getDetail(Long boardId) throws Exception; // 게시판 상세 조회 메소드
