@@ -9,6 +9,7 @@ import com.a205.brushbuddy.board.repository.*;
 import com.a205.brushbuddy.draft.domain.Draft;
 import com.a205.brushbuddy.draft.repository.DraftRepository;
 import com.a205.brushbuddy.user.domain.User;
+import com.a205.brushbuddy.user.repository.UserRepository;
 import com.a205.brushbuddy.util.S3Uploader;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +25,7 @@ public class BoardServiceImpl implements BoardService{
     private final HeartRepository heartRepository;
     private final ImageRepository imageRepository;
     private final ReplyRepository replyRepository;
+
     private final DraftRepository draftRepository;
     private final S3Uploader s3Uploader;
 
@@ -35,12 +37,11 @@ public class BoardServiceImpl implements BoardService{
 
     //게시글 작성
     @Override
-    public boolean writeBoard(BoardWriteRequestDto requestDto) throws Exception{
+    public boolean writeBoard(Integer userId, BoardWriteRequestDto requestDto) throws Exception{
         try{
             //Board entity에 필요 데이터 우선 삽입
             Board entity = Board.builder()
-                    .user(User.builder().userId(1).build()) // TEST CODE
-                    //TODO : JWT 토크에서 사용자 로그 가져오기
+                    .user(User.builder().userId(userId).build())
                     .boardTitle(requestDto.getTitle())
                     .boardContent(requestDto.getContents())
                     .boardThumbnail("")

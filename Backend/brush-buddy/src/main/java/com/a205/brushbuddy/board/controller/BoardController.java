@@ -28,7 +28,9 @@ public class BoardController {
     // 게시판 작성
     @PostMapping("")
     public ResponseEntity<?> writeBoard(@RequestBody BoardWriteRequestDto requestDto) throws Exception{
-        boardService.writeBoard(requestDto);
+        //TODO : userId JWT 토큰으로 부터 추출하기
+        Integer userId = 1;
+        boardService.writeBoard(userId, requestDto);
         return ResponseEntity.ok().build();
     }
 

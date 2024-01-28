@@ -8,7 +8,7 @@ import java.util.Map;
 
 public interface BoardService {
     List<Board> getBoardList(Map<String, String> param) throws Exception; // 게시판 리스트 조회 및 검색 조회
-    boolean writeBoard(BoardWriteRequestDto requestDto) throws Exception; // 게시판 작성 메소드
+    boolean writeBoard(Integer userId, BoardWriteRequestDto requestDto) throws Exception; // 게시판 작성 메소드
 
     BoardDetailResponseDto getDetail(Long boardId) throws Exception; // 게시판 상세 조회 메소드
 
