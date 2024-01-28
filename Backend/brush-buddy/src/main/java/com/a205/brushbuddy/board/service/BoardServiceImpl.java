@@ -1,9 +1,6 @@
 package com.a205.brushbuddy.board.service;
 
-import com.a205.brushbuddy.board.domain.Board;
-import com.a205.brushbuddy.board.domain.Hashtag;
-import com.a205.brushbuddy.board.domain.HashtagPK;
-import com.a205.brushbuddy.board.domain.Image;
+import com.a205.brushbuddy.board.domain.*;
 import com.a205.brushbuddy.board.dto.*;
 import com.a205.brushbuddy.board.repository.*;
 import com.a205.brushbuddy.draft.domain.Draft;
@@ -54,7 +51,7 @@ public class BoardServiceImpl implements BoardService{
             Board result = boardRepository.save(entity);
 
             //해시태그 테이블에 해당 게시글의 해시태그를 저장
-            for(String hashtag : requestDto.getHashtags()){ // 각 해시태그에 대해
+            for(String hashtag : Set.copyOf(requestDto.getHashtags())){ // 각 해시태그에 대해
                 hashtagRepository.save(Hashtag.builder() //저장하라
                         .id(HashtagPK.builder() // id는
                                 .hashtagContent(hashtag) // hashtag와
@@ -233,24 +230,65 @@ public class BoardServiceImpl implements BoardService{
         }
     }
 
-    //코멘트 달기
+    //댓글 목록 조회하기
     @Override
-    public List<CommentListResponseDto> getComments(Long BoardId, CommentWriteRequestDto requestDto) throws Exception{
+    public List<ReplyListResponseDto> getReplies(Long BoardId, ReplyWriteRequestDto requestDto) throws Exception{
+
         return null;
     }
 
+    //댓글 작성하기
+    @Transactional
     @Override
-    public boolean writeComment(CommentWriteRequestDto requestDto) throws Exception{
+    public boolean writeReply(Integer userId, Long boardId, ReplyWriteRequestDto requestDto) throws Exception{
+        // board 찾기
+        Board board = boardRepository.findById(boardId)
+                .orElseThrow(() -> new Exception("couldn't find board by boardId"));
+
+        //댓글 생성
+        Reply reply = Reply.builder()
+                .board(board)
+                .user(User.builder().userId(userId).build())
+                .replyIsDeleted(false)
+                .replyContent(requestDto.getContents())
+                .build();
+
+        // 댓글 db에 저장
+        replyRepository.save(reply);
         return false;
     }
 
+    //댓글 삭제하기
+    @Transactional
     @Override
-    public boolean deleteComment(Long boardId, Long commentId) throws Exception{
-        return false;
+    public boolean deleteReply(Integer boardId, Long replyId) throws Exception{
+        Reply reply = replyRepository.findById(replyId)
+                .orElseThrow(() -> new Exception("couldn't find reply by replyId"));
+        // 삭제처리
+        reply.setReplyIsDeleted(true);
+
+        //변경사항 저장
+        replyRepository.save(reply);
+        return true;
     }
 
+
+    //좋아요 누르기
+    @Transactional
     @Override
-    public boolean addHeart(Integer userId, Long commentId) throws Exception{
-        return false;
+    public boolean addHeart(Integer userId, Long boardId) throws Exception{
+        heartRepository.insertHeart(userId, boardId);
+        return true;
+    }
+
+    //좋아요 취소
+    @Transactional
+    @Override
+    public boolean deleteHeart(Integer userId, Long boardId) throws Exception {
+        Heart heart =  heartRepository.findByHeartId_User_UserIdAndHeartId_Board_BoardId(userId, boardId)
+                .orElseThrow(() -> new Exception("couldn't find heart by userId and boardId"));
+        // 엔티티에서 삭제하기
+        heartRepository.delete(heart);
+        return true;
     }
 }

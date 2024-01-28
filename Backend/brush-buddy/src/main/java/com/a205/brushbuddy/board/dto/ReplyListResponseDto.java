@@ -12,14 +12,14 @@ import java.util.List;
 @Builder
 public class ReplyListResponseDto {
     private Integer resultCode;
-    private List<CommentDTO> commentList;
+    private List<replyDTO> replyList;
     private Integer pageNum;
     private Integer length;
 
 
     @Getter
     @Setter
-    public static class CommentDTO {
+    public static class replyDTO {
         private Integer userId;
         private String nickname;
         private String contents;
