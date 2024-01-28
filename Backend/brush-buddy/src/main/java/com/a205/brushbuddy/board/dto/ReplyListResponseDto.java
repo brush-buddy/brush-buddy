@@ -10,7 +10,7 @@ import java.util.List;
 
 @Data
 @Builder
-public class CommentListResponseDto {
+public class ReplyListResponseDto {
     private Integer resultCode;
     private List<CommentDTO> commentList;
     private Integer pageNum;

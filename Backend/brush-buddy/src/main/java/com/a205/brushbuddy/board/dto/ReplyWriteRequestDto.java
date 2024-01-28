@@ -5,6 +5,6 @@ import lombok.Data;
 
 @Data
 @Builder
-public class CommentWriteRequestDto {
+public class ReplyWriteRequestDto {
     private String contents;
 }

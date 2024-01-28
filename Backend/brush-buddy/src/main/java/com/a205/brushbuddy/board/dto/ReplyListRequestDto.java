@@ -6,6 +6,6 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class CommentListRequestDto {
+public class ReplyListRequestDto {
     private String pageNum;
 }
