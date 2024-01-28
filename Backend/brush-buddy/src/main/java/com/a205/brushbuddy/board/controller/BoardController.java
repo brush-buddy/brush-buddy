@@ -53,6 +53,9 @@ public class BoardController {
     //게시판 삭제
     @DeleteMapping("/{boardId}")
     public  ResponseEntity<?> deleteBoard(@PathVariable long boardId) throws Exception{
+        //TODO : userId JWT 토큰으로 부터 추출하기
+        Integer userId = 1;
+        boardService.deleteBoard(userId, boardId);
         return ResponseEntity.ok().build();
     }
 

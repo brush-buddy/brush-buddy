@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 
 import java.sql.Timestamp;
 
@@ -46,6 +47,10 @@ public class Board {
 
 	@Column(name = "board_watch", nullable = false)
 	private Integer boardWatch;
+
+	@ColumnDefault(value = "false")
+	@Column(name = "board_is_deleted", nullable = false)
+	private Boolean boardIsDeleted;
 
 	@Column(name = "board_timestamp", nullable = false, insertable = false, updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
 	private Timestamp boardTimestamp;

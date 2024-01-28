@@ -10,12 +10,11 @@ import com.a205.brushbuddy.draft.domain.Draft;
 import com.a205.brushbuddy.draft.repository.DraftRepository;
 import com.a205.brushbuddy.user.domain.User;
 import com.a205.brushbuddy.util.S3Uploader;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -47,6 +46,7 @@ public class BoardServiceImpl implements BoardService{
                     .boardThumbnail("")
                     .boardWatch(0)
                     .boardLikeNumber(0)
+                    .boardIsDeleted(false)
                     .build();
 
             //게시판 저장
@@ -102,27 +102,43 @@ public class BoardServiceImpl implements BoardService{
 
         //해당 보드에 연결된 사진들 가지고 오기
         List<BoardDetailResponseDto.PhotoDTO> photos =
-                imageRepository.findAllByBoard_BoardId(boardId).stream().map(
+                imageRepository.findAllByBoard_BoardId(boardId)
+                        .stream().map(
                         m -> BoardDetailResponseDto.PhotoDTO.builder() // 가져온 entity 기반 response dto 형식으로 변경
                                 .order(m.getImageOrder())
                                 .imgUrl(m.getImageUrl())
                                 .build()
                 ).toList();
 
-        //response DTO로 변환 및 반환
-        return BoardDetailResponseDto.builder()
-                .boardId(boardId)
-                .title(result.getBoardTitle())
-                .contents(result.getBoardContent())
-                .createdAt(result.getBoardTimestamp().toString())
-                .likeNumber(result.getBoardLikeNumber())
-                .thumbnail(result.getBoardThumbnail())
-                .views(result.getBoardWatch())
-                .draftId(result.getDraft().getDraftId()) //연결된 거 있으면 넣어주기
-                .photo(photos) // 가져온 사진 넣어주기
-                .build();
+        //게시판 관련 해시태그 추출
+        List<String> hashtags = hashtagRepository.findAllById_Board_BoardId(boardId).stream().map(
+                m -> m.getId().getHashtagContent()
+        ).toList();
+
+        //response DTO로 변환
+        BoardDetailResponseDto.BoardDetailResponseDtoBuilder builder =
+                BoardDetailResponseDto.builder()
+                        .boardId(boardId)
+                        .title(result.getBoardTitle())
+                        .contents(result.getBoardContent())
+                        .hashtag(hashtags)
+                        .createdAt(result.getBoardTimestamp().toString())
+                        .likeNumber(result.getBoardLikeNumber())
+                        .thumbnail(result.getBoardThumbnail())
+                        .views(result.getBoardWatch())
+                        .photo(photos); // 가져온 사진 넣어주기
+
+        //도안 있는지 확인하고 없으면 그냥 보내기
+        if(result.getDraft() != null){
+            builder.draftId(result.getDraft().getDraftId());//연결된 도안 있으면 넣어주기
+        }
+
+        //최종 결과 반환
+        return builder.build();
     }
+
     //게시글 수정
+    @Transactional
     @Override
     public boolean modifyBoard(Long boardId, Integer userId, BoardModifyRequestDto requestDto) throws Exception{
 
@@ -130,22 +146,53 @@ public class BoardServiceImpl implements BoardService{
         Board board = boardRepository.findById(boardId)
                 .orElseThrow(() -> new Exception("invalid boardId"));
         //User 확인을 통해서 수정권한 확인하기
-        if(board.getUser().getUserId() == userId)
+        if(Objects.equals(board.getUser().getUserId(), userId))
         {
             // 변경할 entity의 내용을 작성한다.
             board.setBoardTitle(requestDto.getTitle());
             board.setBoardContent(requestDto.getContents());
 
-            //Thumbnail 설정
+            //기존 이미지 삭제
+            List<Image> images = imageRepository.findAllByBoard_BoardId(boardId);
+
+            if(images != null){ // 기존 이미지가 있다면
+                for(Image image : images){ // 모든 이미지에 대해서
+                    //S3 내 파일 위치 추출
+                    String filename = image.getImageUrl().split(".*//.*board/")[1]; // 이미지 url로 추출한다.
+                    s3Uploader.removeS3File("board/"+filename); //이미지 파일 삭제
+                }
+
+                //DB에서 연관관계 삭제
+                imageRepository.deleteAll(images);
+            }
+
+            //추가 이미지가 있다면
             if(!requestDto.getPhoto().isEmpty()){
-                String thumbnail = requestDto.getPhoto().get(0).getImg(); // 첫번째꺼로 기본 설정
+
+                String thumbnail = null;
 
                 for(BoardModifyRequestDto.PhotoDTO photo : requestDto.getPhoto()){ // 여러개면 조사
+                    //새로운 이미지 업로드
+                    String url = s3Uploader.uploadBase64Image(photo.getImg(), "board");
+
+                    //이미지 DB에 저장하기
+                    Image image = Image.builder()
+                            .board(board)
+                            .imageUrl(url)
+                            .imageOrder(photo.getOrder())
+                            .build();
+
+                    imageRepository.save(image);
+
+                    //Thumbnail 설정
                     if(photo.getOrder() == 1){ // 첫번째 순서라면
-                        thumbnail = photo.getImg(); // 해당 이미지를 썸네일로 설정
-                        break;
+                        thumbnail = url; // 해당 이미지를 썸네일로 설정
                     }
                 }
+
+                // 썸네일 지정 안되면 오류 발생 시키기
+                if(thumbnail == null) throw new Exception("there's no images in request body");
+
                 board.setBoardThumbnail(thumbnail); // 썸네일 변경
             }
 
@@ -165,13 +212,20 @@ public class BoardServiceImpl implements BoardService{
     }
 
     //게시글 삭제
+    @Transactional
     @Override
     public boolean deleteBoard(Integer userId, Long boardId) throws Exception {
+        //게시판 정보 가져오기
         Board board = boardRepository.findById(boardId)
                 .orElseThrow(() -> new Exception("couldn't find board by boardId"));
+
         // 만약 사용자가 작성한 게시글이면 삭제 처리
         if(board.getUser().getUserId().equals(userId)){
-            boardRepository.delete(board);
+            //board 삭제 여부 처리
+            board.setBoardIsDeleted(true);
+
+            //저장
+            boardRepository.save(board);
             return true;
         }else{
             return false;
