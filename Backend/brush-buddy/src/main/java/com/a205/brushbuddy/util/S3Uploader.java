@@ -2,6 +2,7 @@ package com.a205.brushbuddy.util;
 
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
+import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -121,6 +122,10 @@ public class S3Uploader {
             return Optional.of(convertFile);
         }
         return Optional.empty();
+    }
+
+    public void removeS3File(String filepath){
+        amazonS3Client.deleteObject(new DeleteObjectRequest(bucket ,filepath));
     }
 }
 
