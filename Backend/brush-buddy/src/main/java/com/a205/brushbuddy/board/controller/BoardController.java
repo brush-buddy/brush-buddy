@@ -2,11 +2,13 @@ package com.a205.brushbuddy.board.controller;
 
 
 import com.a205.brushbuddy.board.domain.Board;
+import com.a205.brushbuddy.board.domain.Reply;
 import com.a205.brushbuddy.board.dto.*;
 import com.a205.brushbuddy.board.service.BoardService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,13 +24,29 @@ public class BoardController {
     // 게시글 검색 및 리스트 조회
     @GetMapping("/list")
     public ResponseEntity<?> getBoardList(BoardListRequestDto requestDto) throws Exception{
-        List<Board> boards = boardService.getBoardList(requestDto.getSearch(),
-                PageRequest.of(requestDto.getPageNum(), //현재 페이지
-                        requestDto.getListNum(), // 페이지 당 개수
-                        requestDto.getDirection(), //오름차순 or 내림차순
-                        requestDto.getOrder())); //정렬 기준
+        Pageable pageable = PageRequest.of(requestDto.getPageNum() -1, //현재 페이지
+                requestDto.getListNum(), // 페이지 당 개수
+                requestDto.getDirection(), //오름차순 or 내림차순
+                requestDto.getOrder()); // 기준
 
-        return ResponseEntity.ok().body(boards);
+        List<Board> boards = boardService.getBoardList(requestDto.getSearch(), pageable); //정렬 기준
+
+        //결과물 dto로 변환
+        BoardListResponseDto result = BoardListResponseDto.builder()
+                .boards(boards.stream().map(
+                        m-> BoardListResponseDto.BoardDTO.builder()
+                                .boardId(m.getBoardId())
+                                .boardTitle(m.getBoardTitle())
+                                .views(m.getBoardWatch())
+                                .thumbnail(m.getBoardThumbnail())
+                                .likeNumber(m.getBoardLikeNumber())
+                                .createdAt(m.getBoardTimestamp().toString())
+                        .build()).toList())
+                .length(boards.size())
+                .pageNum(pageable.getPageNumber() + 1)
+                .build();
+
+        return ResponseEntity.ok(result);
     }
 
 
@@ -71,8 +89,26 @@ public class BoardController {
 
     //댓글 리스트 조회
     @GetMapping("/{boardId}/replies")
-    public  ResponseEntity<?> getReplies(@PathVariable long boardId) throws Exception{
-        return ResponseEntity.ok().build();
+    public  ResponseEntity<?> getReplies(@PathVariable long boardId, ReplyListRequestDto requestDto) throws Exception{
+        // pageable 생성
+        Pageable pageable = PageRequest.of(requestDto.getPageNum() - 1 ,requestDto.getListNum());
+
+        // 페이지 네이션 댓글 가지고 오기
+        List<Reply> replies =  boardService.getReplies(boardId, pageable);
+
+        ReplyListResponseDto result = ReplyListResponseDto.builder()
+                .pageNum(pageable.getPageNumber()+1)
+                .replyList(replies.stream().map(
+                        m -> ReplyListResponseDto.replyDTO
+                                .builder()
+                                .userId(m.getUser().getUserId())
+                                .nickname(m.getUser().getUserNickname())
+                                .contents(m.getReplyContent())
+                                .createdAt(m.getReplyTimestamp().toString())
+                                .build())
+                        .toList())
+                .build();
+        return ResponseEntity.ok(result);
     }
 
     //댓글 작성
