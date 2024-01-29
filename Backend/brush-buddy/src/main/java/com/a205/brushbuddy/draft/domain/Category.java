@@ -16,5 +16,5 @@ public class Category {
     private Long categoryId;
 
     @Column(name = "category_content")
-    private String category_content;
+    private String categoryContent;
 }
