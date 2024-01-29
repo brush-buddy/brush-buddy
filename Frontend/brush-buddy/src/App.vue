@@ -1,22 +1,15 @@
-<script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router'
-import HomeView from "@/views/HomeView.vue";
+<script setup>
+
+import NavigationComponent from "./components/NavigationComponent.vue";
+import DraftView from "./views/DraftView.vue";
 </script>
-
+    
 <template>
-  <header>
-
-    <div class="wrapper">
-
-    </div>
-  </header>
-
-  <body>
-      <HomeView></HomeView>
-  </body>
-
+    <DraftView />
+    <NavigationComponent />
 </template>
 
 <style scoped>
+
 
 </style>
