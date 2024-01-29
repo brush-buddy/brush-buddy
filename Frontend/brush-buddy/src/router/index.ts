@@ -1,5 +1,6 @@
 import CommunityViewVue from '@/views/CommunityView.vue'
-import DiaryVIewVue from '@/views/DiaryVIew.vue'
+import DiaryVIewVue from '@/views/DiaryView.vue'
+import DraftViewVue from '@/views/DraftView.vue'
 import HomeViewVue from '@/views/HomeView.vue'
 import SearchViewVue from '@/views/SearchView.vue'
 import { createRouter, createWebHistory } from 'vue-router'
@@ -15,19 +16,24 @@ const router = createRouter({
         component: HomeViewVue
       },
       {
-        path: '/',
+        path: '/community',
         name: 'CommunityView',
         component: CommunityViewVue
       },
       {
-        path: '/',
+        path: '/diary',
         name: 'DiaryView',
         component: DiaryVIewVue
       },
       {
-        path: '/',
+        path: '/search',
         name: 'SearchView',
         component: SearchViewVue
+      },
+      {
+        path: '/draft',
+        name: 'DraftView',
+        component: DraftViewVue
       }
 
   ]
