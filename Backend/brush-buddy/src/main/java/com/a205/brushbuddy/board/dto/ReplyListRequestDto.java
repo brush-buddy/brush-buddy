@@ -1,11 +1,17 @@
 package com.a205.brushbuddy.board.dto;
 
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class ReplyListRequestDto {
-    private String pageNum;
+    @Builder.Default
+    private Integer pageNum = 1;
+
+    @Builder.Default
+    private Integer listNum = 20;
 }

@@ -19,6 +19,7 @@ public class ReplyListResponseDto {
 
     @Getter
     @Setter
+    @Builder
     public static class replyDTO {
         private Integer userId;
         private String nickname;
