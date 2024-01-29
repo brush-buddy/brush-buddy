@@ -250,9 +250,8 @@ public class BoardServiceImpl implements BoardService{
 
     //댓글 목록 조회하기
     @Override
-    public List<Reply> getReplies(Long BoardId, Pageable pageable) throws Exception{
-
-        return null;
+    public List<Reply> getReplies(Long boardId, Pageable pageable) throws Exception{
+        return  replyRepository.findAllByBoard_BoardId(boardId, pageable).stream().toList();
     }
 
     //댓글 작성하기

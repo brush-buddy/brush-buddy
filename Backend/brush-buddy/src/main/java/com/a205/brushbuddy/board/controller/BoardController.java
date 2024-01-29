@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -91,7 +92,7 @@ public class BoardController {
     @GetMapping("/{boardId}/replies")
     public  ResponseEntity<?> getReplies(@PathVariable long boardId, ReplyListRequestDto requestDto) throws Exception{
         // pageable 생성
-        Pageable pageable = PageRequest.of(requestDto.getPageNum() - 1 ,requestDto.getListNum());
+        Pageable pageable = PageRequest.of(requestDto.getPageNum() - 1 ,requestDto.getListNum(), Sort.Direction.DESC, "replyTimestamp");
 
         // 페이지 네이션 댓글 가지고 오기
         List<Reply> replies =  boardService.getReplies(boardId, pageable);
@@ -107,6 +108,7 @@ public class BoardController {
                                 .createdAt(m.getReplyTimestamp().toString())
                                 .build())
                         .toList())
+                .length(replies.size())
                 .build();
         return ResponseEntity.ok(result);
     }

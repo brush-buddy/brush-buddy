@@ -11,7 +11,6 @@ import java.util.List;
 @Data
 @Builder
 public class ReplyListResponseDto {
-    private Integer resultCode;
     private List<replyDTO> replyList;
     private Integer pageNum;
     private Integer length;
