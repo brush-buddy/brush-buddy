@@ -1,6 +1,6 @@
 package com.a205.brushbuddy.mileage.domain;
 
-import java.sql.Date;
+import java.sql.Timestamp;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -28,7 +28,7 @@ public class Mileage {
 
 	@Column(name = "mileage_timestamp", nullable = true)
 	@Temporal(TemporalType.TIMESTAMP)
-	private Date mileageTimestamp;
+    private Timestamp mileageTimestamp;
 
     @Column(name = "mileage_before", nullable = true)
     private int mileageBefore;
