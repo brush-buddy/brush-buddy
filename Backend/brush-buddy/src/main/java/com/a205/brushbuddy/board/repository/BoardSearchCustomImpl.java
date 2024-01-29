@@ -22,7 +22,8 @@ public class BoardSearchCustomImpl implements BoardSearchCustom{
                 .from(b)
                 .join(h)
                 .on(b.boardId.eq(h.id.board.boardId))
-                .where(h.id.hashtagContent.eq(search))
+                .where(h.id.hashtagContent.contains(search))
+                .where(b.boardIsDeleted.eq(false)) // 삭제 안된거로 가져온다.
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();

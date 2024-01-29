@@ -38,7 +38,7 @@ public class BoardServiceImpl implements BoardService{
 
         //검색 수행이 아니라면
         if(search == null){
-            result = boardRepository.findAll(pageable).stream().toList();
+            result = boardRepository.findAllByBoardIsDeletedFalse(pageable).stream().toList();
         }
         else { // 검색을 수행하려면
             result = boardRepository.getSearchList(search, pageable).stream().toList();
@@ -109,7 +109,7 @@ public class BoardServiceImpl implements BoardService{
     @Override
     public BoardDetailResponseDto getDetail(Long boardId) throws Exception{
         // id로 보드 찾기
-        Board result = boardRepository.findById(boardId)
+        Board result = boardRepository.findByBoardIdAndBoardIsDeletedFalse(boardId)
                 .orElseThrow(() -> new Exception("couldn't get Board detail by boardId"));
 
         //해당 게시물의 조회수 증가
@@ -159,7 +159,7 @@ public class BoardServiceImpl implements BoardService{
     public boolean modifyBoard(Long boardId, Integer userId, BoardModifyRequestDto requestDto) throws Exception{
 
         //보드 정보 가지고 오기
-        Board board = boardRepository.findById(boardId)
+        Board board = boardRepository.findByBoardIdAndBoardIsDeletedFalse(boardId)
                 .orElseThrow(() -> new Exception("invalid boardId"));
         //User 확인을 통해서 수정권한 확인하기
         if(Objects.equals(board.getUser().getUserId(), userId))
@@ -232,7 +232,7 @@ public class BoardServiceImpl implements BoardService{
     @Override
     public boolean deleteBoard(Integer userId, Long boardId) throws Exception {
         //게시판 정보 가져오기
-        Board board = boardRepository.findById(boardId)
+        Board board = boardRepository.findByBoardIdAndBoardIsDeletedFalse(boardId)
                 .orElseThrow(() -> new Exception("couldn't find board by boardId"));
 
         // 만약 사용자가 작성한 게시글이면 삭제 처리
@@ -251,7 +251,7 @@ public class BoardServiceImpl implements BoardService{
     //댓글 목록 조회하기
     @Override
     public List<Reply> getReplies(Long boardId, Pageable pageable) throws Exception{
-        return  replyRepository.findAllByBoard_BoardId(boardId, pageable).stream().toList();
+        return replyRepository.findAllByBoard_BoardIdAndBoard_BoardIsDeletedFalseAndReplyIsDeletedFalse(boardId, pageable).stream().toList();
     }
 
     //댓글 작성하기
@@ -259,7 +259,7 @@ public class BoardServiceImpl implements BoardService{
     @Override
     public boolean writeReply(Integer userId, Long boardId, ReplyWriteRequestDto requestDto) throws Exception{
         // board 찾기
-        Board board = boardRepository.findById(boardId)
+        Board board = boardRepository.findByBoardIdAndBoardIsDeletedFalse(boardId)
                 .orElseThrow(() -> new Exception("couldn't find board by boardId"));
 
         //댓글 생성
@@ -278,14 +278,20 @@ public class BoardServiceImpl implements BoardService{
     //댓글 삭제하기
     @Transactional
     @Override
-    public boolean deleteReply(Integer boardId, Long replyId) throws Exception{
-        Reply reply = replyRepository.findById(replyId)
+    public boolean deleteReply(Integer userId, Long replyId) throws Exception{
+        Reply reply = replyRepository.findByIdAndReplyIsDeletedFalse(replyId)
                 .orElseThrow(() -> new Exception("couldn't find reply by replyId"));
-        // 삭제처리
-        reply.setReplyIsDeleted(true);
 
-        //변경사항 저장
-        replyRepository.save(reply);
+        //권한이 있는지 파악하기
+        if(reply.getUser().getUserId().equals(userId)) {
+            // 삭제처리
+            reply.setReplyIsDeleted(true);
+            //변경사항 저장
+            replyRepository.save(reply);
+        }else {
+            throw new Exception("user is not privileged for deleting the comment");
+        }
+
         return true;
     }
 
@@ -294,11 +300,13 @@ public class BoardServiceImpl implements BoardService{
     @Transactional
     @Override
     public boolean addHeart(Integer userId, Long boardId) throws Exception{
+        //게시물 탐색
+        Board board = boardRepository.findByBoardIdAndBoardIsDeletedFalse(boardId).orElseThrow(() -> new Exception("couldn't find board by boardId"));
+
         //좋아요 처리
         heartRepository.insertHeart(userId, boardId);
 
         //해당 게시물의 좋아요 수 증가
-        Board board = boardRepository.findById(boardId).orElseThrow(() -> new Exception("couldn't find board by boardId"));
         board.setBoardLikeNumber(board.getBoardLikeNumber() + 1); //
         return true;
     }
@@ -307,15 +315,18 @@ public class BoardServiceImpl implements BoardService{
     @Transactional
     @Override
     public boolean deleteHeart(Integer userId, Long boardId) throws Exception {
+        //엔티티 존재 확인 로직
+        Board board = boardRepository.findByBoardIdAndBoardIsDeletedFalse(boardId)
+                .orElseThrow(() -> new Exception("couldn't find board by boardId"));
         Heart heart =  heartRepository.findByHeartId_User_UserIdAndHeartId_Board_BoardId(userId, boardId)
                 .orElseThrow(() -> new Exception("couldn't find heart by userId and boardId"));
+
         // 엔티티에서 삭제하기
         heartRepository.delete(heart);
 
         //해당 게시물의 좋아요 수 감소
-        Board board = boardRepository.findById(boardId)
-                .orElseThrow(() -> new Exception("couldn't find board by boardId"));
         board.setBoardLikeNumber(board.getBoardLikeNumber() - 1);
+
         return true;
     }
 }

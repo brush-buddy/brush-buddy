@@ -102,6 +102,7 @@ public class BoardController {
                 .replyList(replies.stream().map(
                         m -> ReplyListResponseDto.replyDTO
                                 .builder()
+                                .replyId(m.getId())
                                 .userId(m.getUser().getUserId())
                                 .nickname(m.getUser().getUserNickname())
                                 .contents(m.getReplyContent())
