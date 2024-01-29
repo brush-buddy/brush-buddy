@@ -6,6 +6,7 @@ import lombok.Data;
  * @author SSAFY
  * https://developers.kakao.com/docs/latest/ko/kakaopay/single-payment#approve-response-body-card-info
  * KakaopayApproveResponse에서 사용
+ * 필수가 아닌 클래스
  */
 @Data
 public class KakaopayCardInfo {
