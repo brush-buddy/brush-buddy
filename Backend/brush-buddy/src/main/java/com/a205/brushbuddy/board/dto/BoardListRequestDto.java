@@ -1,13 +1,14 @@
 package com.a205.brushbuddy.board.dto;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.data.domain.Sort;
 
 @Setter
 @Getter
+
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class BoardListRequestDto {
 
     private String search;
