@@ -1,7 +1,10 @@
 package com.a205.brushbuddy.board.service;
 
 import com.a205.brushbuddy.board.domain.*;
-import com.a205.brushbuddy.board.dto.*;
+import com.a205.brushbuddy.board.dto.BoardDetailResponseDto;
+import com.a205.brushbuddy.board.dto.BoardModifyRequestDto;
+import com.a205.brushbuddy.board.dto.BoardWriteRequestDto;
+import com.a205.brushbuddy.board.dto.ReplyWriteRequestDto;
 import com.a205.brushbuddy.board.repository.*;
 import com.a205.brushbuddy.draft.domain.Draft;
 import com.a205.brushbuddy.draft.repository.DraftRepository;
@@ -31,11 +34,16 @@ public class BoardServiceImpl implements BoardService{
     //게시글 조회 및 검색
     @Override
     public List<Board> getBoardList(String search, Pageable pageable) throws Exception {
-        List<Board> result;
+        List<Board> result = null;
+
+        //검색 수행이 아니라면
         if(search == null){
-//            result = boardRepository.
-            }
-        return null;
+            result = boardRepository.findAll(pageable).stream().toList();
+        }
+        else { // 검색을 수행하려면
+            result = boardRepository.getSearchList(search, pageable).stream().toList();
+        }
+        return result;
     }
 
     //게시글 작성
@@ -103,6 +111,10 @@ public class BoardServiceImpl implements BoardService{
         // id로 보드 찾기
         Board result = boardRepository.findById(boardId)
                 .orElseThrow(() -> new Exception("couldn't get Board detail by boardId"));
+
+        //해당 게시물의 조회수 증가
+        result.setBoardWatch(result.getBoardWatch()+1);
+        boardRepository.save(result);
 
         //해당 보드에 연결된 사진들 가지고 오기
         List<BoardDetailResponseDto.PhotoDTO> photos =
@@ -238,7 +250,7 @@ public class BoardServiceImpl implements BoardService{
 
     //댓글 목록 조회하기
     @Override
-    public List<ReplyListResponseDto> getReplies(Long BoardId, ReplyWriteRequestDto requestDto) throws Exception{
+    public List<Reply> getReplies(Long BoardId, Pageable pageable) throws Exception{
 
         return null;
     }
@@ -283,7 +295,12 @@ public class BoardServiceImpl implements BoardService{
     @Transactional
     @Override
     public boolean addHeart(Integer userId, Long boardId) throws Exception{
+        //좋아요 처리
         heartRepository.insertHeart(userId, boardId);
+
+        //해당 게시물의 좋아요 수 증가
+        Board board = boardRepository.findById(boardId).orElseThrow(() -> new Exception("couldn't find board by boardId"));
+        board.setBoardLikeNumber(board.getBoardLikeNumber() + 1); //
         return true;
     }
 
@@ -295,6 +312,11 @@ public class BoardServiceImpl implements BoardService{
                 .orElseThrow(() -> new Exception("couldn't find heart by userId and boardId"));
         // 엔티티에서 삭제하기
         heartRepository.delete(heart);
+
+        //해당 게시물의 좋아요 수 감소
+        Board board = boardRepository.findById(boardId)
+                .orElseThrow(() -> new Exception("couldn't find board by boardId"));
+        board.setBoardLikeNumber(board.getBoardLikeNumber() - 1);
         return true;
     }
 }

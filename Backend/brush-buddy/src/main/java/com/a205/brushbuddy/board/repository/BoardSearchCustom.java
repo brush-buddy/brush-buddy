@@ -6,5 +6,5 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 public interface BoardSearchCustom {
-    List<Board> getBoardList(Pageable pageable);
+    List<Board> getSearchList(String search, Pageable pageable);
 }

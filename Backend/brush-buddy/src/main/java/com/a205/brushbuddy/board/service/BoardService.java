@@ -1,6 +1,7 @@
 package com.a205.brushbuddy.board.service;
 
 import com.a205.brushbuddy.board.domain.Board;
+import com.a205.brushbuddy.board.domain.Reply;
 import com.a205.brushbuddy.board.dto.*;
 import org.springframework.data.domain.Pageable;
 
@@ -16,7 +17,7 @@ public interface BoardService {
 
     boolean deleteBoard(Integer userId, Long boardId) throws Exception; // 게시판 삭제
 
-    List<ReplyListResponseDto> getReplies(Long BoardId, ReplyWriteRequestDto requestDto) throws Exception; // 댓글 목록 조회
+    List<Reply> getReplies(Long BoardId, Pageable pageable) throws Exception; // 댓글 목록 조회
 
     boolean writeReply(Integer userId, Long boardId, ReplyWriteRequestDto requestDto) throws Exception; // 댓글 작성
 
