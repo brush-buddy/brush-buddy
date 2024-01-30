@@ -26,7 +26,7 @@ public class PaletteController {
 
         //pageable 생성
         Pageable pageable = PageRequest.of(
-                requestDto.getPageNum(),
+                requestDto.getPageNum() - 1,
                 requestDto.getListNum(),
                 requestDto.getDirection(),
                 requestDto.getOrder());
@@ -43,11 +43,14 @@ public class PaletteController {
                                 .draftImage(m.getDraft().getDraftThumbnail())
                                 .build())
                         .toList())
+                .length(result.size())
+                .pageNum(pageable.getPageNumber() + 1)
                 .build();
 
         return  ResponseEntity.ok(dto);
     }
 
+    //팔레트 상세 조회
     @GetMapping("/{paletteId}")
     public ResponseEntity<?> getPaletteDetail(@PathVariable(value = "paletteId") Long paletteId) throws Exception{
         //TODO : userId JWT 토큰으로 부터 추출 및 유효성 조사
@@ -64,8 +67,9 @@ public class PaletteController {
         return  ResponseEntity.ok(dto);
     }
 
+    //팔레트 수정
     @PutMapping("/{paletteId}")
-    public ResponseEntity<?> modifyPalette(@PathVariable(value = "paletteId") Long paletteId, PaletteModifyRequestDto requestDto) throws Exception{
+    public ResponseEntity<?> modifyPalette(@PathVariable(value = "paletteId") Long paletteId, @RequestBody PaletteModifyRequestDto requestDto) throws Exception{
         //TODO : userId JWT 토큰으로 부터 추출 및 유효성 조사
         Integer userId = 1;
         paletteService.modifyPalette(userId, paletteId, requestDto);
@@ -86,6 +90,9 @@ public class PaletteController {
 
         return  ResponseEntity.ok(dto);
     }
+
+
+    //팔레트 복제
     @PostMapping("/{paletteId}/duplicate")
     public ResponseEntity<?> duplicatePalette(@PathVariable(value = "paletteId") Long paletteId) throws Exception{
         //TODO : userId JWT 토큰으로 부터 추출 및 유효성 조사
@@ -95,7 +102,7 @@ public class PaletteController {
         return  ResponseEntity.ok(dto);
     }
 
-    // TODO : 팔레트 삭제
+    //팔레트 삭제
     @DeleteMapping("/{paletteId}")
     public ResponseEntity<?> getPaletteList(@PathVariable(value = "paletteId") Long paletteId) throws Exception{
         //TODO : userId JWT 토큰으로 부터 추출 및 유효성 조사

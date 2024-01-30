@@ -46,18 +46,16 @@ public class PaletteServiceImpl implements PaletteService {
         //도안 정보 가져오기
         Draft draft = draftRepository.findByDraftId(requestDto.getDraftId());
 
-        // 도안 구매 여부 확인
+        // TODO : 도안 구매 여부 확인
+        // 사용자 본인이거나 admin이라면
 
-
-        // 도안에서 기본 색깔 추출
-
-
+        // 도안에서 기본 색깔 추출 해서
         // 팔레트에 대입하기
         Palette palette = Palette.builder()
-                .paletteName(requestDto.getPaletteName())
-                .user(User.builder().userId(userId).build())
-                .paletteColorCode(draft.getDraftColorCode())
-                .draft(draft)
+                .paletteName(requestDto.getPaletteName()) // 팔레트 이름
+                .user(User.builder().userId(userId).build()) // 생성하는 사람의 아이디
+                .paletteColorCode(draft.getDraftColorCode()) // 기본 색깔 대입
+                .draft(draft) // 연결 도안
                 .build();
 
         //repository에 저장 후 id 반환
@@ -65,6 +63,7 @@ public class PaletteServiceImpl implements PaletteService {
         return result.getPaletteId();
     }
 
+    // 팔레트 복제
     @Override
     public Long duplicatePalette(Integer userId, Long paletteId) throws Exception{
         Palette originPalette = paletteRepository.findById(paletteId).orElseThrow(
@@ -89,6 +88,8 @@ public class PaletteServiceImpl implements PaletteService {
         return result.getPaletteId();
     }
 
+
+    //팔레트 수정
     @Override
     public boolean modifyPalette(Integer userId, Long paletteId, PaletteModifyRequestDto requestDto) throws Exception {
         // 팔레트 찾기
@@ -104,7 +105,6 @@ public class PaletteServiceImpl implements PaletteService {
 
         //팔레트 수정
         result.setPaletteName(requestDto.getPaletteName());
-        result.setPaletteLastModifiedTime(null);
         ObjectMapper om = new ObjectMapper();
         String colorCodes =  om.writeValueAsString(requestDto.getPaletteColorCode()); // JSON -> String
         result.setPaletteColorCode(colorCodes); // 색깔 정보 불어와서 저장
@@ -114,6 +114,7 @@ public class PaletteServiceImpl implements PaletteService {
         return true;
     }
 
+    //팔레트 삭제
     @Override
     public boolean deletePalette(Integer userId, Long paletteId) throws Exception {
         // 팔레트 찾기
