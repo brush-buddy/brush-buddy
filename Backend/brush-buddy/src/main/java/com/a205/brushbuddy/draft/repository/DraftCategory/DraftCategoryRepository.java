@@ -15,4 +15,10 @@ public interface DraftCategoryRepository extends DraftCategoryCustom, JpaReposit
 	@Modifying
 	@Query(value = "insert into draft_category (draft_id, category_id) values (:draftId, :categoryId)", nativeQuery = true)
 	void insertDraftCategory(@Param("draftId") Long draftId, @Param("categoryId") Long categoryId);
+
+	@Transactional
+	@Modifying
+	@Query(value = "delete from draft_category where draft_id = :draftId", nativeQuery = true)
+	void deleteDraftCategory(@Param("draftId") Long draftId);
+
 }
