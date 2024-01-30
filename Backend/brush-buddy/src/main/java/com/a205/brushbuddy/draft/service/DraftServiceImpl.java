@@ -3,15 +3,11 @@ package com.a205.brushbuddy.draft.service;
 import com.a205.brushbuddy.draft.domain.Draft;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.util.List;
 
-import com.a205.brushbuddy.draft.domain.DraftCategory;
-import com.a205.brushbuddy.draft.domain.DraftCategoryID;
-import com.a205.brushbuddy.draft.dto.request.ColorRequestDto;
 import com.a205.brushbuddy.draft.dto.request.DraftCreateRequestDto;
 import com.a205.brushbuddy.draft.dto.response.DraftCreateResponseDto;
 import com.a205.brushbuddy.draft.dto.response.DraftDetailResponseDto;
@@ -24,8 +20,10 @@ import com.a205.brushbuddy.palette.domain.Palette;
 import com.a205.brushbuddy.palette.repository.PaletteRepository;
 import com.a205.brushbuddy.user.domain.User;
 import com.a205.brushbuddy.user.repository.UserRepository;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
-import lombok.AllArgsConstructor;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -78,31 +76,17 @@ public class DraftServiceImpl implements DraftService{
         }
     }
 
+    @Transactional
     @Override
-    public DraftCreateResponseDto createDraft(int userId, DraftCreateRequestDto draftCreateDto) {
+    public DraftCreateResponseDto createDraft(int userId, DraftCreateRequestDto draftCreateDto) throws
+        JsonProcessingException {
         List<Category> categoryList = categoryRepository.findByCategoryContentIn(draftCreateDto.getCategoryList());
-        // Long draftId = draftRepository.InsertDraft(draftCreateDto, userId);
-        System.out.println(draftCreateDto.getPalette().toString());
         User user = userRepository.findByUserId(userId);
-
-        StringBuilder sb = new StringBuilder();
-        sb.append("{");
-        for(ColorRequestDto color : draftCreateDto.getPalette()){
-            sb.append("\"");
-            sb.append(color.getColorId());
-            sb.append("\" : \"");
-
-            sb.append(color.getColorCode());
-            sb.append("\",");
-        }
-        String js = sb.toString();
-        if(draftCreateDto.getPalette().size() != 0){
-            js = js.substring(0, js.length()-1);
-        }
-        js += "}";
+        ObjectMapper objectMapper = new ObjectMapper();
+        String json = objectMapper.writeValueAsString(draftCreateDto.getPalette());
 
         Draft draft = Draft.builder()
-            .draftColorCode(js)
+            .draftColorCode(json)
             .draftThumbnail(draftCreateDto.getImageFile())
             .draftFileLink(draftCreateDto.getDraftFIleLink())
             .draftIsAI(draftCreateDto.isDraftIsAI())
@@ -118,10 +102,9 @@ public class DraftServiceImpl implements DraftService{
 
         draftRepository.save(draft);
 
-
         Palette palette = Palette.builder()
             .paletteName(draftCreateDto.getPaletteTitle())
-            .paletteColorCode(js)
+            .paletteColorCode(json)
             .paletteCreatedAt(new Timestamp(System.currentTimeMillis()))
             .paletteLastModifiedTime(new Timestamp(System.currentTimeMillis()))
             .draft(draft).build();
@@ -129,12 +112,22 @@ public class DraftServiceImpl implements DraftService{
 
 
 
-
         for(Category category : categoryList){
             draftCategoryRepository.insertDraftCategory(draft.getDraftId(), category.getCategoryId());
         }
 
-
         return new DraftCreateResponseDto(draft.getDraftId(), palette.getPaletteId());
+    }
+
+    @Transactional
+    @Override
+    public void deleteDraft(int userId, Long draftId) {
+        Draft draft = draftRepository.findByDraftId(draftId);
+        if(draft.getUser().getUserId() == userId){
+            draft.setDraftIsDeleted(true);
+        }
+        else{
+            // throw new CustomExcpException("삭제 권한이 없습니다.");
+        }
     }
 }
