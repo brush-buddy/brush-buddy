@@ -31,7 +31,7 @@ public class KakaopayController {
     @Value("${datetimeformatter.ofpattern}")
     private static DateTimeFormatter dateTimeFormatter;
 
-    // 브러쉬버디 충전 내역용 workplaceid = 0
+    //// 브러쉬버디 충전 내역용 workplaceid = 0, 갱신 필요시 참고
     @Value("${workplaceid}")
     private static int workplaceId;
 
@@ -39,7 +39,7 @@ public class KakaopayController {
     private final KakaopayService kakaopayService;
 
     //// 충전 페이지를 넘어갈 때 이전 url 혹은 구매 시도 아이템 정보 등을 model에 선언 필요
-    //// 우선 Url로 작성, 필요의 경우 수정
+    //// 우선 결제페이지 진입 이전 Url로 작업, 필요의 경우 수정
     private String redirectUrl;
 
     private String partnerOrderId;
