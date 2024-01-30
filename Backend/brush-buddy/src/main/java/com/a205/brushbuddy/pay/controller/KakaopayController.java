@@ -28,129 +28,142 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Controller
 public class KakaopayController {
-	@Value("${datetimeformatter.ofpattern}")
-	private static DateTimeFormatter dateTimeFormatter;
+    @Value("${datetimeformatter.ofpattern}")
+    private static DateTimeFormatter dateTimeFormatter;
 
-	//// 단순히 마이페이지로 통일이 최선으로 판단
-	//// 상황에 따른 반응 추가 여부(성공, 실패, 취소 등) 경우 properties 할당된 (## ready.requset 결과 URL) 변경
-	@Value("${kakaopay.ready.request.url.approval}")
-	private static String redirectUrl;
+    //// 브러쉬버디 충전 내역용 workplaceid = 0, 갱신 필요시 참고
+    @Value("${workplaceid}")
+    private static int workplaceId;
 
-	// 브러쉬버디 충전 내역용 workplaceid = 0
-	@Value("${workplaceid}")
-	private static int workplaceId;
+    private final User user;
+    private final KakaopayService kakaopayService;
 
-	private final User user;
-	private final KakaopayService kakaopayService;
-	private String partnerOrderId;
-	private int totalAmount;
-	private String tid;
+    //// 충전 페이지를 넘어갈 때 이전 url 혹은 구매 시도 아이템 정보 등을 model에 선언 필요
+    //// 우선 결제페이지 진입 이전 Url로 작업, 필요의 경우 수정
+    private String redirectUrl;
 
-	public KakaopayController(User user, KakaopayService kakaopayService) {
-		this.user = user;
-		this.kakaopayService = kakaopayService;
-	}
+    private String partnerOrderId;
+    private int totalAmount;
+    private String tid;
 
-	// 결제 요청 시작
-	@PostMapping("${kakaopay.controller.ready.url}")
-	@ResponseBody
-	public KakaopayReadyResponse ready(Model model) {
-		//// 규칙성, 보안 등의 이유로 변경 가능
-		partnerOrderId = user.getUserId() + '_' + (String)model.getAttribute("itemName") + '_'
-			+ LocalDateTime.now().format(dateTimeFormatter);
-		totalAmount = (int)model.getAttribute("totalAmount");
+    public KakaopayController(User user, KakaopayService kakaopayService) {
+        this.user = user;
+        this.kakaopayService = kakaopayService;
+    }
 
-		KakaopayReadyRequest kakaopayReadyRequest = new KakaopayReadyRequest();
-		kakaopayReadyRequest.setPartnerOrderId(partnerOrderId);
-		kakaopayReadyRequest.setTotalAmount(totalAmount);
-		kakaopayReadyRequest.setPartnerUserId(String.valueOf(((User)model.getAttribute("user")).getUserId()));
-		kakaopayReadyRequest.setItemName((String)model.getAttribute("itemName"));
+    // 결제 요청 시작
+    @PostMapping("${kakaopay.controller.ready.url}")
+    @ResponseBody
+    public KakaopayReadyResponse ready(Model model) {
+        //// 규칙성, 보안 등의 이유로 변경 가능
+        //// itemName = kakaopay 전송 항목 = 충전페이지 선택 항목
+        String itemName = "브러쉬버디_" + model.getAttribute("itemName");
+        partnerOrderId = user.getUserId() + '_' + itemName + '_' + LocalDateTime.now().format(dateTimeFormatter);
+        totalAmount = (int)model.getAttribute("totalAmount");
 
-		model.addAttribute("kakaopayReadyRequest", kakaopayReadyRequest);
-		log.info(kakaopayReadyRequest.toString());
+        redirectUrl = model.getAttribute("redirectUrl").toString();
 
-		KakaopayReadyResponse kakaopayReadyResponse = kakaopayService.sendReadyRequest(kakaopayReadyRequest);
-		tid = kakaopayReadyResponse.getTid();
-		model.addAttribute("kakaopayReadyResponse", kakaopayReadyResponse);
-		log.info(kakaopayReadyResponse.toString());
+        KakaopayReadyRequest kakaopayReadyRequest = new KakaopayReadyRequest();
+        kakaopayReadyRequest.setPartnerOrderId(partnerOrderId);
+        kakaopayReadyRequest.setTotalAmount(totalAmount);
+        kakaopayReadyRequest.setPartnerUserId(String.valueOf(user.getUserId()));
+        kakaopayReadyRequest.setItemName(itemName);
 
-		return kakaopayReadyResponse;
-	}
+        //// 취소/오류페이지 작성의 경우, 해당 페이지 이동을 위해 return 값 변경
+        //// 혹은 Model에 객체 선언 후 화면에 출력 등 가능
+        //// 지금은 단순히 안내와 마일리지 변경없이 이전 페이지로 복귀
+        //// Sping 초기화 값은 resources 참조
+        kakaopayReadyRequest.setApprovalUrl(redirectUrl);
+        kakaopayReadyRequest.setCancelUrl(redirectUrl);
+        kakaopayReadyRequest.setFailUrl(redirectUrl);
 
-	// 결제 완료 이후
-	@GetMapping("${kakaopay.controller.completed.url}")
-	public String completed(Model model,
-		@RequestParam("pg_token")
-		String pgToken) {
+        model.addAttribute("kakaopayReadyRequest", kakaopayReadyRequest);
+        log.info(kakaopayReadyRequest.toString());
 
-		log.info("completed 시작");
+        KakaopayReadyResponse kakaopayReadyResponse = kakaopayService.sendReadyRequest(kakaopayReadyRequest);
+        tid = kakaopayReadyResponse.getTid();
+        model.addAttribute("kakaopayReadyResponse", kakaopayReadyResponse);
+        log.info(kakaopayReadyResponse.toString());
 
-		model.addAttribute("pgToken", pgToken);
-		KakaopayApproveRequest kakaopayApproveRequest = new KakaopayApproveRequest();
-		kakaopayApproveRequest.setTid(tid);
-		kakaopayApproveRequest.setPartnerOrderId(partnerOrderId);
-		kakaopayApproveRequest.setPartnerOrderId(String.valueOf(user.getUserId()));
-		kakaopayApproveRequest.setPgToken(pgToken);
+        return kakaopayReadyResponse;
+    }
 
-		model.addAttribute("kakaopayApproveRequest", kakaopayApproveRequest);
-		log.info(kakaopayApproveRequest.toString());
+    // 결제 완료 이후
+    @GetMapping("${kakaopay.ready.request.url.approval}")
+    public String completed(Model model,
+        @RequestParam("pg_token")
+        String pgToken) {
 
-		KakaopayApproveResponse kakaopayApproveResponse = kakaopayService.sendApproveRequest(kakaopayApproveRequest);
-		model.addAttribute("KakaopayApproveResponse", kakaopayApproveResponse);
-		log.info(kakaopayApproveResponse.toString());
+        log.info("completed 시작");
 
-		log.info("completed kakaopay 종료");
+        model.addAttribute("pgToken", pgToken);
+        KakaopayApproveRequest kakaopayApproveRequest = new KakaopayApproveRequest();
+        kakaopayApproveRequest.setTid(tid);
+        kakaopayApproveRequest.setPartnerOrderId(partnerOrderId);
+        kakaopayApproveRequest.setPartnerOrderId(String.valueOf(user.getUserId()));
+        kakaopayApproveRequest.setPgToken(pgToken);
 
-		log.info("completed JPA 시작");
+        model.addAttribute("kakaopayApproveRequest", kakaopayApproveRequest);
+        log.info(kakaopayApproveRequest.toString());
 
-		//// JPA 충전 기능을 API 내부가 아닌 호출 전후에 해야하는가
-		EntityManagerFactory emf = Persistence.createEntityManagerFactory("brush-buddy");
-		EntityManager em = emf.createEntityManager();
-		EntityTransaction et = em.getTransaction();
+        KakaopayApproveResponse kakaopayApproveResponse = kakaopayService.sendApproveRequest(kakaopayApproveRequest);
+        model.addAttribute("KakaopayApproveResponse", kakaopayApproveResponse);
+        log.info(kakaopayApproveResponse.toString());
 
-		try {
-			Mileage mileage = new Mileage();
-			mileage.setUserId(user.getUserId());
-			mileage.setWorkplaceId(workplaceId);
-			mileage.setMileageBefore(user.getUserMileage());
-			mileage.setMileageAmount(user.getUserMileage() + totalAmount);
-			user.setUserMileage(user.getUserMileage() + totalAmount);
-			mileage.setMileageAfter(user.getUserMileage());
-			mileage.setMileageContent("마일리지 충전 : " + partnerOrderId);
-			log.info(mileage.toString());
-		} catch (Exception e) {
-			e.printStackTrace();
-			et.rollback();
-			log.error("결제 이후 마일리지 반영 오류" + e.toString());
-			System.err.println("결제 이후 마일리지 반영 오류" + e.toString());
-			return "redirect:" + redirectUrl;
-		} finally {
-			em.close();
-			emf.close();
-		}
+        log.info("completed kakaopay 종료");
 
-		log.info("작업 데이터 출력");
-		log.info(((KakaopayReadyRequest)model.getAttribute("kakaopayReadyRequest")).toString());
-		log.info(((KakaopayReadyResponse)model.getAttribute("kakaopayReadyResponse")).toString());
-		log.info(((String)model.getAttribute("pgToken")).toString());
-		log.info(((KakaopayApproveRequest)model.getAttribute("kakaopayApproveRequest")).toString());
-		log.info(((KakaopayApproveResponse)model.getAttribute("kakaopayApproveResponse")).toString());
+        log.info("completed JPA 시작");
 
-		//// 처리 이후 정보 삭제
-		model.addAttribute("kakaopayReadyRequest", null);
-		model.addAttribute("kakaopayReadyResponse", null);
-		model.addAttribute("pgToken", null);
-		model.addAttribute("kakaopayApproveRequest", null);
-		model.addAttribute("kakaopayApproveResponse", null);
+        //// JPA 충전 기능을 API 내부가 아닌 호출 전후에 해야하는가
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory("brush-buddy");
+        EntityManager em = emf.createEntityManager();
+        EntityTransaction tx = em.getTransaction();
+        tx.begin();
 
-		log.info("작업 데이터 삭제");
-		log.info(((KakaopayReadyRequest)model.getAttribute("kakaopayReadyRequest")).toString());
-		log.info(((KakaopayReadyResponse)model.getAttribute("kakaopayReadyResponse")).toString());
-		log.info(((String)model.getAttribute("pgToken")).toString());
-		log.info(((KakaopayApproveRequest)model.getAttribute("kakaopayApproveRequest")).toString());
-		log.info(((KakaopayApproveResponse)model.getAttribute("kakaopayApproveResponse")).toString());
+        try {
+            Mileage mileage = new Mileage();
+            mileage.setUserId(user.getUserId());
+            mileage.setWorkplaceId(workplaceId);
+            mileage.setMileageBefore(user.getUserMileage());
+            mileage.setMileageAmount(user.getUserMileage() + totalAmount);
+            user.setUserMileage(user.getUserMileage() + totalAmount);
+            mileage.setMileageAfter(user.getUserMileage());
+            mileage.setMileageContent("마일리지 충전 : " + partnerOrderId);
+            log.info(mileage.toString());
+            tx.commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+            tx.rollback();
+            log.error("결제 이후 마일리지 반영 오류" + e.toString());
+            System.err.println("결제 이후 마일리지 반영 오류" + e.toString());
+            return "redirect:" + redirectUrl;
+        } finally {
+            em.close();
+            emf.close();
+        }
 
-		log.info("completed 종료");
-		return "redirect:" + redirectUrl;
-	}
+        log.info("작업 데이터 출력");
+        log.info(((KakaopayReadyRequest)model.getAttribute("kakaopayReadyRequest")).toString());
+        log.info(((KakaopayReadyResponse)model.getAttribute("kakaopayReadyResponse")).toString());
+        log.info(((String)model.getAttribute("pgToken")).toString());
+        log.info(((KakaopayApproveRequest)model.getAttribute("kakaopayApproveRequest")).toString());
+        log.info(((KakaopayApproveResponse)model.getAttribute("kakaopayApproveResponse")).toString());
+
+        //// 처리 이후 정보 삭제
+        model.addAttribute("kakaopayReadyRequest", null);
+        model.addAttribute("kakaopayReadyResponse", null);
+        model.addAttribute("pgToken", null);
+        model.addAttribute("kakaopayApproveRequest", null);
+        model.addAttribute("kakaopayApproveResponse", null);
+
+        log.info("작업 데이터 삭제");
+        log.info(((KakaopayReadyRequest)model.getAttribute("kakaopayReadyRequest")).toString());
+        log.info(((KakaopayReadyResponse)model.getAttribute("kakaopayReadyResponse")).toString());
+        log.info(((String)model.getAttribute("pgToken")).toString());
+        log.info(((KakaopayApproveRequest)model.getAttribute("kakaopayApproveRequest")).toString());
+        log.info(((KakaopayApproveResponse)model.getAttribute("kakaopayApproveResponse")).toString());
+
+        log.info("completed 종료");
+        return "redirect:" + redirectUrl;
+    }
 }

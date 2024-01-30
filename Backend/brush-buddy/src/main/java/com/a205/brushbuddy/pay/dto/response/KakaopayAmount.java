@@ -1,13 +1,18 @@
 package com.a205.brushbuddy.pay.dto.response;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 /**
  * @author SSAFY
  * https://developers.kakao.com/docs/latest/ko/kakaopay/single-payment#approve-response-body-amount
  * KakaopayApproveResponse에서 사용
+ * 필수가 아닌 클래스
  */
-@Data
+@Getter
+@Setter
+@ToString
 public class KakaopayAmount {
     private int total;
     private int taxFree;
