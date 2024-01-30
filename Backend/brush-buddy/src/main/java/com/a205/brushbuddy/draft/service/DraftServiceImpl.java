@@ -13,6 +13,7 @@ import com.a205.brushbuddy.draft.dto.request.DraftCreateRequestDto;
 import com.a205.brushbuddy.draft.dto.response.DraftCreateResponseDto;
 import com.a205.brushbuddy.draft.dto.response.DraftDetailResponseDto;
 import com.a205.brushbuddy.draft.dto.response.DraftListResponseDto;
+import com.a205.brushbuddy.draft.repository.BookmarkRepository;
 import com.a205.brushbuddy.draft.repository.CategoryRepository;
 import com.a205.brushbuddy.draft.repository.Draft.DraftRepository;
 import com.a205.brushbuddy.draft.domain.Category;
@@ -36,6 +37,7 @@ public class DraftServiceImpl implements DraftService{
     private final CategoryRepository categoryRepository;
     private final PaletteRepository paletteRepository;
     private final DraftCategoryRepository draftCategoryRepository;
+    private final BookmarkRepository bookmarkRepository;
 
     public Page<DraftListResponseDto> getDraftList(Pageable pageable) {
         try {
@@ -145,4 +147,19 @@ public class DraftServiceImpl implements DraftService{
         return true;
 
     }
+
+    // 북마크
+    @Override
+    public boolean createBookmarkDraft(int userId, Long draftId){
+        bookmarkRepository.insertBookmark(userId, draftId);
+        return true;
+    }
+
+    @Override
+    public boolean deleteBookmarkDraft(int userId, Long draftId) {
+        bookmarkRepository.deleteBookmark(userId, draftId);
+        return true;
+    }
+
+
 }
