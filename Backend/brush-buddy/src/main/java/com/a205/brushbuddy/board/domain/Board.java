@@ -30,7 +30,7 @@ public class Board {
 	@ManyToOne // Board(Many) : User(One)
 	private User user;
 
-	@JoinColumn(name = "draft_id", nullable = false)
+	@JoinColumn(name = "draft_id")
 	@ManyToOne // Board(Many) : Draft(One)
 	private Draft draft;
 
