@@ -1,7 +1,7 @@
 package com.a205.brushbuddy.palette.service;
 
 import com.a205.brushbuddy.draft.domain.Draft;
-import com.a205.brushbuddy.draft.repository.DraftRepository;
+import com.a205.brushbuddy.draft.repository.Draft.DraftRepository;
 import com.a205.brushbuddy.palette.domain.Palette;
 import com.a205.brushbuddy.palette.dto.PaletteMakeRequestDto;
 import com.a205.brushbuddy.palette.dto.PaletteModifyRequestDto;
