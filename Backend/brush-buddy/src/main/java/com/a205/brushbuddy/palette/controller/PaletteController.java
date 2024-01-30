@@ -31,9 +31,11 @@ public class PaletteController {
         //pageable 생성
         Pageable pageable = PageRequest.of(
                 requestDto.getPageNum(),
-                requestDto.getListNum());
+                requestDto.getListNum(),
+                requestDto.getDirection(),
+                requestDto.getOrder());
 
-        List<Palette> result =  paletteService.getPaletteList(userId, requestDto.getOrder(), pageable);
+        List<Palette> result =  paletteService.getPaletteList(userId, pageable);
 
         PaletteListResponseDto dto = PaletteListResponseDto.builder()
                 .palettes(result.stream().map(m ->PaletteListResponseDto.PaletteDTO.builder()
@@ -52,7 +54,7 @@ public class PaletteController {
 
     //TODO : 팔레트 상세 조회
     @GetMapping("/{paletteId}")
-    public ResponseEntity<?> getPaletteDetail(@PathVariable(value = "palettedId") Long paletteId){
+    public ResponseEntity<?> getPaletteDetail(@PathVariable(value = "paletteId") Long paletteId){
         //TODO : userId JWT 토큰으로 부터 추출 및 유효성 조사
         Integer userId = 1;
         Palette result = paletteService.getPaletteDetail(userId, paletteId);
@@ -69,7 +71,7 @@ public class PaletteController {
 
     //TODO : 팔레트 수정 메소드
     @PutMapping("/{paletteId}")
-    public ResponseEntity<?> modifyPalette(@PathVariable(value = "palettedId") Long paletteId, PaletteModifyRequestDto requestDto){
+    public ResponseEntity<?> modifyPalette(@PathVariable(value = "paletteId") Long paletteId, PaletteModifyRequestDto requestDto){
         //TODO : userId JWT 토큰으로 부터 추출 및 유효성 조사
         Integer userId = 1;
         paletteService.modifyPalette(userId, paletteId, requestDto);
@@ -78,7 +80,7 @@ public class PaletteController {
 
     //TODO : 팔레트 복제
     @PostMapping("/{paletteId}/duplicate")
-    public ResponseEntity<?> duplicatePalette(@PathVariable(value = "palettedId") Long paletteId){
+    public ResponseEntity<?> duplicatePalette(@PathVariable(value = "paletteId") Long paletteId){
         //TODO : userId JWT 토큰으로 부터 추출 및 유효성 조사
         Integer userId = 1;
         paletteService.duplicatePalette(userId, paletteId);
@@ -87,7 +89,7 @@ public class PaletteController {
 
     // TODO : 팔레트 삭제
     @DeleteMapping("/{paletteId}")
-    public ResponseEntity<?> getPaletteList(@PathVariable(value = "palettedId") Long paletteId){
+    public ResponseEntity<?> getPaletteList(@PathVariable(value = "paletteId") Long paletteId){
         //TODO : userId JWT 토큰으로 부터 추출 및 유효성 조사
         Integer userId = 1;
         paletteService.deletePalette(userId,paletteId);
