@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 import java.sql.Timestamp;
 import java.util.List;
 
+import com.a205.brushbuddy.draft.domain.Purchase;
+import com.a205.brushbuddy.draft.domain.PurchaseId;
 import com.a205.brushbuddy.draft.dto.request.DraftCategoryModifyRequestDto;
 import com.a205.brushbuddy.draft.dto.request.DraftCreateRequestDto;
 import com.a205.brushbuddy.draft.dto.response.DraftCreateResponseDto;
@@ -18,6 +20,7 @@ import com.a205.brushbuddy.draft.repository.CategoryRepository;
 import com.a205.brushbuddy.draft.repository.Draft.DraftRepository;
 import com.a205.brushbuddy.draft.domain.Category;
 import com.a205.brushbuddy.draft.repository.DraftCategory.DraftCategoryRepository;
+import com.a205.brushbuddy.draft.repository.PurchaseRepository;
 import com.a205.brushbuddy.palette.domain.Palette;
 import com.a205.brushbuddy.palette.repository.PaletteRepository;
 import com.a205.brushbuddy.user.domain.User;
@@ -38,6 +41,7 @@ public class DraftServiceImpl implements DraftService{
     private final PaletteRepository paletteRepository;
     private final DraftCategoryRepository draftCategoryRepository;
     private final BookmarkRepository bookmarkRepository;
+    private final PurchaseRepository purchaseRepository;
 
     public Page<DraftListResponseDto> getDraftList(Pageable pageable) {
         try {
@@ -158,6 +162,10 @@ public class DraftServiceImpl implements DraftService{
             // throw new CustomExcpException("존재하지 않는 도안입니다.");
         }
 
+        if(draft.getDraftIsDeleted()){
+            // throw new CustomExcpException("삭제된 도안입니다.");
+        }
+
         List<Category> categoryList = categoryRepository.findByCategoryContentIn(draftCategoryModifyRequestDto.getCategoryList());
         draftCategoryRepository.deleteDraftCategory(draftId);
         for(Category category : categoryList){
@@ -169,16 +177,42 @@ public class DraftServiceImpl implements DraftService{
 
     // 북마크
     @Override
-    public boolean createBookmarkDraft(int userId, Long draftId){
+    public void createBookmarkDraft(int userId, Long draftId) throws Exception{
+        Draft draft = draftRepository.findByDraftId(draftId);
+        if(draft.getDraftIsDeleted()){
+            // throw new CustomExcpException("삭제된 도안입니다.");
+        }
+
         bookmarkRepository.insertBookmark(userId, draftId);
-        return true;
     }
 
     @Override
-    public boolean deleteBookmarkDraft(int userId, Long draftId) {
+    public void deleteBookmarkDraft(int userId, Long draftId) {
+        Draft draft = draftRepository.findByDraftId(draftId);
+
+        if(draft.getDraftIsDeleted()){
+            // throw new CustomExcpException("삭제된 도안입니다.");
+        }
         bookmarkRepository.deleteBookmark(userId, draftId);
-        return true;
     }
 
+    @Override
+    public void buyDraft(int userId, Long draftId) throws Exception {
+        User user = userRepository.findByUserId(userId);
+        Draft draft = draftRepository.findByDraftId(draftId);
+
+        if(draft.getDraftIsDeleted()){
+            // throw new CustomExcpException("삭제된 도안입니다.");
+        }
+
+        if(user.getUserMileage() < draft.getDraftPrice()){
+            // throw new CustomExcpException("마일리지가 부족합니다.");
+        }
+
+        user.setUserMileage(user.getUserMileage() - draft.getDraftPrice());
+        purchaseRepository.insertPurchase(userId, draftId, draft.getDraftPrice());
+        // purchaseRepository.save(null);
+
+    }
 
 }

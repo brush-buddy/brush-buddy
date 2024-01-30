@@ -27,8 +27,11 @@ public interface DraftService{
 
 
 	// 북마크
-	boolean createBookmarkDraft(int userId, Long draftId);
+	void createBookmarkDraft(int userId, Long draftId) throws Exception;
 	// 북마크 제거
-	boolean deleteBookmarkDraft(int userId, Long draftId);
+	void deleteBookmarkDraft(int userId, Long draftId);
 
+
+	// 도안 구매
+	void buyDraft(int userId, Long draftId) throws Exception;
 }
