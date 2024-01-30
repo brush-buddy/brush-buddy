@@ -15,6 +15,8 @@ public interface DraftService{
 
 	Page<DraftListResponseDto> getDraftList(Pageable pageable);
 
+	Page<DraftListResponseDto> getDraftListByCategory(Pageable pageable, String categoryContent);
+
 	DraftDetailResponseDto getDraftDetail(Long draftId);
 
 	DraftCreateResponseDto createDraft(int userId, DraftCreateRequestDto draftCreateDto) throws JsonProcessingException;

@@ -45,10 +45,16 @@ public class DraftController {
 		@RequestParam(required = false) String search,
 		@RequestParam(defaultValue = "5") int size,
 		@RequestParam(defaultValue = "0") int page) {
+		if(search == null) {
+			DraftListRequestDto draftListRequestDto = new DraftListRequestDto(search);
+			Page<DraftListResponseDto> draftList = draftService.getDraftList(PageRequest.of(page, size, Sort.by("draftId").descending()));
+			return new ResponseEntity<>(draftList, HttpStatus.OK);
+		}else{
+			Page<DraftListResponseDto> draftList = draftService.getDraftListByCategory(PageRequest.of(page, size, Sort.by("draftId").descending()), search);
 
-		DraftListRequestDto draftListRequestDto = new DraftListRequestDto(search);
-		Page<DraftListResponseDto> draftList = draftService.getDraftList(PageRequest.of(page, size, Sort.by("draftId").descending()));
-		return new ResponseEntity<>(draftList, HttpStatus.OK);
+			return new ResponseEntity<>(draftList, HttpStatus.OK);
+		}
+
 	}
 
 	@GetMapping("/{draftId}")
