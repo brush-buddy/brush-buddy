@@ -6,7 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
-import java.util.Map;
 
 @Data
 @Builder
@@ -23,9 +22,10 @@ public class PaletteListResponseDto {
     @AllArgsConstructor
     public static class PaletteDTO {
         private String draftImage;
-        private int paletteId;
+        private Long paletteId;
         private String paletteName;
-        private Map<String, String> paletteColorCode;
-        private String paletteTimestamp;
+        private String paletteColorCode;
+        private String paletteModifiedTime;
+        private String paletteCreatedAt;
     }
 }

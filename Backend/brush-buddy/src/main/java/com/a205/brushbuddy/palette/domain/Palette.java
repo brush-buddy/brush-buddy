@@ -3,8 +3,8 @@ package com.a205.brushbuddy.palette.domain;
 import com.a205.brushbuddy.draft.domain.Draft;
 import com.a205.brushbuddy.user.domain.User;
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.Getter;
+import lombok.Builder;
+import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 
 import java.sql.Timestamp;
@@ -13,6 +13,9 @@ import java.sql.Timestamp;
 @Data
 @Entity
 @Table(name = "palette")
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Palette {
 
     @Id
