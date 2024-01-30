@@ -11,7 +11,6 @@ import com.a205.brushbuddy.draft.repository.DraftCategory.DraftCategoryCustom;
 
 public interface CategoryRepository extends JpaRepository<Category, Long>, DraftCategoryCustom {
 	List<Category> findByCategoryContentIn(List<String> categoryContent);
-
 	Category findByCategoryContent(String categoryContent);
 
 

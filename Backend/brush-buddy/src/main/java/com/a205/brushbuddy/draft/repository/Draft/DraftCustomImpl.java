@@ -11,28 +11,4 @@ public class DraftCustomImpl implements DraftCustom{
 
 	private final JPAQueryFactory query;
 
-	@Override
-	public Long InsertDraft(DraftCreateRequestDto draftCreateDto, int userId) {
-		QDraft draft = QDraft.draft;
-		return null;
-		// return query.insert(draft)
-		// 	.columns(draft.user.userId
-		// 		, draft.draftColorCode
-		// 		, draft.draftThumbnail
-		// 		, draft.draftFileLink
-		// 		, draft.draftIsAI
-		// 		, draft.draftIsPublic
-		// 		, draft.draftPrompt)
-		// 	.values(
-		// 		userId,
-		// 		draftCreateDto.getPalette(),
-		// 		draftCreateDto.getImageFile(),
-		// 		draftCreateDto.getDraftFIleLink(),
-		// 		draftCreateDto.isDraftIsAI(),
-		// 		draftCreateDto.isDraftShare(),
-		// 		draftCreateDto.getDraftPrompt()
-		//
-		// 	)
-		// 	.execute();
-	}
 }

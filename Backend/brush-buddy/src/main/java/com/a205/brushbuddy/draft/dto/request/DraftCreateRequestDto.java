@@ -1,5 +1,6 @@
 package com.a205.brushbuddy.draft.dto.request;
 
+import java.util.HashMap;
 import java.util.List;
 
 import lombok.Getter;
@@ -17,7 +18,7 @@ public class DraftCreateRequestDto {
 
 
 	// json
-	private List<ColorRequestDto> palette;
+	private HashMap<Integer, String> palette;
 	private boolean draftShare;
 	private boolean draftIsAI;
 	private String draftPrompt;

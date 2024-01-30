@@ -27,6 +27,8 @@ import com.a205.brushbuddy.draft.dto.response.DraftCreateResponseDto;
 import com.a205.brushbuddy.draft.dto.response.DraftDetailResponseDto;
 import com.a205.brushbuddy.draft.dto.response.DraftListResponseDto;
 import com.a205.brushbuddy.draft.service.DraftService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -40,13 +42,11 @@ public class DraftController {
 	@GetMapping("/list")
 	public ResponseEntity<Page<DraftListResponseDto>> getDrafts(
 		@RequestParam(required = false) String search,
-		@RequestParam(defaultValue = "3") int size,
+		@RequestParam(defaultValue = "5") int size,
 		@RequestParam(defaultValue = "0") int page) {
 
 		DraftListRequestDto draftListRequestDto = new DraftListRequestDto(search);
 		Page<DraftListResponseDto> draftList = draftService.getDraftList(PageRequest.of(page, size, Sort.by("draftId").descending()));
-		System.out.println(draftList);
-		System.out.println("====================================");
 		return new ResponseEntity<>(draftList, HttpStatus.OK);
 	}
 
@@ -59,11 +59,11 @@ public class DraftController {
 	}
 	
 	// 도안 및 팔레트 저장
-	@Transactional
-	@PostMapping("/")
-	public ResponseEntity<DraftCreateResponseDto> createDraft(@RequestBody DraftCreateRequestDto draftCreateDto) {
-		int userId = 1;
 
+	@PostMapping("/")
+	public ResponseEntity<DraftCreateResponseDto> createDraft(@RequestBody DraftCreateRequestDto draftCreateDto) throws
+		JsonProcessingException {
+		int userId = 1;
 		return new ResponseEntity<>(draftService.createDraft(1,draftCreateDto), HttpStatus.OK);
 
 	}
@@ -80,10 +80,10 @@ public class DraftController {
 
 	// 도안 삭제
 	@DeleteMapping("/{draftId}")
-	public ResponseEntity<String> deleteDraft(@RequestParam int draftId) {
-		// draftService.deleteDraft(draftId);
-		// return new ResponseEntity<>("success", HttpStatus.OK);
-		return null;
+	public ResponseEntity<String> deleteDraft(@PathVariable Long draftId) throws Exception{
+		int userId = 2;
+		draftService.deleteDraft(userId, draftId);
+		return new ResponseEntity<>("success", HttpStatus.OK);
 	}
 
 
