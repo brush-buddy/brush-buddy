@@ -53,6 +53,25 @@ public class DraftServiceImpl implements DraftService{
         }
     }
 
+    @Override
+    public Page<DraftListResponseDto> getDraftListByCategory(Pageable pageable, String categoryContent) {
+        Category category = categoryRepository.findByCategoryContent(categoryContent);
+        List<Long> categoryIds = draftCategoryRepository.findDraftIdByCategoryId(category.getCategoryId());
+        try {
+            return draftRepository.findAllByDraftIdIn(categoryIds,pageable).map(p->DraftListResponseDto.builder()
+                    .draftId(p.getDraftId())
+                    .draftThumbnail(p.getDraftThumbnail())
+                    .draftTimestamp(p.getDraftTimestamp())
+                    .draftDownload(p.getDraftDownload())
+                    .draftBookmark(p.getDraftBookmark())
+                    .build());
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return null;
+        }
+        // return null;
+    }
+
     public DraftDetailResponseDto getDraftDetail(Long draftId) {
           try {
               Draft draft = draftRepository.findByDraftId(draftId);
