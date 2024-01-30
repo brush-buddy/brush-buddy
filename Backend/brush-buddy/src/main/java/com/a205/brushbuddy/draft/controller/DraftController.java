@@ -94,4 +94,19 @@ public class DraftController {
 	}
 
 
+	// 북마크
+	@PostMapping("/{draftId}/bookmark")
+	public ResponseEntity<String> createBookmark(@PathVariable Long draftId) throws Exception{
+		int userId = 1;
+		draftService.createBookmarkDraft(userId, draftId);
+		return new ResponseEntity<>("success", HttpStatus.OK);
+	}
+
+	@DeleteMapping("/{draftId}/bookmark")
+	public ResponseEntity<String> deleteBookmark(@PathVariable Long draftId) throws Exception{
+		int userId = 1;
+		draftService.deleteBookmarkDraft(userId, draftId);
+		return new ResponseEntity<>("success", HttpStatus.OK);
+	}
+
 }

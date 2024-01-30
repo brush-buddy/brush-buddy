@@ -26,5 +26,9 @@ public interface DraftService{
 	boolean updateDraft(long draftId, DraftCategoryModifyRequestDto draftCategoryModifyRequestDto);
 
 
+	// 북마크
+	boolean createBookmarkDraft(int userId, Long draftId);
+	// 북마크 제거
+	boolean deleteBookmarkDraft(int userId, Long draftId);
 
 }
