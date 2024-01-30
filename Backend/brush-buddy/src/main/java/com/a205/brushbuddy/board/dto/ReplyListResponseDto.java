@@ -10,16 +10,17 @@ import java.util.List;
 
 @Data
 @Builder
-public class CommentListResponseDto {
-    private Integer resultCode;
-    private List<CommentDTO> commentList;
+public class ReplyListResponseDto {
+    private List<replyDTO> replyList;
     private Integer pageNum;
     private Integer length;
 
 
     @Getter
     @Setter
-    public static class CommentDTO {
+    @Builder
+    public static class replyDTO {
+        private Long replyId;
         private Integer userId;
         private String nickname;
         private String contents;

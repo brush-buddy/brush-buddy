@@ -5,10 +5,16 @@ import jakarta.persistence.Embeddable;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 
 @Embeddable
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class HeartId implements Serializable {
 
 	@ManyToOne(fetch = FetchType.LAZY) // Heart(Many) : User(One)

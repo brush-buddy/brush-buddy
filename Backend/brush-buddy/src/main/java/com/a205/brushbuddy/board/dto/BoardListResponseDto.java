@@ -17,12 +17,13 @@ public class BoardListResponseDto {
 
     @Getter
     @Setter
+    @Builder
     public static class BoardDTO {
         private Long boardId;
         private String boardTitle;
         private String thumbnail;
-        private Long likeNumber;
-        private Long views;
+        private Integer likeNumber;
+        private Integer views;
         private String createdAt;
 
     }

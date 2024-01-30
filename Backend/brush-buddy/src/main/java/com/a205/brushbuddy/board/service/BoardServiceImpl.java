@@ -1,10 +1,10 @@
 package com.a205.brushbuddy.board.service;
 
-import com.a205.brushbuddy.board.domain.Board;
-import com.a205.brushbuddy.board.domain.Hashtag;
-import com.a205.brushbuddy.board.domain.HashtagPK;
-import com.a205.brushbuddy.board.domain.Image;
-import com.a205.brushbuddy.board.dto.*;
+import com.a205.brushbuddy.board.domain.*;
+import com.a205.brushbuddy.board.dto.BoardDetailResponseDto;
+import com.a205.brushbuddy.board.dto.BoardModifyRequestDto;
+import com.a205.brushbuddy.board.dto.BoardWriteRequestDto;
+import com.a205.brushbuddy.board.dto.ReplyWriteRequestDto;
 import com.a205.brushbuddy.board.repository.*;
 import com.a205.brushbuddy.draft.domain.Draft;
 import com.a205.brushbuddy.draft.repository.Draft.DraftRepository;
@@ -12,9 +12,12 @@ import com.a205.brushbuddy.user.domain.User;
 import com.a205.brushbuddy.util.S3Uploader;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -30,8 +33,17 @@ public class BoardServiceImpl implements BoardService{
 
     //게시글 조회 및 검색
     @Override
-    public List<Board> getBoardList(Map<String, String> param) throws Exception {
-        return null;
+    public List<Board> getBoardList(String search, Pageable pageable) throws Exception {
+        List<Board> result = null;
+
+        //검색 수행이 아니라면
+        if(search == null){
+            result = boardRepository.findAllByBoardIsDeletedFalse(pageable).stream().toList();
+        }
+        else { // 검색을 수행하려면
+            result = boardRepository.getSearchList(search, pageable).stream().toList();
+        }
+        return result;
     }
 
     //게시글 작성
@@ -53,7 +65,7 @@ public class BoardServiceImpl implements BoardService{
             Board result = boardRepository.save(entity);
 
             //해시태그 테이블에 해당 게시글의 해시태그를 저장
-            for(String hashtag : requestDto.getHashtags()){ // 각 해시태그에 대해
+            for(String hashtag : Set.copyOf(requestDto.getHashtags())){ // 각 해시태그에 대해
                 hashtagRepository.save(Hashtag.builder() //저장하라
                         .id(HashtagPK.builder() // id는
                                 .hashtagContent(hashtag) // hashtag와
@@ -97,8 +109,12 @@ public class BoardServiceImpl implements BoardService{
     @Override
     public BoardDetailResponseDto getDetail(Long boardId) throws Exception{
         // id로 보드 찾기
-        Board result = boardRepository.findById(boardId)
+        Board result = boardRepository.findByBoardIdAndBoardIsDeletedFalse(boardId)
                 .orElseThrow(() -> new Exception("couldn't get Board detail by boardId"));
+
+        //해당 게시물의 조회수 증가
+        result.setBoardWatch(result.getBoardWatch()+1);
+        boardRepository.save(result);
 
         //해당 보드에 연결된 사진들 가지고 오기
         List<BoardDetailResponseDto.PhotoDTO> photos =
@@ -143,7 +159,7 @@ public class BoardServiceImpl implements BoardService{
     public boolean modifyBoard(Long boardId, Integer userId, BoardModifyRequestDto requestDto) throws Exception{
 
         //보드 정보 가지고 오기
-        Board board = boardRepository.findById(boardId)
+        Board board = boardRepository.findByBoardIdAndBoardIsDeletedFalse(boardId)
                 .orElseThrow(() -> new Exception("invalid boardId"));
         //User 확인을 통해서 수정권한 확인하기
         if(Objects.equals(board.getUser().getUserId(), userId))
@@ -216,7 +232,7 @@ public class BoardServiceImpl implements BoardService{
     @Override
     public boolean deleteBoard(Integer userId, Long boardId) throws Exception {
         //게시판 정보 가져오기
-        Board board = boardRepository.findById(boardId)
+        Board board = boardRepository.findByBoardIdAndBoardIsDeletedFalse(boardId)
                 .orElseThrow(() -> new Exception("couldn't find board by boardId"));
 
         // 만약 사용자가 작성한 게시글이면 삭제 처리
@@ -232,24 +248,85 @@ public class BoardServiceImpl implements BoardService{
         }
     }
 
-    //코멘트 달기
+    //댓글 목록 조회하기
     @Override
-    public List<CommentListResponseDto> getComments(Long BoardId, CommentWriteRequestDto requestDto) throws Exception{
-        return null;
+    public List<Reply> getReplies(Long boardId, Pageable pageable) throws Exception{
+        return replyRepository.findAllByBoard_BoardIdAndBoard_BoardIsDeletedFalseAndReplyIsDeletedFalse(boardId, pageable).stream().toList();
     }
 
+    //댓글 작성하기
+    @Transactional
     @Override
-    public boolean writeComment(CommentWriteRequestDto requestDto) throws Exception{
+    public boolean writeReply(Integer userId, Long boardId, ReplyWriteRequestDto requestDto) throws Exception{
+        // board 찾기
+        Board board = boardRepository.findByBoardIdAndBoardIsDeletedFalse(boardId)
+                .orElseThrow(() -> new Exception("couldn't find board by boardId"));
+
+        //댓글 생성
+        Reply reply = Reply.builder()
+                .board(board)
+                .user(User.builder().userId(userId).build())
+                .replyIsDeleted(false)
+                .replyContent(requestDto.getContents())
+                .build();
+
+        // 댓글 db에 저장
+        replyRepository.save(reply);
         return false;
     }
 
+    //댓글 삭제하기
+    @Transactional
     @Override
-    public boolean deleteComment(Long boardId, Long commentId) throws Exception{
-        return false;
+    public boolean deleteReply(Integer userId, Long replyId) throws Exception{
+        Reply reply = replyRepository.findByIdAndReplyIsDeletedFalse(replyId)
+                .orElseThrow(() -> new Exception("couldn't find reply by replyId"));
+
+        //권한이 있는지 파악하기
+        if(reply.getUser().getUserId().equals(userId)) {
+            // 삭제처리
+            reply.setReplyIsDeleted(true);
+            //변경사항 저장
+            replyRepository.save(reply);
+        }else {
+            throw new Exception("user is not privileged for deleting the comment");
+        }
+
+        return true;
     }
 
+
+    //좋아요 누르기
+    @Transactional
     @Override
-    public boolean addHeart(Integer userId, Long commentId) throws Exception{
-        return false;
+    public boolean addHeart(Integer userId, Long boardId) throws Exception{
+        //게시물 탐색
+        Board board = boardRepository.findByBoardIdAndBoardIsDeletedFalse(boardId).orElseThrow(() -> new Exception("couldn't find board by boardId"));
+
+        //좋아요 처리
+        heartRepository.insertHeart(userId, boardId);
+
+        //해당 게시물의 좋아요 수 증가
+        board.setBoardLikeNumber(board.getBoardLikeNumber() + 1); //
+        return true;
+    }
+
+    //좋아요 취소
+    @Transactional
+    @Override
+    public boolean deleteHeart(Integer userId, Long boardId) throws Exception {
+        //엔티티 존재 확인 로직
+        Board board = boardRepository.findByBoardIdAndBoardIsDeletedFalse(boardId)
+                .orElseThrow(() -> new Exception("couldn't find board by boardId"));
+        Heart heart =  heartRepository.findByHeartId_User_UserIdAndHeartId_Board_BoardId(userId, boardId)
+                .orElseThrow(() -> new Exception("couldn't find heart by userId and boardId"));
+
+        // 엔티티에서 삭제하기
+        heartRepository.delete(heart);
+
+        //해당 게시물의 좋아요 수 감소
+        board.setBoardLikeNumber(board.getBoardLikeNumber() - 1);
+
+        return true;
     }
 }
