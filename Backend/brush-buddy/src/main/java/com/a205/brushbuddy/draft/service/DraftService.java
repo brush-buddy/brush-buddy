@@ -30,4 +30,5 @@ public interface DraftService{
 	boolean createBookmarkDraft(int userId, Long draftId);
 	// 북마크 제거
 	boolean deleteBookmarkDraft(int userId, Long draftId);
+
 }
