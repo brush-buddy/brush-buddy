@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface PaletteRepository extends JpaRepository<Palette, Long>, PaletteCustom{
+public interface PaletteRepository extends JpaRepository<Palette, Long>{
     List<Palette> findAllByUser_UserId(Integer userId, Pageable pageable); // user 아이디로 가져오기
 //    Optional<Palette> findByPaletteIdAndUser_UserId(Long paletteId, Integer UserId);
 }
