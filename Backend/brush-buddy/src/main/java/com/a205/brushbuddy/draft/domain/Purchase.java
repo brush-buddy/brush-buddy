@@ -1,4 +1,4 @@
-package com.a205.brushbuddy.purchase.domain;
+package com.a205.brushbuddy.draft.domain;
 
 import java.sql.Timestamp;
 

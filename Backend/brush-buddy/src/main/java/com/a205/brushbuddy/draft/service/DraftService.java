@@ -24,4 +24,7 @@ public interface DraftService{
 	void deleteDraft(int userId, Long draftId) ;
 
 	boolean updateDraft(long draftId, DraftCategoryModifyRequestDto draftCategoryModifyRequestDto);
+
+
+
 }
