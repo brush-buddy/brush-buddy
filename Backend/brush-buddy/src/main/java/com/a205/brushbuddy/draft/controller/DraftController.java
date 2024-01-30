@@ -109,4 +109,10 @@ public class DraftController {
 		return new ResponseEntity<>("success", HttpStatus.OK);
 	}
 
+	@PostMapping("/{draftId}/purchase")
+	public ResponseEntity<String> buyDraft(@PathVariable Long draftId) throws Exception{
+		int userId = 1;
+		draftService.buyDraft(userId, draftId);
+		return new ResponseEntity<>("success", HttpStatus.OK);
+	}
 }
