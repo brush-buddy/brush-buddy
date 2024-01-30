@@ -40,7 +40,7 @@ public class Palette {
     @Column(name = "palette_last_modified_time", nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private Timestamp paletteLastModifiedTime;
 
-    @Column(name = "palette_created_at", nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    @Column(name = "palette_created_at", nullable = false, updatable = false, insertable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private Timestamp paletteCreatedAt;
 
 }

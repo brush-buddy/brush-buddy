@@ -161,7 +161,9 @@ public class BoardServiceImpl implements BoardService{
         //보드 정보 가지고 오기
         Board board = boardRepository.findByBoardIdAndBoardIsDeletedFalse(boardId)
                 .orElseThrow(() -> new Exception("invalid boardId"));
+
         //User 확인을 통해서 수정권한 확인하기
+        // TODO : Admin인지 확인하는 로직 필요
         if(Objects.equals(board.getUser().getUserId(), userId))
         {
             // 변경할 entity의 내용을 작성한다.
@@ -236,6 +238,7 @@ public class BoardServiceImpl implements BoardService{
                 .orElseThrow(() -> new Exception("couldn't find board by boardId"));
 
         // 만약 사용자가 작성한 게시글이면 삭제 처리
+        // TODO : Admin인지 확인하는 로직 필요
         if(board.getUser().getUserId().equals(userId)){
             //board 삭제 여부 처리
             board.setBoardIsDeleted(true);
@@ -283,6 +286,7 @@ public class BoardServiceImpl implements BoardService{
                 .orElseThrow(() -> new Exception("couldn't find reply by replyId"));
 
         //권한이 있는지 파악하기
+        // TODO : Admin인지 확인하는 로직 필요
         if(reply.getUser().getUserId().equals(userId)) {
             // 삭제처리
             reply.setReplyIsDeleted(true);

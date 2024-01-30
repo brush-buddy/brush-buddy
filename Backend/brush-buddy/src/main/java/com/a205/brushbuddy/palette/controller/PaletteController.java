@@ -1,10 +1,7 @@
 package com.a205.brushbuddy.palette.controller;
 
 import com.a205.brushbuddy.palette.domain.Palette;
-import com.a205.brushbuddy.palette.dto.PaletteDetailResponseDto;
-import com.a205.brushbuddy.palette.dto.PaletteListRequestDto;
-import com.a205.brushbuddy.palette.dto.PaletteListResponseDto;
-import com.a205.brushbuddy.palette.dto.PaletteModifyRequestDto;
+import com.a205.brushbuddy.palette.dto.*;
 import com.a205.brushbuddy.palette.service.PaletteService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,9 +19,8 @@ import java.util.List;
 public class PaletteController {
     public final PaletteService paletteService;
 
-    //TODO :팔레트 리스트 조회
     @GetMapping("")
-    public ResponseEntity<?> getPaletteList(PaletteListRequestDto requestDto){
+    public ResponseEntity<?> getPaletteList(PaletteListRequestDto requestDto) throws Exception{
         //TODO : userId JWT 토큰으로 부터 추출 및 유효성 조사
         Integer userId = 1;
 
@@ -52,9 +48,8 @@ public class PaletteController {
         return  ResponseEntity.ok(dto);
     }
 
-    //TODO : 팔레트 상세 조회
     @GetMapping("/{paletteId}")
-    public ResponseEntity<?> getPaletteDetail(@PathVariable(value = "paletteId") Long paletteId){
+    public ResponseEntity<?> getPaletteDetail(@PathVariable(value = "paletteId") Long paletteId) throws Exception{
         //TODO : userId JWT 토큰으로 부터 추출 및 유효성 조사
         Integer userId = 1;
         Palette result = paletteService.getPaletteDetail(userId, paletteId);
@@ -69,27 +64,40 @@ public class PaletteController {
         return  ResponseEntity.ok(dto);
     }
 
-    //TODO : 팔레트 수정 메소드
     @PutMapping("/{paletteId}")
-    public ResponseEntity<?> modifyPalette(@PathVariable(value = "paletteId") Long paletteId, PaletteModifyRequestDto requestDto){
+    public ResponseEntity<?> modifyPalette(@PathVariable(value = "paletteId") Long paletteId, PaletteModifyRequestDto requestDto) throws Exception{
         //TODO : userId JWT 토큰으로 부터 추출 및 유효성 조사
         Integer userId = 1;
         paletteService.modifyPalette(userId, paletteId, requestDto);
         return  ResponseEntity.ok().build();
     }
 
-    //TODO : 팔레트 복제
-    @PostMapping("/{paletteId}/duplicate")
-    public ResponseEntity<?> duplicatePalette(@PathVariable(value = "paletteId") Long paletteId){
+    // 팔레트 추가
+    @PostMapping("")
+    public ResponseEntity<?> newPalette(PaletteMakeRequestDto requestDto) throws Exception{
         //TODO : userId JWT 토큰으로 부터 추출 및 유효성 조사
         Integer userId = 1;
-        paletteService.duplicatePalette(userId, paletteId);
-        return  ResponseEntity.ok().build();
+
+        Long id = paletteService.newPalette(userId, requestDto); // 팔레트 생성
+
+        PaletteMakeResponseDto dto = PaletteMakeResponseDto.builder() // 팔레트 dto로 변경
+                .paletteId(id)
+                .build();
+
+        return  ResponseEntity.ok(dto);
+    }
+    @PostMapping("/{paletteId}/duplicate")
+    public ResponseEntity<?> duplicatePalette(@PathVariable(value = "paletteId") Long paletteId) throws Exception{
+        //TODO : userId JWT 토큰으로 부터 추출 및 유효성 조사
+        Integer userId = 1;
+        Long id = paletteService.duplicatePalette(userId, paletteId);
+        PaletteDuplicateResponseDto dto = PaletteDuplicateResponseDto.builder().paletteId(id).build();
+        return  ResponseEntity.ok(dto);
     }
 
     // TODO : 팔레트 삭제
     @DeleteMapping("/{paletteId}")
-    public ResponseEntity<?> getPaletteList(@PathVariable(value = "paletteId") Long paletteId){
+    public ResponseEntity<?> getPaletteList(@PathVariable(value = "paletteId") Long paletteId) throws Exception{
         //TODO : userId JWT 토큰으로 부터 추출 및 유효성 조사
         Integer userId = 1;
         paletteService.deletePalette(userId,paletteId);
