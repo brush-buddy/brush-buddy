@@ -7,7 +7,7 @@ import com.a205.brushbuddy.board.dto.BoardWriteRequestDto;
 import com.a205.brushbuddy.board.dto.ReplyWriteRequestDto;
 import com.a205.brushbuddy.board.repository.*;
 import com.a205.brushbuddy.draft.domain.Draft;
-import com.a205.brushbuddy.draft.repository.DraftRepository;
+import com.a205.brushbuddy.draft.repository.Draft.DraftRepository;
 import com.a205.brushbuddy.user.domain.User;
 import com.a205.brushbuddy.util.S3Uploader;
 import jakarta.transaction.Transactional;
