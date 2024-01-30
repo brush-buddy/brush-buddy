@@ -21,6 +21,7 @@ import jakarta.websocket.server.PathParam;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import com.a205.brushbuddy.draft.dto.request.DraftCategoryModifyRequestDto;
 import com.a205.brushbuddy.draft.dto.request.DraftCreateRequestDto;
 import com.a205.brushbuddy.draft.dto.request.DraftListRequestDto;
 import com.a205.brushbuddy.draft.dto.response.DraftCreateResponseDto;
@@ -71,10 +72,10 @@ public class DraftController {
 
 	// 도안 정보(해시태그) 수정
 	@PostMapping("/{draftId}")
-	public ResponseEntity<Draft> updateDraft(@RequestParam Draft draft) {
-		// Draft updatedDraft = draftService.updateDraft(draft);
-		// return new ResponseEntity<>(updatedDraft, HttpStatus.OK);
-		return null;
+	public ResponseEntity<String> updateDraft(@PathVariable long draftId, @RequestBody DraftCategoryModifyRequestDto draftCategoryModifyRequestDto) {
+
+		boolean check = draftService.updateDraft(draftId, draftCategoryModifyRequestDto);
+		return new ResponseEntity<>("success", HttpStatus.OK);
 	}
 
 

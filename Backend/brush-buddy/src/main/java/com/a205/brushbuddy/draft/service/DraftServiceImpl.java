@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import java.sql.Timestamp;
 import java.util.List;
 
+import com.a205.brushbuddy.draft.dto.request.DraftCategoryModifyRequestDto;
 import com.a205.brushbuddy.draft.dto.request.DraftCreateRequestDto;
 import com.a205.brushbuddy.draft.dto.response.DraftCreateResponseDto;
 import com.a205.brushbuddy.draft.dto.response.DraftDetailResponseDto;
@@ -110,8 +111,6 @@ public class DraftServiceImpl implements DraftService{
             .draft(draft).build();
         paletteRepository.save(palette);
 
-
-
         for(Category category : categoryList){
             draftCategoryRepository.insertDraftCategory(draft.getDraftId(), category.getCategoryId());
         }
@@ -129,5 +128,21 @@ public class DraftServiceImpl implements DraftService{
         else{
             // throw new CustomExcpException("삭제 권한이 없습니다.");
         }
+    }
+
+    @Override
+    public boolean updateDraft(long draftId, DraftCategoryModifyRequestDto draftCategoryModifyRequestDto) {
+        Draft draft = draftRepository.findByDraftId(draftId);
+        if(draft == null){
+            // throw new CustomExcpException("존재하지 않는 도안입니다.");
+        }
+
+        List<Category> categoryList = categoryRepository.findByCategoryContentIn(draftCategoryModifyRequestDto.getCategoryList());
+        draftCategoryRepository.deleteDraftCategory(draftId);
+        for(Category category : categoryList){
+            draftCategoryRepository.insertDraftCategory(draftId, category.getCategoryId());
+        }
+        return true;
+
     }
 }
