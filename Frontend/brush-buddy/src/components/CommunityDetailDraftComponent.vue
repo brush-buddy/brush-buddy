@@ -1,16 +1,16 @@
 <template>
     <div class = "rect">
-        <div id = "category">
+        <!-- <div id = "category">
             <div id = "category1">
             <CategoryBtnComponent :title=title1 :color=color1 />
             </div>
             <div id = "category2">
             <CategoryBtnComponent :title=title2 :color=color2 />
             </div>
-        </div>
-        <div id = "draft">
+        </div> -->
+        <!-- <div id = "draft">
             <BookmarkedDraftImgComponent/>
-        </div>
+        </div> -->
         <div id = "palette">
             <PaletteComponent/>
         </div>
@@ -55,6 +55,7 @@ const color2 = ref('#FF7575')
     #palette {
         position: relative;
         margin-bottom : 0.5rem;
+        top: 0;
         z-index: 2;
     }
     .rect {

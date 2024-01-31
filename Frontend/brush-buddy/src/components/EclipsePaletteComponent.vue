@@ -34,12 +34,11 @@ const color5 = ref('#EEECDE')
 
 <style scoped>
 .fixed_width {
-  width: 375px;
   display: inline-flex;
   align-items: flex-end;
 }
 
 .palette{
-  margin-right: -6px;
+  margin-right: -12px;
 }
 </style>
