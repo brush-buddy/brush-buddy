@@ -21,66 +21,6 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Service
 public class KakaopayService {
-	/*
-		private static String kakaoAdminKey;
-		private static HttpHeaders headers;
-		private static String[] headerKey;
-		private static String[] headerValue;
-		private static String readyRequestUrl;
-		private static int readyRequestSize;
-		private static String[] readyRequestName;
-		private static String approveRequestUrl;
-		private static int approveRequestSize;
-		private static String[] approveRequestName;
-
-		@Value("${spring.kakao.admin-key}")
-		public static void setkakaoAdminKey(String kakaoAdminKey) {
-			KakaopayService.kakaoAdminKey = kakaoAdminKey;
-			System.out.println("set admin");
-		}
-
-		@Value("${spring.kakao.pay.header.key}")
-		public static void setHeaderKey(String[] headerKey) {
-			KakaopayService.headerKey = headerKey;
-			System.out.println("set key");
-		}
-
-		@Value("${spring.kakao.pay.header.value}")
-		public static void setHeaderValue(String[] headerValue) {
-			KakaopayService.headerValue = headerValue;
-			System.out.println("set value");
-		}
-
-		@Value("${spring.kakao.pay.ready.request.url}")
-		public static void setReadyRequestUrl(String readyRequestUrl) {
-			KakaopayService.readyRequestUrl = readyRequestUrl;
-		}
-
-		@Value("${spring.kakao.pay.ready.request.size}")
-		public static void setReadyRequestSize(int readyRequestSize) {
-			KakaopayService.readyRequestSize = readyRequestSize;
-		}
-
-		@Value("${spring.kakao.pay.ready.request.name}")
-		public static void setReadyRequestName(String[] readyRequestName) {
-			KakaopayService.readyRequestName = readyRequestName;
-		}
-
-		@Value("${spring.kakao.pay.approve.request.url}")
-		public static void setApproveRequestUrl(String approveRequestUrl) {
-			KakaopayService.approveRequestUrl = approveRequestUrl;
-		}
-
-		@Value("${kakaopay.approve.request.size}")
-		public static void setApproveRequestSize(int approveRequestSize) {
-			KakaopayService.approveRequestSize = approveRequestSize;
-		}
-
-		@Value("${spring.kakao.pay.approve.request.name}")
-		public static void setApproveRequestName(String[] approveRequestName) {
-			KakaopayService.approveRequestName = approveRequestName;
-		}
-	*/
 
 	private HttpHeaders headers;
 	@Value("${spring.kakao.admin-key}")
