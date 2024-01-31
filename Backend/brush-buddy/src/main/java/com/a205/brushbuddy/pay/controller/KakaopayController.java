@@ -23,20 +23,22 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.Persistence;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+@Getter
 @Controller
 public class KakaopayController {
-    @Value("${datetimeformatter.ofpattern}")
+    @Value("${spring.kakao.pay.datetimeformatter.ofpattern}")
     private static DateTimeFormatter dateTimeFormatter;
 
     //// 브러쉬버디 충전 내역용 workplaceid = 0, 갱신 필요시 참고
-    @Value("${workplaceid}")
+    @Value("${spring.kakao.pay.workplaceid}")
     private static int workplaceId;
 
-    private final User user;
-    private final KakaopayService kakaopayService;
+    private User user;
+    private KakaopayService kakaopayService;
 
     //// 충전 페이지를 넘어갈 때 이전 url 혹은 구매 시도 아이템 정보 등을 model에 선언 필요
     //// 우선 결제페이지 진입 이전 Url로 작업, 필요의 경우 수정
@@ -46,13 +48,16 @@ public class KakaopayController {
     private int totalAmount;
     private String tid;
 
+    public KakaopayController() {}
+
     public KakaopayController(User user, KakaopayService kakaopayService) {
+        System.out.println("test");
         this.user = user;
         this.kakaopayService = kakaopayService;
     }
 
     // 결제 요청 시작
-    @PostMapping("${kakaopay.controller.ready.url}")
+    @PostMapping("${spring.kakao.pay.mapping}")
     @ResponseBody
     public KakaopayReadyResponse ready(Model model) {
         //// 규칙성, 보안 등의 이유로 변경 가능
@@ -89,7 +94,7 @@ public class KakaopayController {
     }
 
     // 결제 완료 이후
-    @GetMapping("${kakaopay.ready.request.url.approval}")
+    @GetMapping("${spring.kakao.pay.ready.request.approval}")
     public String completed(Model model,
         @RequestParam("pg_token")
         String pgToken) {

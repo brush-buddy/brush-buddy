@@ -16,20 +16,20 @@ import lombok.ToString;
 @ToString
 @NoArgsConstructor
 public class KakaopayApproveRequest {
-	@Value("${kakaopay.cid}")
-	private String cid;
-	private String tid;
-	private String partnerOrderId;
-	private String partnerUserId;
-	private String pgToken;
+    @Value("${spring.kakao.pay.cid-key}")
+    private String cid;
+    private String tid;
+    private String partnerOrderId;
+    private String partnerUserId;
+    private String pgToken;
 
-	@Value("${kakaopay.approve.request.size}")
-	public static int size;
+    @Value("${spring.kakao.approve.request.size}")
+    public static int size;
 
-	@Value("${kakaopay.approve.request.name}")
-	public static String[] name;
+    @Value("${spring.kakao.approve.request.name}")
+    public static String[] name;
 
-	public String[] getString() {
-		return new String[] {cid, tid, partnerOrderId, partnerUserId, pgToken};
-	}
+    public String[] getString() {
+        return new String[] {cid, tid, partnerOrderId, partnerUserId, pgToken};
+    }
 }
