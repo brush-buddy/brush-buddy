@@ -7,25 +7,32 @@ import CommunityListview from "./views/CommunityListview.vue";
 </script>
 
 <template>
-  <header>
-    <div class="wrapper"></div>
-    <meta charset="utf-8" content ='ko'/>
-  </header>
+  <div class="Wrapper">
+    <div class="contentWrapper">
+        <RouterView/>
+        <NavigationComponent />
+        <CommunityListview></CommunityListview>
+    </div>
+  </div>
 
-  <body>
 
-    <RouterView/>
-    <NavigationComponent />
-    <CommunityListview></CommunityListview>
 
-  </body>
 </template>
 
 <style scoped>
 NavigationComponent {
-  width: 375px;
+  /* width: 375px;
   height: 50px;
   flex-shrink: 0;
+  z-index: 999; */
 }
+.Wrapper {
+display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+.contentWrapper {
+  flex : 1;
 
+}
 </style>
