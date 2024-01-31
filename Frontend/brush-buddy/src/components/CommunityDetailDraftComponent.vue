@@ -61,7 +61,7 @@ const color2 = ref('#FF7575')
         position: relative;
         background: #FFFFFF;    
         width: 18rem;
-        height: 18rem;
+        /* height: 18rem; */
         border-radius: 2rem;
         margin: 0 auto;
     }
