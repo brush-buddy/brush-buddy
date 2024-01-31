@@ -18,27 +18,27 @@ public class Mileage {
     @Id
     @GeneratedValue
     @Column(name = "mileage_id", nullable = false)
-    private int mileageId;
+    private long mileageId;
 
     @Column(name = "user_id", nullable = false)
-    private int userId;
+    private long userId;
 
     @Column(name = "workplace_id", nullable = true)
-    private int workplaceId;
+    private Long workplaceId;
 
-	@Column(name = "mileage_timestamp", nullable = true)
-	@Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "mileage_timestamp", nullable = true)
+    @Temporal(TemporalType.TIMESTAMP)
     private Timestamp mileageTimestamp;
 
-    @Column(name = "mileage_before", nullable = true)
+    @Column(name = "mileage_before", nullable = false)
     private int mileageBefore;
 
-    @Column(name = "mileage_after", nullable = true)
+    @Column(name = "mileage_after", nullable = false)
     private int mileageAfter;
 
-    @Column(name = "mileage_amount", nullable = true)
+    @Column(name = "mileage_amount", nullable = false)
     private int mileageAmount;
 
-    @Column(name = "mileage_content", nullable = true, length = 100)
+    @Column(name = "mileage_content", nullable = false, length = 100)
     private String mileageContent;
 }
