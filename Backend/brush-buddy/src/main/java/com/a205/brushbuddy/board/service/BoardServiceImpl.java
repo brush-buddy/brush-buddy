@@ -12,6 +12,7 @@ import com.a205.brushbuddy.user.domain.User;
 import com.a205.brushbuddy.util.S3Uploader;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -33,15 +34,15 @@ public class BoardServiceImpl implements BoardService{
 
     //게시글 조회 및 검색
     @Override
-    public List<Board> getBoardList(String search, Pageable pageable) throws Exception {
-        List<Board> result = null;
+    public Page<Board> getBoardList(String search, Pageable pageable) throws Exception {
+        Page<Board> result = null;
 
         //검색 수행이 아니라면
         if(search == null){
-            result = boardRepository.findAllByBoardIsDeletedFalse(pageable).stream().toList();
+            result = boardRepository.findAllByBoardIsDeletedFalse(pageable);
         }
         else { // 검색을 수행하려면
-            result = boardRepository.getSearchList(search, pageable).stream().toList();
+            result = boardRepository.getSearchList(search, pageable);
         }
         return result;
     }
@@ -253,8 +254,8 @@ public class BoardServiceImpl implements BoardService{
 
     //댓글 목록 조회하기
     @Override
-    public List<Reply> getReplies(Long boardId, Pageable pageable) throws Exception{
-        return replyRepository.findAllByBoard_BoardIdAndBoard_BoardIsDeletedFalseAndReplyIsDeletedFalse(boardId, pageable).stream().toList();
+    public Page<Reply> getReplies(Long boardId, Pageable pageable) throws Exception{
+        return replyRepository.findAllByBoard_BoardIdAndBoard_BoardIsDeletedFalseAndReplyIsDeletedFalse(boardId, pageable);
     }
 
     //댓글 작성하기

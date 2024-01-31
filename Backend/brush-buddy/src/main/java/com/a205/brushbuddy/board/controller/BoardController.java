@@ -7,13 +7,12 @@ import com.a205.brushbuddy.board.dto.*;
 import com.a205.brushbuddy.board.service.BoardService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @Slf4j
 @RestController
@@ -30,11 +29,11 @@ public class BoardController {
                 requestDto.getDirection(), //오름차순 or 내림차순
                 requestDto.getOrder()); // 기준
 
-        List<Board> boards = boardService.getBoardList(requestDto.getSearch(), pageable); //정렬 기준
+        Page<Board> boards = boardService.getBoardList(requestDto.getSearch(), pageable); //정렬 기준
 
         //결과물 dto로 변환
         BoardListResponseDto result = BoardListResponseDto.builder()
-                .boards(boards.stream().map(
+                .boards(boards.getContent().stream().map(
                         m-> BoardListResponseDto.BoardDTO.builder()
                                 .boardId(m.getBoardId())
                                 .boardTitle(m.getBoardTitle())
@@ -43,8 +42,9 @@ public class BoardController {
                                 .likeNumber(m.getBoardLikeNumber())
                                 .createdAt(m.getBoardTimestamp().toString())
                         .build()).toList())
-                .length(boards.size())
-                .pageNum(pageable.getPageNumber() + 1)
+                .length(boards.getNumberOfElements())
+                .pageNum(boards.getNumber() + 1)
+                .totalPage(boards.getTotalPages())
                 .build();
 
         return ResponseEntity.ok(result);
@@ -95,11 +95,11 @@ public class BoardController {
         Pageable pageable = PageRequest.of(requestDto.getPageNum() - 1 ,requestDto.getListNum(), Sort.Direction.DESC, "replyTimestamp");
 
         // 페이지 네이션 댓글 가지고 오기
-        List<Reply> replies =  boardService.getReplies(boardId, pageable);
+        Page<Reply> replies =  boardService.getReplies(boardId, pageable);
 
         ReplyListResponseDto result = ReplyListResponseDto.builder()
-                .pageNum(pageable.getPageNumber()+1)
-                .replyList(replies.stream().map(
+
+                .replyList(replies.getContent().stream().map(
                         m -> ReplyListResponseDto.replyDTO
                                 .builder()
                                 .replyId(m.getId())
@@ -109,7 +109,9 @@ public class BoardController {
                                 .createdAt(m.getReplyTimestamp().toString())
                                 .build())
                         .toList())
-                .length(replies.size())
+                .pageNum(replies.getNumber() + 1)
+                .length(replies.getNumberOfElements())
+                .totalPage(replies.getTotalPages())
                 .build();
         return ResponseEntity.ok(result);
     }

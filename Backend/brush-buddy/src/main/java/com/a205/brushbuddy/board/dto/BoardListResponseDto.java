@@ -13,6 +13,7 @@ public class BoardListResponseDto {
     private List<BoardDTO> boards;
     private Integer pageNum;
     private Integer length;
+    private Integer totalPage; // 전체 페이지
 
 
     @Getter
