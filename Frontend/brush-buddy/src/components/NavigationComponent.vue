@@ -1,13 +1,13 @@
 <script setup lang="ts">
+import { defineComponent } from 'vue'
 import { RouterLink } from 'vue-router'
 
 </script>
 
 <template>
 
-
   <div class="bottom-navbar">
-    <Routerlink :to="{name : 'HomeView'}">
+    <router-link to="/">
       <div class="navicon">
         <svg viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path id="Vector" d="M22.524 11.3116L12.0738 0.251884C11.9986 0.172037 11.9092 0.10869 11.8108 0.0654689C11.7125 0.0222474 11.607 0 11.5005 0C11.394 0 11.2885 0.0222474 11.1901 0.0654689C11.0917 0.10869 11.0023 0.172037 10.9271 0.251884L0.476967 11.3116C0.17252 11.634 0 12.072 0 12.5288C0 13.4773 0.728135 14.2485 1.62372 14.2485H2.7248V22.1402C2.7248 22.6158 3.0876 23 3.53666 23H9.87676V16.9811H12.7183V23H19.4643C19.9134 23 20.2762 22.6158 20.2762 22.1402V14.2485H21.3772C21.8085 14.2485 22.2221 14.0684 22.5265 13.7433C23.1582 13.0715 23.1582 11.9833 22.524 11.3116Z" fill="black"/>
@@ -15,8 +15,8 @@ import { RouterLink } from 'vue-router'
         <p>홈</p>
       </div>
 
-    </Routerlink>
-    <Routerlink :to="{name : 'SearchView'}">
+    </router-link>
+    <router-link to="/search">
       <div class="navicon">
         <svg viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
           <g id="&#240;&#159;&#166;&#134; icon &#34;camera&#34;">
@@ -27,8 +27,8 @@ import { RouterLink } from 'vue-router'
         </svg>
         <p>검색</p>
       </div>
-    </Routerlink>
-    <Routerlink :to="{name : 'DraftView'}">
+    </router-link>
+    <router-link to="/draft">
       <div class="navicon">
         <svg viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
         <g id="&#240;&#159;&#166;&#134; icon &#34;picture&#34;">
@@ -39,8 +39,8 @@ import { RouterLink } from 'vue-router'
         </svg>
         <p>도안 생성</p>
       </div>
-    </Routerlink>
-    <Routerlink :to="{name : 'CommunityView'}">
+    </router-link>
+    <router-link to="/community">
       <div class="navicon">
         <svg viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
         <g id="&#240;&#159;&#166;&#134; icon &#34;team&#34;">
@@ -49,8 +49,8 @@ import { RouterLink } from 'vue-router'
         </svg>
         <p>커뮤니티</p>
       </div>
-    </Routerlink>
-    <Routerlink :to="{name : 'DiaryView'}">
+    </router-link>
+    <router-link to="/diary">
       <div class="navicon">
         <svg viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
         <g id="Group 5">
@@ -61,7 +61,7 @@ import { RouterLink } from 'vue-router'
           그림기록
         </p>
       </div>
-    </Routerlink>
+    </router-link>
   </div>
 </template>
 

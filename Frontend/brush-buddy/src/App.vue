@@ -1,15 +1,15 @@
-<script setup>
 
-import NavigationComponent from "./components/NavigationComponent.vue";
-import DraftView from "./views/DraftView.vue";
-</script>
-    
 <template>
-    <DraftView />
+    <meta charset="utf-8" content ='ko'/>
+    <RouterView/>
     <NavigationComponent />
 </template>
 
+<script setup>
+import NavigationComponent from "./components/NavigationComponent.vue";
+
+
+</script>
+
 <style scoped>
-
-
 </style>

@@ -1,39 +1,39 @@
-import CommunityViewVue from '@/views/CommunityView.vue'
-import DiaryVIewVue from '@/views/DiaryView.vue'
-import DraftViewVue from '@/views/DraftView.vue'
-import HomeViewVue from '@/views/HomeView.vue'
-import SearchViewVue from '@/views/SearchView.vue'
+import CommunityView from '@/views/CommunityView.vue'
+import DiaryView from '@/views/DiaryView.vue'
+import DraftView from '@/views/DraftView.vue'
+import HomeView from '@/views/HomeView.vue'
+import SearchView from '@/views/SearchView.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 
 
 const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
+  history: createWebHistory(""),
   routes: [
     
       {
+        name: 'home',
         path: '/',
-        name: 'HomeView',
-        component: HomeViewVue
+        component: HomeView
       },
       {
+        name: 'community',
         path: '/community',
-        name: 'CommunityView',
-        component: CommunityViewVue
+        component: CommunityView
       },
       {
+        name: 'diary',
         path: '/diary',
-        name: 'DiaryView',
-        component: DiaryVIewVue
+        component: DiaryView
       },
       {
+        name: 'search',
         path: '/search',
-        name: 'SearchView',
-        component: SearchViewVue
+        component: SearchView
       },
       {
+        name: 'draft',
         path: '/draft',
-        name: 'DraftView',
-        component: DraftViewVue
+        component: DraftView
       }
 
   ]
