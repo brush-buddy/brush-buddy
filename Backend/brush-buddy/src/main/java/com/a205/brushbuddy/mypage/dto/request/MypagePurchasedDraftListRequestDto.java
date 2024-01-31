@@ -1,14 +1,16 @@
-package com.a205.brushbuddy.mypage.repository;
+package com.a205.brushbuddy.mypage.dto.request;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.data.domain.Sort;
 
-@Setter
-@Getter
+@Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class MypageHeartListRequestDto {
+public class MypagePurchasedDraftListRequestDto {
     private String search;
 
     @Builder.Default
