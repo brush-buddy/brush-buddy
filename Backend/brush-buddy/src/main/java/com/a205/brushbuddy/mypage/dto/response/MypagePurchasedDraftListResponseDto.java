@@ -13,7 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MypagePurchasedDraftListResponseDto {
-    private List<MypageBookmarkedDraftListResponseDto.DraftDto> drafts;
+    private List<DraftDto> drafts;
     private Integer pageNum;
     private Integer length;
     private Integer totalPage; // 전체 페이지
