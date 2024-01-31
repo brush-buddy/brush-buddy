@@ -1,20 +1,18 @@
-package com.a205.brushbuddy.board.dto;
+package com.a205.brushbuddy.mypage.dto.response;
 
-import lombok.Builder;
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.List;
 
 @Data
 @Builder
-public class BoardListResponseDto {
+@NoArgsConstructor
+@AllArgsConstructor
+public class MypageHeartBoardListResponseDto {
     private List<BoardDTO> boards;
     private Integer pageNum;
     private Integer length;
     private Integer totalPage; // 전체 페이지
-
 
     @Getter
     @Setter

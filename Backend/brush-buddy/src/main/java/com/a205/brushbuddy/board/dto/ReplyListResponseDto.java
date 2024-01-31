@@ -14,7 +14,7 @@ public class ReplyListResponseDto {
     private List<replyDTO> replyList;
     private Integer pageNum;
     private Integer length;
-
+    private Integer totalPage; // 전체 페이지
 
     @Getter
     @Setter
