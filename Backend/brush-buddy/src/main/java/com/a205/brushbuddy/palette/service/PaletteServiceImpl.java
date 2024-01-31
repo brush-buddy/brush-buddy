@@ -2,6 +2,8 @@ package com.a205.brushbuddy.palette.service;
 
 import com.a205.brushbuddy.draft.domain.Draft;
 import com.a205.brushbuddy.draft.repository.Draft.DraftRepository;
+import com.a205.brushbuddy.exception.BaseException;
+import com.a205.brushbuddy.exception.ErrorCode;
 import com.a205.brushbuddy.palette.domain.Palette;
 import com.a205.brushbuddy.palette.dto.PaletteMakeRequestDto;
 import com.a205.brushbuddy.palette.dto.PaletteModifyRequestDto;
@@ -21,28 +23,28 @@ public class PaletteServiceImpl implements PaletteService {
     private final DraftRepository draftRepository;
 
     @Override
-    public List<Palette> getPaletteList(Integer userId, Pageable pageable) throws Exception{
+    public List<Palette> getPaletteList(Integer userId, Pageable pageable) {
         return paletteRepository.findAllByUser_UserId(userId, pageable); // 리스트 조회
     }
 
     @Override
-    public Palette getPaletteDetail(Integer userId, Long paletteId) throws Exception{
+    public Palette getPaletteDetail(Integer userId, Long paletteId) {
         // 팔레트 찾기
         Palette result = paletteRepository.findById(paletteId).orElseThrow(
-                ()-> new Exception("there is not palette with that paletted ID")
+                ()-> new BaseException(ErrorCode.NOT_FOUND_DATA)
         );
 
         //사용자가 권한이 있는가
         // TODO : Admin인지 확인하는 로직 필요
         if(!result.getUser().getUserId().equals(userId)){ // UserId가 다르거나 admin이 아니면
-            throw new Exception("User is not privileged for the palette");
+            throw new BaseException(ErrorCode.NOT_PRIVIEGED);
         }
 
         return result;
     }
 
     @Override
-    public Long newPalette(Integer userId, PaletteMakeRequestDto requestDto) throws Exception {
+    public Long newPalette(Integer userId, PaletteMakeRequestDto requestDto) {
         //도안 정보 가져오기
         Draft draft = draftRepository.findByDraftId(requestDto.getDraftId());
 
@@ -65,15 +67,15 @@ public class PaletteServiceImpl implements PaletteService {
 
     // 팔레트 복제
     @Override
-    public Long duplicatePalette(Integer userId, Long paletteId) throws Exception{
+    public Long duplicatePalette(Integer userId, Long paletteId) {
         Palette originPalette = paletteRepository.findById(paletteId).orElseThrow(
-                ()-> new Exception("there is not palette with that paletted ID")
+                ()-> new BaseException(ErrorCode.NOT_FOUND_DATA)
         );
 
         //사용자가 권한이 있는가
         // TODO : Admin인지 확인하는 로직 필요
         if(!originPalette.getUser().getUserId().equals(userId)){ // UserId가 다르거나 admin이 아니면
-            throw new Exception("User is not privileged for the palette");
+            throw new BaseException(ErrorCode.NOT_PRIVIEGED);
         }
 
         //팔레트 복제
@@ -91,23 +93,27 @@ public class PaletteServiceImpl implements PaletteService {
 
     //팔레트 수정
     @Override
-    public boolean modifyPalette(Integer userId, Long paletteId, PaletteModifyRequestDto requestDto) throws Exception {
+    public boolean modifyPalette(Integer userId, Long paletteId, PaletteModifyRequestDto requestDto) {
         // 팔레트 찾기
         Palette result = paletteRepository.findById(paletteId).orElseThrow(
-                ()-> new Exception("there is not palette with that paletted ID")
+                ()-> new BaseException(ErrorCode.NOT_FOUND_DATA)
         );
 
         //사용자가 권한이 있는가
         // TODO : Admin인지 확인하는 로직 필요
         if(!result.getUser().getUserId().equals(userId)){ // UserId가 다르거나 admin이 아니면
-            throw new Exception("User is not privileged for the palette");
+            throw new BaseException(ErrorCode.NOT_PRIVIEGED);
         }
 
         //팔레트 수정
         result.setPaletteName(requestDto.getPaletteName());
         ObjectMapper om = new ObjectMapper();
-        String colorCodes =  om.writeValueAsString(requestDto.getPaletteColorCode()); // JSON -> String
-        result.setPaletteColorCode(colorCodes); // 색깔 정보 불어와서 저장
+        try{
+            String colorCodes =  om.writeValueAsString(requestDto.getPaletteColorCode()); // JSON -> String
+            result.setPaletteColorCode(colorCodes); // 색깔 정보 불어와서 저장
+        }catch (Exception e){
+            throw new BaseException(ErrorCode.BAD_REQUEST);
+        }
 
         // 팔레트 적용
         paletteRepository.save(result);
@@ -116,16 +122,16 @@ public class PaletteServiceImpl implements PaletteService {
 
     //팔레트 삭제
     @Override
-    public boolean deletePalette(Integer userId, Long paletteId) throws Exception {
+    public boolean deletePalette(Integer userId, Long paletteId){
         // 팔레트 찾기
         Palette result = paletteRepository.findById(paletteId).orElseThrow(
-                ()-> new Exception("there is not palette with that paletted ID")
+                ()-> new BaseException(ErrorCode.NOT_FOUND_DATA)
         );
 
         //사용자가 권한이 있는가
         // TODO : Admin인지 확인하는 로직 필요
         if(!result.getUser().getUserId().equals(userId)){ // UserId가 다르거나 admin이 아니면
-            throw new Exception("User is not privileged for the palette");
+            throw new BaseException(ErrorCode.NOT_PRIVIEGED);
         }
 
         //팔레트 삭제
