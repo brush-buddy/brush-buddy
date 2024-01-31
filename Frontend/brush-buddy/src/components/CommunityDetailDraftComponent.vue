@@ -2,10 +2,10 @@
     <div class = "rect">
         <div id = "category">
             <div id = "category1">
-            <CategoryBtnComponent/>
+            <CategoryBtnComponent :title=title1 :color=color1 />
             </div>
             <div id = "category2">
-            <CategoryBtnComponent/>
+            <CategoryBtnComponent :title=title2 :color=color2 />
             </div>
         </div>
         <div id = "draft">
@@ -20,10 +20,15 @@
 
 <script setup lang="ts">
 import BookmarkedDraftImgComponent from "../components/BookmarkedDraftImgComponent.vue";
-import PaletteComponent from "../components/PaletteComponent.vue";
+import PaletteComponent from "./EclipsePaletteComponent.vue";
 import CategoryBtnComponent from "../components/CategoryBtnComponent.vue";
+import { ref } from 'vue'
 
+const title1 = ref('물고기')
+const color1 = ref('#FFB6C1')
 
+const title2 = ref('바다')
+const color2 = ref('#FF7575')
 
 </script>
 

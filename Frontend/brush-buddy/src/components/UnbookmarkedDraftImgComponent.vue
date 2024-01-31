@@ -1,5 +1,5 @@
 <template>
-    <div id = "draft">
+    <div id = "fulldraft">
         <div id = "bookmark">
          <svg xmlns="http://www.w3.org/2000/svg" width="25" height="31" viewBox="0 0 25 31" fill="none">
             <g filter="url(#filter0_d_492_1949)">
@@ -20,7 +20,9 @@
             </defs>
         </svg>
         </div>
-        <img src="@/assets/images/draft_img.png" alt="draft" width="330" height="330"  />     
+        <div class = "draft">
+        <img src="@/assets/images/draft_img.png" alt="draft" width="330" height="330"  />
+        </div>
     </div>
 </template>
 
