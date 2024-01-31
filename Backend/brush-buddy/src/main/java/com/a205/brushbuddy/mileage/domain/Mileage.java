@@ -24,7 +24,7 @@ public class Mileage {
     private long userId;
 
     @Column(name = "workplace_id", nullable = true)
-    private Long workplaceId;
+    private Integer workplaceId;
 
     @Column(name = "mileage_timestamp", nullable = true)
     @Temporal(TemporalType.TIMESTAMP)
