@@ -8,6 +8,8 @@ import com.a205.brushbuddy.board.dto.ReplyWriteRequestDto;
 import com.a205.brushbuddy.board.repository.*;
 import com.a205.brushbuddy.draft.domain.Draft;
 import com.a205.brushbuddy.draft.repository.Draft.DraftRepository;
+import com.a205.brushbuddy.exception.BaseException;
+import com.a205.brushbuddy.exception.ErrorCode;
 import com.a205.brushbuddy.user.domain.User;
 import com.a205.brushbuddy.util.S3Uploader;
 import jakarta.transaction.Transactional;
@@ -34,22 +36,25 @@ public class BoardServiceImpl implements BoardService{
 
     //게시글 조회 및 검색
     @Override
-    public Page<Board> getBoardList(String search, Pageable pageable) throws Exception {
+    public Page<Board> getBoardList(String search, Pageable pageable)  {
         Page<Board> result = null;
-
-        //검색 수행이 아니라면
-        if(search == null){
-            result = boardRepository.findAllByBoardIsDeletedFalse(pageable);
-        }
-        else { // 검색을 수행하려면
-            result = boardRepository.getSearchList(search, pageable);
+        try{
+            //검색 수행이 아니라면
+            if(search == null){
+                result = boardRepository.findAllByBoardIsDeletedFalse(pageable);
+            }
+            else { // 검색을 수행하려면
+                result = boardRepository.getSearchList(search, pageable);
+            }
+        }catch(Exception e){
+            throw new BaseException(ErrorCode.BAD_REQUEST);
         }
         return result;
     }
 
     //게시글 작성
     @Override
-    public boolean writeBoard(Integer userId, BoardWriteRequestDto requestDto) throws Exception{
+    public boolean writeBoard(Integer userId, BoardWriteRequestDto requestDto) {
         try{
             //Board entity에 필요 데이터 우선 삽입
             Board entity = Board.builder()
@@ -98,20 +103,18 @@ public class BoardServiceImpl implements BoardService{
             }
 
         }catch(Exception e) {
-            e.printStackTrace();
-            return false;
+            throw new BaseException(ErrorCode.BAD_REQUEST);
         }
-
         return true;
     }
 
 
     //게시글 상세 보기
     @Override
-    public BoardDetailResponseDto getDetail(Long boardId) throws Exception{
+    public BoardDetailResponseDto getDetail(Long boardId) {
         // id로 보드 찾기
         Board result = boardRepository.findByBoardIdAndBoardIsDeletedFalse(boardId)
-                .orElseThrow(() -> new Exception("couldn't get Board detail by boardId"));
+                .orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND_DATA));
 
         //해당 게시물의 조회수 증가
         result.setBoardWatch(result.getBoardWatch()+1);
@@ -157,11 +160,11 @@ public class BoardServiceImpl implements BoardService{
     //게시글 수정
     @Transactional
     @Override
-    public boolean modifyBoard(Long boardId, Integer userId, BoardModifyRequestDto requestDto) throws Exception{
+    public boolean modifyBoard(Long boardId, Integer userId, BoardModifyRequestDto requestDto) {
 
         //보드 정보 가지고 오기
         Board board = boardRepository.findByBoardIdAndBoardIsDeletedFalse(boardId)
-                .orElseThrow(() -> new Exception("invalid boardId"));
+                .orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND_DATA));
 
         //User 확인을 통해서 수정권한 확인하기
         // TODO : Admin인지 확인하는 로직 필요
@@ -210,7 +213,7 @@ public class BoardServiceImpl implements BoardService{
                 }
 
                 // 썸네일 지정 안되면 오류 발생 시키기
-                if(thumbnail == null) throw new Exception("there's no images in request body");
+                if(thumbnail == null) throw new BaseException(ErrorCode.BAD_REQUEST);
 
                 board.setBoardThumbnail(thumbnail); // 썸네일 변경
             }
@@ -233,10 +236,10 @@ public class BoardServiceImpl implements BoardService{
     //게시글 삭제
     @Transactional
     @Override
-    public boolean deleteBoard(Integer userId, Long boardId) throws Exception {
+    public boolean deleteBoard(Integer userId, Long boardId)  {
         //게시판 정보 가져오기
         Board board = boardRepository.findByBoardIdAndBoardIsDeletedFalse(boardId)
-                .orElseThrow(() -> new Exception("couldn't find board by boardId"));
+                .orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND_DATA));
 
         // 만약 사용자가 작성한 게시글이면 삭제 처리
         // TODO : Admin인지 확인하는 로직 필요
@@ -254,17 +257,22 @@ public class BoardServiceImpl implements BoardService{
 
     //댓글 목록 조회하기
     @Override
-    public Page<Reply> getReplies(Long boardId, Pageable pageable) throws Exception{
-        return replyRepository.findAllByBoard_BoardIdAndBoard_BoardIsDeletedFalseAndReplyIsDeletedFalse(boardId, pageable);
+    public Page<Reply> getReplies(Long boardId, Pageable pageable){
+        try{
+            return replyRepository.findAllByBoard_BoardIdAndBoard_BoardIsDeletedFalseAndReplyIsDeletedFalse(boardId, pageable);
+        }catch(Exception e){
+            throw new BaseException(ErrorCode.NOT_FOUND_DATA);
+        }
+
     }
 
     //댓글 작성하기
     @Transactional
     @Override
-    public boolean writeReply(Integer userId, Long boardId, ReplyWriteRequestDto requestDto) throws Exception{
+    public boolean writeReply(Integer userId, Long boardId, ReplyWriteRequestDto requestDto){
         // board 찾기
         Board board = boardRepository.findByBoardIdAndBoardIsDeletedFalse(boardId)
-                .orElseThrow(() -> new Exception("couldn't find board by boardId"));
+                .orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND_DATA));
 
         //댓글 생성
         Reply reply = Reply.builder()
@@ -282,9 +290,9 @@ public class BoardServiceImpl implements BoardService{
     //댓글 삭제하기
     @Transactional
     @Override
-    public boolean deleteReply(Integer userId, Long replyId) throws Exception{
+    public boolean deleteReply(Integer userId, Long replyId) {
         Reply reply = replyRepository.findByIdAndReplyIsDeletedFalse(replyId)
-                .orElseThrow(() -> new Exception("couldn't find reply by replyId"));
+                .orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND_DATA));
 
         //권한이 있는지 파악하기
         // TODO : Admin인지 확인하는 로직 필요
@@ -294,7 +302,7 @@ public class BoardServiceImpl implements BoardService{
             //변경사항 저장
             replyRepository.save(reply);
         }else {
-            throw new Exception("user is not privileged for deleting the comment");
+            throw new BaseException(ErrorCode.NOT_PRIVIEGED);
         }
 
         return true;
@@ -304,9 +312,9 @@ public class BoardServiceImpl implements BoardService{
     //좋아요 누르기
     @Transactional
     @Override
-    public boolean addHeart(Integer userId, Long boardId) throws Exception{
+    public boolean addHeart(Integer userId, Long boardId){
         //게시물 탐색
-        Board board = boardRepository.findByBoardIdAndBoardIsDeletedFalse(boardId).orElseThrow(() -> new Exception("couldn't find board by boardId"));
+        Board board = boardRepository.findByBoardIdAndBoardIsDeletedFalse(boardId).orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND_DATA));
 
         //좋아요 처리
         heartRepository.insertHeart(userId, boardId);
@@ -319,12 +327,12 @@ public class BoardServiceImpl implements BoardService{
     //좋아요 취소
     @Transactional
     @Override
-    public boolean deleteHeart(Integer userId, Long boardId) throws Exception {
+    public boolean deleteHeart(Integer userId, Long boardId) {
         //엔티티 존재 확인 로직
         Board board = boardRepository.findByBoardIdAndBoardIsDeletedFalse(boardId)
-                .orElseThrow(() -> new Exception("couldn't find board by boardId"));
+                .orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND_DATA));
         Heart heart =  heartRepository.findByHeartId_User_UserIdAndHeartId_Board_BoardId(userId, boardId)
-                .orElseThrow(() -> new Exception("couldn't find heart by userId and boardId"));
+                .orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND_DATA));
 
         // 엔티티에서 삭제하기
         heartRepository.delete(heart);
