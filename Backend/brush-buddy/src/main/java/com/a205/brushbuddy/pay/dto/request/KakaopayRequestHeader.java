@@ -15,6 +15,7 @@ public class KakaopayRequestHeader {
 	private static int size;
 	@Value("${kakaopay.header.key}")
 	private static String[] key;
+    //// properties #### KakaoAK a7d115c350be34144764ea1ecbbcac51 Admin 키 후에 비공개 설정 필요 ####
 	@Value("${kakaopay.header.value}")
 	private static String[] value;
 
