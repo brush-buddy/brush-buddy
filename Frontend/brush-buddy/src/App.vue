@@ -1,3 +1,4 @@
+
 <script setup lang="ts">
 import { RouterLink, RouterView } from "vue-router";
 import HomeView from "@/views/HomeView.vue";
@@ -8,11 +9,15 @@ import CommunityListview from "./views/CommunityListview.vue";
 <template>
   <header>
     <div class="wrapper"></div>
+    <meta charset="utf-8" content ='ko'/>
   </header>
 
   <body>
+
+    <RouterView/>
+    <NavigationComponent />
     <CommunityListview></CommunityListview>
-    <NavigationComponent></NavigationComponent>
+
   </body>
 </template>
 
@@ -22,4 +27,5 @@ NavigationComponent {
   height: 50px;
   flex-shrink: 0;
 }
+
 </style>
