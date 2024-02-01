@@ -2,17 +2,20 @@
     const props = defineProps<
         {
             text?: string
+            link? : String 
         }
     >(
     );
-    console.log(props.text);
 </script>
 
 <template>
-    <div class="option-button">
-        <img src="@/assets/icon/palette.svg"/>
-        <span class="inner-message"> {{ props.text }} </span>
-    </div>
+    <router-link style="text-decoration: none" :to="link">
+        <v-button class="option-button">
+                <img src="@/assets/icon/palette.svg"/>
+                <span class="inner-message"> {{ props.text }} </span>
+        </v-button>
+    </router-link>
+    
 </template>
 
 <style scoped>
@@ -34,5 +37,6 @@
         font-weight: 400;
         line-height: 1.375rem; /* 129.412% */
         letter-spacing: -0.02688rem;
+        text-decoration: none;
     }
 </style>
