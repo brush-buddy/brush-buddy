@@ -3,7 +3,6 @@
     <rect width="50" height="20" rx="8" :fill="props.color"/>
     <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="white" font-size="10">{{ props.title }}</text>
     </svg>
-
 </template>
     
 <script setup >

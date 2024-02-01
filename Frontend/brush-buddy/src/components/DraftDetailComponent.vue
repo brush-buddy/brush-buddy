@@ -1,27 +1,26 @@
 <template>
     <div class = "rect">
-        <!-- <div id = "category">
+        <div id = "category">
             <div id = "category1">
             <CategoryBtnComponent :title=title1 :color=color1 />
             </div>
             <div id = "category2">
             <CategoryBtnComponent :title=title2 :color=color2 />
             </div>
-        </div> -->
-        <!-- <div id = "draft">
+        </div>
+        <div id = "draft">
             <BookmarkedDraftImgComponent/>
-        </div> -->
+        </div>
         <div id = "palette">
             <PaletteComponent/>
         </div>
-        
     </div>
 </template>
 
 <script setup lang="ts">
-import BookmarkedDraftImgComponent from "../components/BookmarkedDraftImgComponent.vue";
+import BookmarkedDraftImgComponent from "./BookmarkedDraftImgComponent.vue";
 import PaletteComponent from "./EclipsePaletteComponent.vue";
-import CategoryBtnComponent from "../components/CategoryBtnComponent.vue";
+import CategoryBtnComponent from "./CategoryBtnComponent.vue";
 import { ref } from 'vue'
 
 const title1 = ref('물고기')

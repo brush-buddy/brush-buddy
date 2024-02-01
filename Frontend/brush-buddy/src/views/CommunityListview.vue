@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { defineComponent } from "vue3";
+import { defineComponent } from "vue";
 import communitycomponent from "@/components/CommunityComponent.vue";
 const communityList = [];
 </script>
