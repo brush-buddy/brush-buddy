@@ -10,10 +10,10 @@
 
 <template>
     <router-link style="text-decoration: none" :to="link">
-        <v-button class="option-button">
-                <img src="@/assets/icon/palette.svg"/>
-                <span class="inner-message"> {{ props.text }} </span>
-        </v-button>
+        <div class="option-button">
+            <img src="@/assets/icon/palette.svg"/>
+            <span class="inner-message"> {{ props.text }} </span>
+        </div>
     </router-link>
     
 </template>
