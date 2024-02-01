@@ -17,7 +17,6 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps } from 'vue';
 import { BoardThumbnail } from '../api/types';
 import { useRouter } from 'vue-router'
 const router = useRouter();
@@ -25,12 +24,13 @@ const router = useRouter();
 const props = defineProps<{
   boardThumbnail: BoardThumbnail;
 }>();
-
+console.log(props.boardThumbnail);
+console.log("`````````````````");
 async function goToDetail() {
   router.push({ name: 'boardDetail', params: { id: props.boardThumbnail.boardId} })
 }
 
-console.log(props.boardThumbnail.boardId);
+// console.log(props.boardThumbnail.boardId);
 </script>
 
 <style scoped>
