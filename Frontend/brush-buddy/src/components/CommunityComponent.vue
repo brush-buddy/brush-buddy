@@ -1,13 +1,17 @@
-<script setup></script>
-
 <template>
-  <div id="communitycomponent"></div>
+  <div>
+    <h1>{{ boardThumbnail.boardTitle }}</h1>
+    <img :src="boardThumbnail.thumbnail" alt="Thumbnail" />
+    <p>Likes: {{ boardThumbnail.likeNumber }}</p>
+    <p>Views: {{ boardThumbnail.views }}</p>
+  </div>
 </template>
 
-<style scoped>
-#communitiycomponent {
-  width: 300px;
-  height: 400px;
-  flex-shrink: 0;
-}
-</style>
+<script setup lang="ts">
+import { defineProps } from 'vue';
+import { BoardThumbnail } from '../api/types';
+
+const props = defineProps<{
+  boardThumbnail: BoardThumbnail;
+}>();
+</script>
