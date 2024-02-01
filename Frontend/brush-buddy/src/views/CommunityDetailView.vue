@@ -1,14 +1,14 @@
 <template>
     <div>
         
-        <p class = "communityTitle">{{community.title}}</p>
+        <p class = "communityTitle">{{community["title"]}}</p>
         
         <div>
-
+            
         </div>
-        <!-- <img :src="community.photo[0]" alt=""> -->
+        <img :src="community" alt="">
         <p>{{community.contents}}</p>
-        
+
         <p>{{community}}</p>
     </div>
 </template>
@@ -20,7 +20,8 @@ import { onMounted, inject, ref } from 'vue';
 import axios from 'axios';
 const route = useRoute()
 const boardId = route.params.id
-const community = ref<any>(null)
+const community = ref<any>({ "boardId": -1, 
+        "title": " ", "contents": " ", "thumbnail": " ", "photo": [], "draftId": -1, "likeNumber": 0, "views": 0, "hashtag": [], "createdAt": "-" })
 console.log(route.params)
 onMounted(() => {
   axios({
@@ -35,6 +36,7 @@ onMounted(() => {
     community.value = response.data;
   })
 })
+
 </script>
 
 <style scoped>
