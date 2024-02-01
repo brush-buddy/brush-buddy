@@ -1,8 +1,11 @@
 <template>
-    <div id="cardWrapper">글 카드 입니다</div>
+    <div id="cardWrapper">
+        {{ props }}
+    </div>
 </template>
 <script setup lang="ts">
-
+import { defineProps } from 'vue';
+const props = defineProps({board:Object});
 </script>
 <style scoped>
 #cardWrapper{
