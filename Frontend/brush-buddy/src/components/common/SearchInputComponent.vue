@@ -1,12 +1,16 @@
 <script setup lang="ts">
+const props = defineProps(
+    ['placeHolder']
+    );
 
+    //-그려줘라고 입력하면 그림을 만들어드려요
 </script>
 
 <template>
     <div class="input-box-container">
         <div class="input-box-sub-container">
             <!-- <div class="input-container"> -->
-                <input type="text" class="search-input-box" placeholder="-그려줘라고 입력하면 그림을 만들어드려요"  />
+                <input type="text" class="search-input-box" :placeholder="placeHolder"  />
                 <v-btn>전송</v-btn>
             <!-- </div> -->
         </div>
