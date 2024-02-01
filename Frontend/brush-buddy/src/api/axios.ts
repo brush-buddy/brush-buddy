@@ -1,7 +1,7 @@
 import axios from 'axios';
-import { VITE_SERVER_URL } from '../.env';
+const url = import.meta.env.VITE_APP_SERVER_URL
 
 export const instance = axios.create({
-    baseURL: VITE_SERVER_URL,
+    baseURL: url,
     withCredentials: true
   });
