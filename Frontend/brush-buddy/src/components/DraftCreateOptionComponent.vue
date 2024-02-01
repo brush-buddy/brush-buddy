@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import DraftCreateOptionButtonComponent from '@/components/DraftCreateOptionButtonComponent.vue';
+import DraftCreateOptionButtonComponent from '../components/DraftCreateOptionButtonComponent.vue';
 
 
 </script>
@@ -8,7 +8,7 @@ import DraftCreateOptionButtonComponent from '@/components/DraftCreateOptionButt
     <div class="page">
         <div class="logo">
             <div class="icons-with-boxes">
-                <img src="@/assets/images/glass_boxes.svg"/>
+                <img src="../assets/images/glass_boxes.svg"/>
                 <img class="logo-img" src="@/assets/logo.png"/>
             </div>
         </div>
