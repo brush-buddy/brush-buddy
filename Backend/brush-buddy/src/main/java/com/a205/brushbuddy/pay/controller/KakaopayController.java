@@ -24,11 +24,14 @@ import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.Persistence;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Getter
 @Controller
+@NoArgsConstructor
 public class KakaopayController {
     @Value("${spring.kakao.pay.datetimeformatter.ofpattern}")
     private static DateTimeFormatter dateTimeFormatter;
@@ -37,7 +40,9 @@ public class KakaopayController {
     @Value("${spring.kakao.pay.workplaceid}")
     private static int workplaceId;
 
+    @Setter
     private User user;
+    @Setter
     private KakaopayService kakaopayService;
 
     //// 충전 페이지를 넘어갈 때 이전 url 혹은 구매 시도 아이템 정보 등을 model에 선언 필요
@@ -47,14 +52,6 @@ public class KakaopayController {
     private String partnerOrderId;
     private int totalAmount;
     private String tid;
-
-    public KakaopayController() {}
-
-    public KakaopayController(User user, KakaopayService kakaopayService) {
-        System.out.println("test");
-        this.user = user;
-        this.kakaopayService = kakaopayService;
-    }
 
     // 결제 요청 시작
     @PostMapping("${spring.kakao.pay.mapping}")
