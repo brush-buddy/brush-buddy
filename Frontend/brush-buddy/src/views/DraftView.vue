@@ -1,11 +1,12 @@
 <template>
     <div>
-        <DraftDetailComponent/>
+        <DraftCreateOptionComponentVue/>
     </div>
 </template>
 
 <script setup lang="ts">
-import DraftDetailComponent from "../components/DraftDetailComponent.vue";
+import DraftCreateOptionComponentVue from "@/components/DraftCreateOptionComponent.vue";
+
 
 </script>
 
