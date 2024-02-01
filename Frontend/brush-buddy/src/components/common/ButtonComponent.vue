@@ -1,29 +1,21 @@
 <script setup lang="ts">
-    const props = defineProps<
+const props = defineProps<
         {
-            text?: string,
-            link? : string 
+            text?: string
         }
     >(
     );
 </script>
 
 <template>
-    <router-link class="btn-container" style="text-decoration: none" :to="link">
-        <div class="option-button">
-            <img src="@/assets/icon/palette.svg"/>
-            <span class="inner-message"> {{ props.text }} </span>
-        </div>
-    </router-link>
-    
+    <div class="option-button">
+        <img src="@/assets/icon/palette.svg"/>
+        <span class="inner-message"> {{ props.text }} </span>
+    </div>
 </template>
 
 <style scoped>
-    .btn-container{
-        justify-content: center;
-    }
-
-    .option-button{
+.option-button{
         display: flex;
         flex-direction: row;
         justify-content: center;

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import DraftCreateOptionButtonComponent from '@/components/Draft/DraftCreateOptionButtonComponent.vue';
+import DraftCreateOptionButtonComponent from './DraftCreateOptionButtonComponent.vue';
 import { onMounted, ref} from 'vue';
 const fadein = ref(false);
 const buttonFadein = ref(false);
@@ -18,7 +18,7 @@ onMounted(() => {
         <Transition @after-enter="nextFadein" name="fade">
         <div v-show="fadein" class="logo">
             <div class="icons-with-boxes">
-                <img src="../assets/images/glass_boxes.svg"/>
+                <img src="@/assets/images/glass_boxes.svg"/>
                 <img class="logo-img" src="@/assets/logo.png"/>
             </div>
         </div>
@@ -40,7 +40,7 @@ onMounted(() => {
 
 <style scoped>
     .page{
-        height: 100vh;
+        height: 85vh;
         display: flex;
         flex-direction: column;
         justify-content: center;

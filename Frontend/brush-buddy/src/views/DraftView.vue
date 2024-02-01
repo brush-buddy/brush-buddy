@@ -8,9 +8,9 @@
 </template>
 
 <script setup lang="ts">
-import DraftCreateOptionComponentVue from "../components/DraftCreateOptionComponent.vue";
+import DraftCreateOptionComponentVue from "../components/Draft/DraftCreateOptionComponent.vue";
 import CommunityDetailDraftComponent from "../components/CommunityDetailDraftComponent.vue";
-import DraftCreateAIPromptComponent from "../components/Draft/DraftCreateAIPromptComponent.vue";
+// import DraftCreateAIPromptComponent from "../components/Draft/DraftCreateAIPromptComponent.vue";
 
 </script>
 
