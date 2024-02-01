@@ -1,37 +1,36 @@
 package com.a205.brushbuddy.board.domain;
 
-import java.sql.Timestamp;
-
 import com.a205.brushbuddy.draft.domain.Draft;
 import com.a205.brushbuddy.user.domain.User;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
+
+import java.sql.Timestamp;
 
 @SuppressWarnings("checkstyle:RegexpSinglelineJava")
 @Data
 @Entity
 @Table(name = "board")
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Board {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "board_id", nullable = false)
-	private int BoardId;
+	private Long boardId;
 
 	@JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false)
-	@ManyToOne // Board(Many) : User(One)
+	@ManyToOne(fetch = FetchType.LAZY) // Board(Many) : User(One)
 	private User user;
 
 	@JoinColumn(name = "draft_id")
-	@ManyToOne // Board(Many) : Draft(One)
+	@ManyToOne(fetch = FetchType.LAZY) // Board(Many) : Draft(One)
 	private Draft draft;
 
 	@Column(name = "board_title", nullable = false, length = 200)
@@ -44,12 +43,16 @@ public class Board {
 	private String boardThumbnail;
 
 	@Column(name = "board_like_number", nullable = false)
-	private int boardLikeNumber;
+	private Integer boardLikeNumber;
 
 	@Column(name = "board_watch", nullable = false)
-	private int boardWatch;
+	private Integer boardWatch;
 
-	@Column(name = "board_timestamp", nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+	@ColumnDefault(value = "false")
+	@Column(name = "board_is_deleted", nullable = false)
+	private Boolean boardIsDeleted;
+
+	@Column(name = "board_timestamp", nullable = false, insertable = false, updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
 	private Timestamp boardTimestamp;
 }
 
