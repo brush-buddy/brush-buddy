@@ -1,84 +1,28 @@
 <template>
     <div>
         <div>
-            <ComponentProfile />
+            <CProfile />
         </div>
-    <div class="sticky">메뉴탭</div>
-    <div>div4</div>
-    <div>div5</div>
-    <div>div6</div>
-    <div>div7</div>
-    <div>div8</div>
-    <div>div8</div>
-    <div>div9</div>
-    <div>div10</div>
-    <div>div11</div>
-    <div>div12</div>
-    <div>div13</div>
-    <div>div9</div>
-    <div>div10</div>
-    <div>div11</div>
-    <div>div12</div>
-    <div>div13</div>
-    <div>div14</div>
-    <div>div15</div>
-    <div>div9</div>
-    <div>div10</div>
-    <div>div11</div>
-    <div>div12</div>
-    <div>div13</div>
-    <div>div14</div>
-    <div>div15</div>
-    <div>div14</div>
-    <div>div15</div>
-    <div>div16</div>
-    <div>div8</div>
-    <div>div9</div>
-    <div>div10</div>
-    <div>div11</div>
-    <div>div12</div>
-    <div>div13</div>
-    <div>div14</div>
-    <div>div15</div>
-    <div>div16</div>
-    <div>div8</div>
-    <div>div9</div>
-    <div>div10</div>
-    <div>div11</div>
-    <div>div12</div>
-    <div>div13</div>
-    <div>div14</div>
-    <div>div15</div>
-    <div>div16</div>
-    <div>div8</div>
-    <div>div9</div>
-    <div>div10</div>
-    <div>div11</div>
-    <div>div12</div>
-    <div>div13</div>
-    <div>div14</div>
-    <div>div8</div>
-    <div>div9</div>
-    <div>div10</div>
-    <div>div11</div>
-    <div>div12</div>
-    <div>div13</div>
-    <div>div14</div>
-
+    <div class="sticky">
+        <CMenuTab />
+    </div>
+        <CCard/>
     </div>
 </template>
 
 <script setup lang="ts">
-import ComponentProfile from "../components/Diary/ComponentProfile.vue"
+import CProfile from "../components/Diary/CProfile.vue"
+import CMenuTab from "../components/Diary/CMenuTab.vue"
+import CCard from "../components/Diary/CCard.vue"
 </script>
 
 <style scoped>
 
     .sticky{
-        background-color: yellow;
         position:sticky;
         top:0px;
-        line-height: 100px;
+        line-height: 4rem;
+        background-color: #ffffff;
     }
 
 </style>
