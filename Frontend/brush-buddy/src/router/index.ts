@@ -1,4 +1,4 @@
-import CommunityView from '@/views/CommunityView.vue'
+import CommunityListviewVue from '@/views/CommunityListview.vue'
 import DiaryView from '@/views/DiaryView.vue'
 import DraftView from '@/views/DraftView.vue'
 import HomeView from '@/views/HomeView.vue'
@@ -18,7 +18,7 @@ const router = createRouter({
       {
         name: 'community',
         path: '/community',
-        component: CommunityView
+        component: CommunityListviewVue
       },
       {
         name: 'diary',
