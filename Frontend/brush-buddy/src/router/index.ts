@@ -1,9 +1,9 @@
-import CommunityDetailView from '@/views/CommunityDetailView.vue'
-import CommunityListView from '@/views/CommunityListView.vue'
-import DiaryView from '@/views/DiaryView.vue'
-import DraftView from '@/views/DraftView.vue'
-import HomeView from '@/views/HomeView.vue'
-import SearchView from '@/views/SearchView.vue'
+import CommunityDetailView from '../views/CommunityDetailView.vue'
+import CommunityListView from '../views/CommunityBoardListView.vue'
+import DiaryView from '../views/DiaryView.vue'
+import DraftView from '../views/DraftView.vue'
+import HomeView from '../views/HomeView.vue'
+import SearchView from '../views/SearchView.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 
 
