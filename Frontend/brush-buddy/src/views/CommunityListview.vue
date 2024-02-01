@@ -16,8 +16,8 @@
 <script setup lang="ts">
 import { ref, onMounted} from 'vue';
 import axios from "axios";
-import CommunityComponent from '../components/CommunityComponent.vue';
-import { BoardThumbnail } from '../api/types';
+import CommunityComponent from '@/components/CommunityComponent.vue';
+import type{ BoardThumbnail } from '@/api/type.ts';
 
 const boardThumbnailDataFirst = ref<BoardThumbnail[]>([{
   boardId: '1',
