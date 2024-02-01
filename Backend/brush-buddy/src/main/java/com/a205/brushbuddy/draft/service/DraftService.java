@@ -1,35 +1,37 @@
 package com.a205.brushbuddy.draft.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
 
-import com.a205.brushbuddy.draft.dto.request.DraftListRequestDto;
+import com.a205.brushbuddy.draft.dto.request.DraftCategoryModifyRequestDto;
+import com.a205.brushbuddy.draft.dto.request.DraftCreateRequestDto;
+import com.a205.brushbuddy.draft.dto.response.DraftCreateResponseDto;
+import com.a205.brushbuddy.draft.dto.response.DraftDetailResponseDto;
 import com.a205.brushbuddy.draft.dto.response.DraftListResponseDto;
-import com.a205.brushbuddy.draft.repository.DraftRepository;
+import com.fasterxml.jackson.core.JsonProcessingException;
 
-import lombok.RequiredArgsConstructor;
-
-@Service
-@RequiredArgsConstructor
-public class DraftService{
-
-	@Autowired
-	private DraftRepository draftRepository;
+public interface DraftService{
 
 
-	public Page<DraftListResponseDto> getDraftList(DraftListRequestDto draftListRequestDto, Pageable pageable) {
-		try {
-			return draftRepository.findAll(pageable).map(p->DraftListResponseDto.builder()
-					.draftId(p.getDraftId())
-					.draftThumbnail(p.getDraftThumbnail())
-					.draftTimestamp(p.getDraftTimestamp())
-					.draftDownload(p.getDraftDownload())
-					.draftBookmark(p.getDraftBookmark())
-					.build());
-		} catch (Exception e) {
-			return null;
-		}
-	}
+	Page<DraftListResponseDto> getDraftList(Pageable pageable);
+
+	Page<DraftListResponseDto> getDraftListByCategory(Pageable pageable, String categoryContent);
+
+	DraftDetailResponseDto getDraftDetail(Long draftId);
+
+	DraftCreateResponseDto createDraft(int userId, DraftCreateRequestDto draftCreateDto) throws JsonProcessingException;
+
+	void deleteDraft(int userId, Long draftId) ;
+
+	boolean updateDraft(long draftId, DraftCategoryModifyRequestDto draftCategoryModifyRequestDto);
+
+
+	// 북마크
+	void createBookmarkDraft(int userId, Long draftId) throws Exception;
+	// 북마크 제거
+	void deleteBookmarkDraft(int userId, Long draftId);
+
+
+	// 도안 구매
+	void buyDraft(int userId, Long draftId) throws Exception;
 }
