@@ -20,7 +20,7 @@
 <script setup lang="ts">
 import BookmarkedDraftImgComponent from "./BookmarkedDraftImgComponent.vue";
 import PaletteComponent from "./EclipsePaletteComponent.vue";
-import CategoryBtnComponent from "./CategoryBtnComponent.vue";
+import CategoryBtnComponent from "./MiniBtnComponent.vue";
 import { ref } from 'vue'
 
 const title1 = ref('물고기')

@@ -4,7 +4,8 @@
         <p class = "communityTitle">{{community["title"]}}</p>
         
         <div>
-          {{im}}
+          <!-- {{im}} -->
+         <!-- <p v-for="item in im" :key="item.order">{{ item.imgUrl }}</p> -->
           <v-carousel hide-delimiters>
               <v-carousel-item
                 v-for="(item,i) in im"
@@ -19,11 +20,14 @@
         <p>{{community.contents}}</p>
 
         <p>{{community}}</p>
+
+        <ReplyComponent />
     </div>
 </template>
 
 
 <script setup lang="ts">
+import ReplyComponent from "@/components/ReplyComponent.vue";
 import { useRoute } from 'vue-router';
 import { onMounted, inject, ref } from 'vue';
 import axios from 'axios';
