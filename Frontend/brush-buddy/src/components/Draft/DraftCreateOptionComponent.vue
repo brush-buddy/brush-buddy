@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import DraftCreateOptionButtonComponent from '@/components/DraftCreateOptionButtonComponent.vue';
+import DraftCreateOptionButtonComponent from '@/components/Draft/DraftCreateOptionButtonComponent.vue';
 import { onMounted, ref} from 'vue';
 const fadein = ref(false);
 const buttonFadein = ref(false);
@@ -22,8 +22,8 @@ onMounted(() => {
                 <img class="logo-img" src="@/assets/logo.png"/>
             </div>
         </div>
-        
         </Transition>
+        
         <div class="button-box">
             <Transition name="slide-fade">
             <div v-show="buttonFadein" class="button-group">
@@ -88,9 +88,11 @@ onMounted(() => {
         align-items: flex-start;
     }
 
-    .fade-enter-active, .fade-leave-active {
+    .fade-enter-active , .fade-leave-active {
         transition: opacity 0.7s ease;
     }
+
+
     .fade-enter-from, .fade-leave-to /* .fade-leave-active in <2.1.8 */ {
         opacity: 0;
     }
@@ -101,7 +103,6 @@ onMounted(() => {
     }
 
     .slide-fade-leave-active {
-        
         transition: all 0.8s cubic-bezier(1, 0.5, 0.8, 1);
     }
 
