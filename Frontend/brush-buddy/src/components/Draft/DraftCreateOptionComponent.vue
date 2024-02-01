@@ -18,7 +18,7 @@ onMounted(() => {
         <Transition @after-enter="nextFadein" name="fade">
         <div v-show="fadein" class="logo">
             <div class="icons-with-boxes">
-                <img src="@/assets/images/glass_boxes.svg"/>
+                <img src="../assets/images/glass_boxes.svg"/>
                 <img class="logo-img" src="@/assets/logo.png"/>
             </div>
         </div>
