@@ -11,7 +11,6 @@ import CommunityListview from "./views/CommunityListview.vue";
     <div class="contentWrapper">
         <RouterView/>
         <NavigationComponent />
-        <CommunityListview></CommunityListview>
     </div>
   </div>
 
