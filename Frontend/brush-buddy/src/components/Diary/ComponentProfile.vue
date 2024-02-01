@@ -18,7 +18,7 @@
             보유한 마일리지
         </div>
         <div id="amount">
-            <div>
+            <div id="num">
                 9500
             </div>
             <div id="M">
@@ -47,9 +47,10 @@
 #profile-avartar {
     border-radius: 50%;
     background-color: #ffffff;
-    width: 5rem;
-    height: 5rem;
+    width: 4rem;
+    height: 4rem;
     margin-right: 1rem;
+    padding:1rem;
     overflow: hidden;
     > img {
         width:100%;
@@ -76,23 +77,28 @@
     font-size: small;
 }
 #milage {
-    display: flex;
     border-style: solid;
     border-width: thin;
     border-color: lightslategray;
     background-color: #ffffff;
     border-radius: 10px;
-    padding: 0.5rem;
+    padding: 0.5rem 1rem 0.5rem;
     margin-top: 0.5rem;
-    justify-content: space-between;
-}
-#amount{
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
 }
-#M{
-    color: #FF5773;
+#amount{
     font-weight: bold;
+    justify-content: center;
+    display: flex;
+    align-items: center;
+}
+#num{
+    font-size: 1.5rem;
+    color: #ae67e4;
+}
+#M{
+    padding-left: 0.5rem;
 }
 </style>
