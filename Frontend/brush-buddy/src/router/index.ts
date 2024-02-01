@@ -1,5 +1,5 @@
 import CommunityDetailView from '../views/CommunityDetailView.vue'
-import CommunityListView from '../views/CommunityListView.vue'
+import CommunityListView from '../views/CommunityBoardListView.vue'
 import DiaryView from '../views/DiaryView.vue'
 import DraftView from '../views/DraftView.vue'
 import HomeView from '../views/HomeView.vue'
