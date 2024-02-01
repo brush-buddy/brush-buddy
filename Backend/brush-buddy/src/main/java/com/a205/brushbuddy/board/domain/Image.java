@@ -1,18 +1,17 @@
 package com.a205.brushbuddy.board.domain;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Data
 @Table(name = "image")
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Image {
 
 	@Id
@@ -20,7 +19,7 @@ public class Image {
 	@Column(name = "image_id", nullable = false)
 	private Long id;
 
-	@ManyToOne  // Image(Many) : Board(One)
+	@ManyToOne(fetch = FetchType.LAZY)  // Image(Many) : Board(One)
 	@JoinColumn(name = "board_id", referencedColumnName = "board_id", nullable = false)
 	private Board board;
   

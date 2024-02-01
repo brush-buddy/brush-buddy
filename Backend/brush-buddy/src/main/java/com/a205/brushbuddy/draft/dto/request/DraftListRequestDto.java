@@ -10,9 +10,7 @@ import lombok.ToString;
 @Data
 @RequiredArgsConstructor
 public class DraftListRequestDto {
-
 	private String search;
-
 	public DraftListRequestDto(String search) {
 		this.search = search;
 	}
