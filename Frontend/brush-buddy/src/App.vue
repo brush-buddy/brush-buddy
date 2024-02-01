@@ -2,7 +2,6 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from "vue-router";
 import NavigationComponent from "./components/NavigationComponent.vue";
-import CommunityListview from "./views/CommunityListView.vue";
 </script>
 
 <template>
