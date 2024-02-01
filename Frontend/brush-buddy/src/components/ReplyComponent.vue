@@ -1,81 +1,121 @@
 <template>
-    <div class=out>
-        <div class="reply">
-            <div class="replyImg">
-                <img src="/src/assets/images/image1.jpg" alt="reply" />
-            </div>
-            <div class="replyContent">
-                <div class="replyName">
-                    <p>이름</p>
-                </div>
-                <div class="replyText">
-                    <p>내용</p>
-                </div>
-            </div>
-        </div>    
-        <div id="btn" >
-            <MiniBtnComponent :title=title :color=color />
+  <div class="out">
+    <div class="wrap">
+      <div class="replyImg">
+        <img src="/src/assets/images/image1.jpg" alt="reply" />
+      </div>
+      <div class="reply">
+        <div class="replyName">
+          <p>이름</p>
         </div>
-        
+        <textarea
+          v-model="textAreaValue"
+          rows="1"
+          type="text"
+          class="replyText"
+          @input="resizeTextArea"
+        />
+        <div class="btnout">
+          <div id="btn">
+            <MiniBtnComponent :title="title" :color="color" />
+          </div>
+        </div>
+      </div>
     </div>
+  </div>
 </template>
 
 <script setup lang="ts">
 import MiniBtnComponent from "@/components/MiniBtnComponent.vue";
-import { ref } from 'vue'
+import { ref } from "vue";
 
-const title = ref('send')
-const color = ref('#C5C6EF')
+const title = ref("send");
+const color = ref("#C5C6EF");
 
+const textAreaValue = ref("");
+const textareaRef = ref(null);
+
+const resizeTextArea = () => {
+  const targetTextarea = textareaRef.value;
+  if (targetTextarea.scrollHeight > targetTextarea.clientHeight) {
+    // textarea height 확장
+    targetTextarea.style.height = targetTextarea.scrollHeight + "px";
+  } else {
+    // textarea height 축소
+    targetTextarea.style.height = targetTextarea.scrollHeight - 18 + "px";
+  }
+};
 </script>
 
 <style scoped>
-    .reply {
-    box-sizing: border-box;
-    padding: 18px;
-    border-bottom: 1px solid #ebebeb;
-    display: flex;
-    align-items: center;
-    position: relative;
-    }
+.out {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-self: center;
+  /* justify-content: in; */
+  /* margin: 1rem; */
+  /* background-color: aquamarine; */
+  border-style: solid;
+  border-width: thin;
+  border-radius: 1rem;
+}
 
-    .replyImg {
-    border-radius: 50%;
-    background-color: #ffffff;
-    width: 4rem;
-    height: 4rem;
-    margin-right: 1rem;
-    padding: 1rem;
-    overflow: hidden;
-    }
+.wrap {
+  /* background-color: aqua; */
+  display: flex;
+  justify-content: space-between;
+  /* flex-direction: row; */
+  /* align-items: center; */
+  margin: auto;
+}
 
-    .replyImg img {
+.reply {
+  /* background-color: blue; */
+  width: 70%;
+  display: flex;
+  flex-direction: column;
+}
+
+.replyImg {
+  border-radius: 50%;
+  background-color: #fffff3;
+  width: 4rem;
+  height: 4rem;
+  padding: 1rem;
+  overflow: hidden;
+  margin: 1rem;
+  > img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    }
+  }
+}
+.replyContent {
+}
 
-    .replyContent {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    }
+.replyName {
+  font-size: small;
+}
 
-    .replyName {
-    font-size: 1.2rem; /* 작게 만듦 */
-    }
+.replyText {
+}
 
-    .replyText {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    margin-top: 1px;
-    font-size: 1.2rem;
-    line-height: 20px;
-    }
+#btn {
+  float: right;
+}
 
-    .btn {
-    position: absolute;
-    right: 0;
-    bottom: 0;
-    }
+textarea {
+  border: none;
+  border-bottom-style: solid;
+  border-width: thin;
+  border-bottom-color: black;
+  outline: none;
+  resize: none;
+}
+.btnout {
+  display: flex;
+  justify-content: flex-end;
+  margin: 1rem;
+}
 </style>
