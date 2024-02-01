@@ -17,7 +17,7 @@
 </template>
 
 <script setup lang="ts">
-import { BoardThumbnail } from '../api/types';
+import type{ BoardThumbnail } from '@/api/type';
 import { useRouter } from 'vue-router'
 const router = useRouter();
 
