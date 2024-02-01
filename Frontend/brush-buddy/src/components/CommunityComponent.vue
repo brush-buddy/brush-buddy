@@ -1,7 +1,7 @@
 <template>
   <div class = "communityComponent" @click="goToDetail">
     <img class = "communityThumbnail" :src="boardThumbnail.thumbnail" alt="Thumbnail" />
-    <div style="display: flex; justify-content: flex-end; margin-top: 0.5rem;">
+    <div style="display: flex; justify-content: flex-end; margin-top: 0.5rem; margin-bottom: 0.5rem;">
       <svg xmlns="http://www.w3.org/2000/svg" width="10" height="9" viewBox="0 0 10 9" fill="none">
 <path d="M9.24719 3.06994C9.24719 3.72816 8.99483 4.36038 8.54416 4.82806C7.50677 5.90494 6.50059 7.02786 5.42444 8.06571C5.17777 8.30014 4.78648 8.29159 4.55043 8.04656L1.45004 4.82806C0.51291 3.85521 0.51291 2.28466 1.45004 1.31183C2.39638 0.329435 3.93807 0.329435 4.8844 1.31183L4.99711 1.42881L5.10973 1.3119C5.56346 0.840632 6.18141 0.574829 6.82694 0.574829C7.47248 0.574829 8.09038 0.840607 8.54416 1.31183C8.99487 1.77954 9.24719 2.41173 9.24719 3.06994Z" stroke="black" stroke-width="0.7" stroke-linejoin="round"/>
 </svg>
