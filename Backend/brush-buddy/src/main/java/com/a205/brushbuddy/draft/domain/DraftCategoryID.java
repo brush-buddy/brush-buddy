@@ -4,8 +4,11 @@ import com.a205.brushbuddy.user.domain.User;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import lombok.Builder;
+import lombok.RequiredArgsConstructor;
 
 import java.io.Serializable;
+
 
 @Embeddable
 public class DraftCategoryID implements Serializable {

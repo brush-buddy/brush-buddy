@@ -1,20 +1,26 @@
 package com.a205.brushbuddy.user.domain;
 
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 
 import jakarta.persistence.*;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 
 @Entity
 @Data
 @Table(name = "user")
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class User{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id", nullable = false)
-    private int userId;
+    private Integer userId;
 
     @Column(name = "user_refreshtoken", nullable = false, length = 100)
     private String userRefreshtoken;
@@ -34,7 +40,7 @@ public class User{
 
     @Column(name = "user_mileage", nullable = false)
     @ColumnDefault("0")
-    private int userMileage;
+    private Integer userMileage;
 
     @Column(name = "user_is_admin", nullable = false)
     @ColumnDefault("false")
