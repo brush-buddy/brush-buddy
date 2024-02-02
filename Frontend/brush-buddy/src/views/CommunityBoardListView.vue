@@ -1,17 +1,7 @@
-<<<<<<< HEAD
 <script setup lang="ts">
-<<<<<<< HEAD
-import { defineComponent } from "vue";
 import communitycomponent from "@/components/CommunityComponent.vue";
-const communityList = [];
-=======
-import CommunityComponent from "@/components/CommunityComponent.vue";
-
->>>>>>> 5639bc58f74ffe143c962ddfd0efe76a1eb4173c
 </script>
 
-=======
->>>>>>> 35f475e00acbaf156d9c92ad3b0ecc301a620cbf
 <template>
   <div style="display: flex; justify-content: space-around;">
     <div>
@@ -31,7 +21,7 @@ import CommunityComponent from "@/components/CommunityComponent.vue";
 import { ref, onMounted} from 'vue';
 import axios from "axios";
 import CommunityComponent from '../components/CommunityComponent.vue';
-import { BoardThumbnail } from '../api/types';
+import type{ BoardThumbnail } from '../api/type.ts';
 
 const boardThumbnailDataFirst = ref<BoardThumbnail[]>([{
   boardId: '1',

@@ -18,7 +18,7 @@
     </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 
 import SinglePaletteComponent from "./SinglePaletteComponent.vue";
 import { ref } from 'vue'

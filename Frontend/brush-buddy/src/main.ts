@@ -1,21 +1,25 @@
 import App from './App.vue';
 import router from './router';
-import { createVuetify } from 'vuetify'
-import stores from "@/stores/index";
 import { createApp } from 'vue';
-import * as components from 'vuetify/components'
-const app = createApp(App);
-import * as directives from 'vuetify/directives'
+import { createPinia } from 'pinia'
+
 // import { aliases, mdi } from 'vuetify/iconsets/mdi'
 
 
-const vuetify = createVuetify({
-    components,
-    directives,
-   
-    })
+// Vuetify
+import { createVuetify } from 'vuetify'
+import * as components from 'vuetify/components'
+import * as directives from 'vuetify/directives'
 
-app.use(router).use(stores);
+const app = createApp(App);
+
+const vuetify = createVuetify({
+  components,
+  directives
+})
+
+app.use(createPinia());
+app.use(router);
 app.use(vuetify);
 
 app.mount('#app');
