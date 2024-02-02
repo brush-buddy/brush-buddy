@@ -1,6 +1,21 @@
 <template>
   <div class="communityComponent" @click="goToDetail">
-    <img class="communityThumbnail" :src="boardThumbnail.thumbnail" alt="Thumbnail" />
+    <v-img
+    class="mx-auto w-100"
+    lazy-src="../assets/logo.png"
+    cover
+    :src="boardThumbnail.thumbnail"
+  >
+    <template v-slot:placeholder>
+      <div class="d-flex align-center justify-center fill-height">
+        <v-progress-circular
+          color="grey-lighten-4"
+          indeterminate
+        ></v-progress-circular>
+      </div>
+    </template>
+  </v-img>
+    <!-- <v-img class="communityThumbnail" :src="boardThumbnail.thumbnail" alt="Thumbnail" /> -->
     <div
       style="display: flex; justify-content: flex-end; margin-top: 0.5rem; margin-bottom: 0.5rem"
     >

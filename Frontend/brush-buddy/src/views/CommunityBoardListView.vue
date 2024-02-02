@@ -1,21 +1,21 @@
 <template>
+  <!-- <div style="height: 1rem;"></div> -->
   <div style="display: flex; justify-content: space-around">
-    <div style="width: 50%">
-      <v-infinite-scroll :height="800" :items="boardThumbnailDataFirst" :onLoad="load">
+    <div>
+    <div class = "columns" style="display: flex; flex-direction: column; justify-content: center;">
         <template v-for="(card, i) in boardThumbnailDataFirst" :key="i">
           <CommunityComponent :boardThumbnail="card" />
         </template>
-        <div style="height: 200px"></div>
-      </v-infinite-scroll>
+
     </div>
-    <div style="width: 50%">
-      <v-infinite-scroll :height="800" :items="boardThumbnailDataSecond" :onLoad="load">
+  </div>
+  <div>
+    <div  class = "columns" style="display: flex; flex-direction: column; justify-content: center;">
         <template v-for="(card, i) in boardThumbnailDataSecond" :key="i">
           <CommunityComponent :boardThumbnail="card" />
-        </template>
-        <div style="height: 200px"></div>
-      </v-infinite-scroll>
+        </template>    
     </div>
+  </div>  
   </div>
 </template>
 
@@ -70,3 +70,13 @@ onMounted(async () => {
   await load({ done: () => {} });
 });
 </script>
+
+<style scoped>
+.column {
+  display: flex;
+  width: 50%;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+</style>
