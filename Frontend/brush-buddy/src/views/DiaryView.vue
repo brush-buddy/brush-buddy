@@ -5,21 +5,23 @@
     </div>
     <div class="sticky">
       <div id="tab">
-        <div class="tabButton">만든 도안</div>
-        <div class="tabButton">구매 도안</div>
-        <div class="tabButton">북마크 도안</div>
-        <div class="tabButton" @click="getHeartList(0)">찜한 글</div>
+        <router-link to="">
+            <div class="tabButton">만든 도안</div>
+        </router-link>
+        <router-link to="">
+            <div class="tabButton">구매 도안</div>
+        </router-link>
+        <router-link to="">
+            <div class="tabButton">북마크 도안</div>
+        </router-link>
+        <router-link to="">
+            <div class="tabButton" @click="getHeartList(0)">찜한 글</div>
+        </router-link>
       </div>
     </div>
-    <!-- <template v-for="(board, i) in heartList" :key="i">
-            <CCard :board="board"/>
-        </template> -->
     <v-infinite-scroll :height="300" :items="items" :onLoad="load">
       <template v-for="(item, index) in items" :key="item">
-        <div :class="['pa-2', index % 2 === 0 ? 'bg-grey-lighten-2' : '']">
-          <!-- Item #{{ item }} -->
           <CCard :board="item"/>
-        </div>
       </template>
     </v-infinite-scroll>
   </div>
@@ -29,8 +31,8 @@
 import CProfile from "../components/Diary/CProfile.vue";
 import CCard from "../components/Diary/CCard.vue";
 import axios from "axios";
-import { ref, onMounted } from "vue";
-// import InfiniteLoading from "infinite-loading-vue3-ts";
+import { RouterLink } from 'vue-router'
+import { ref } from "vue";
 
 // HeartList 불러오기
 interface HeartListRes {
