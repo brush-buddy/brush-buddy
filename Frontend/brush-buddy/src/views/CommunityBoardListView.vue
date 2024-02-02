@@ -1,93 +1,82 @@
 <template>
-  <div style="display: flex; justify-content: space-around;">
+  <!-- <div style="height: 1rem;"></div> -->
+  <div style="display: flex; justify-content: space-around">
     <div>
-    <div v-for="(card, i) in boardThumbnailDataFirst" :key="i">
-        <CommunityComponent :boardThumbnail="card"/>
-    </div>
-    </div>
-    <div>
-    <div v-for="(card, i) in boardThumbnailDataSecond" :key="i">
-        <CommunityComponent :boardThumbnail="card"/>
+    <div class = "columns" style="display: flex; flex-direction: column; justify-content: center;">
+        <template v-for="(card, i) in boardThumbnailDataFirst" :key="i">
+          <CommunityComponent :boardThumbnail="card" />
+        </template>
+
     </div>
   </div>
+  <div>
+    <div  class = "columns" style="display: flex; flex-direction: column; justify-content: center;">
+        <template v-for="(card, i) in boardThumbnailDataSecond" :key="i">
+          <CommunityComponent :boardThumbnail="card" />
+        </template>    
+    </div>
+  </div>  
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted} from 'vue';
+import { ref, onMounted } from "vue";
 import axios from "axios";
-import CommunityComponent from '../components/CommunityComponent.vue';
-import type{ BoardThumbnail } from '../api/type.ts';
+import InfiniteLoading from "infinite-loading-vue3-ts";
+import CommunityComponent from "../components/CommunityComponent.vue";
+import type { BoardThumbnail } from "../api/type.ts";
 
-const boardThumbnailDataFirst = ref<BoardThumbnail[]>([{
-  boardId: '1',
-  boardTitle: 'Example Board',
-  thumbnail: 'https://picsum.photos/100/200',
-  likeNumber: 100,
-  views: 500
-},{
-  boardId: '2',
-  boardTitle: 'Example Board',
-  thumbnail: 'https://picsum.photos/200/300',
-  likeNumber: 100,
-  views: 300
-},{
-  boardId: '1',
-  boardTitle: 'Example Board',
-  thumbnail: 'https://picsum.photos/400/200',
-  likeNumber: 100,
-  views: 500
-},{
-  boardId: '2',
-  boardTitle: 'Example Board',
-  thumbnail: 'https://picsum.photos/200/300',
-  likeNumber: 100,
-  views: 300
-}]);
+const boardThumbnailDataFirst = ref<BoardThumbnail[]>([]);
+const boardThumbnailDataSecond = ref<BoardThumbnail[]>([]);
 
-const boardThumbnailDataSecond = ref<BoardThumbnail[]>([{
-  boardId: '1',
-  boardTitle: 'Example Board',
-  thumbnail: 'https://picsum.photos/300/100',
-  likeNumber: 100,
-  views: 500
-},{
-  boardId: '2',
-  boardTitle: 'Example Board',
-  thumbnail: 'https://picsum.photos/300/300',
-  likeNumber: 100,
-  views: 300
-},{
-  boardId: '1',
-  boardTitle: 'Example Board',
-  thumbnail: 'https://picsum.photos/200/100',
-  likeNumber: 300,
-  views: 500
-},{
-  boardId: '2',
-  boardTitle: 'Example Board',
-  thumbnail: 'https://picsum.photos/200/400',
-  likeNumber: 100,
-  views: 300
-}]);
+// 비동기 API 함수
+async function api(pageNum: number, listNum: number = 5): Promise<BoardThumbnail[]> {
+  try {
+    const response = await axios({
+      baseURL: "",
+      method: "get",
+      url: `http://localhost:8080/v1/api/board/list?listNum=${listNum}&pageNum=${pageNum}`,
+      headers: {
+        "Content-Type": "application/json; charset=utf-8",
+      },
+    });
+    return response.data.boards;
+  } catch (error) {
+    console.error("API 호출 중 오류 발생:", error);
+    return [];
+  }
+}
 
-const num = 1;
+// 무한 스크롤 로드 함수
+async function load({ done }: { done: (status: string) => void }) {
+  // const pageNum = Math.ceil(boardThumbnailDataFirst.value.length / 5) + 1;
+  const pageNum =
+    Math.ceil((boardThumbnailDataFirst.value.length + boardThumbnailDataSecond.value.length) / 5) +
+    1;
+  const res = await api(pageNum);
 
-
-onMounted(() => {
-  axios({
-    baseURL: '',
-    method: 'get',
-    url: 'http://localhost:8080/v1/api/board/list', // URL에 한글이 포함될 경우 인코딩
-    headers: {
-      'Content-Type': 'application/json; charset=utf-8'
+  res.forEach((board, i) => {
+    if (i % 2 === 0) {
+      boardThumbnailDataFirst.value.push(board);
+    } else {
+      boardThumbnailDataSecond.value.push(board);
     }
-  }).then(function (response : any) {
-    console.log(response.data)
-    
-    // boardThumbnailData.value = response.data;
-  })
-})
+  });
 
+  done("ok");
+}
 
+onMounted(async () => {
+  await load({ done: () => {} });
+});
 </script>
+
+<style scoped>
+.column {
+  display: flex;
+  width: 50%;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+</style>

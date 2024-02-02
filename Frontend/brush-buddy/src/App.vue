@@ -3,8 +3,9 @@
 import { RouterLink, RouterView } from "vue-router";
 import NavigationComponent from "./components/NavigationComponent.vue";
 </script>
-
+,
 <template>
+  <div style="height: 10px; width: 100vw;"></div>
   <div class="Wrapper">
     <div class="contentWrapper">
         <RouterView/>
@@ -27,7 +28,6 @@ display: flex;
 }
 .contentWrapper {
   flex : 1;
-
 }
 
 </style>
