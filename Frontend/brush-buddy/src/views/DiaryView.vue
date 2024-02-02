@@ -12,9 +12,9 @@
     </div>
 
     </div>
-        <!-- <div v-for="(item, index) for heartList.boards" :key="index">
-            <CCard :board = "item"/> 
-        </div> -->
+        <template v-for="(board, i) in heartList" :key="i">
+            <CCard :board="board"/>
+        </template>
     </div>
 </template>
 
@@ -22,9 +22,10 @@
 import CProfile from "../components/Diary/CProfile.vue"
 import CCard from "../components/Diary/CCard.vue"
 import axios from "axios";
-import { ref, toRaw } from "vue";
+import { ref, onMounted } from "vue";
+// import InfiniteLoading from "infinite-loading-vue3-ts";
 
-interface HeartList{
+interface HeartListRes{
     boards: {
         boardId: number,
         boardTitle: string,
@@ -37,34 +38,35 @@ interface HeartList{
     length: number;
     totalPage: number;
 }
+interface HeartList {
+    boardId: number,
+    boardTitle: string,
+    createdAt: string,
+    likeNumber: number,
+    thumbnail: string,
+    views: number
+}
 const listNum = ref(3);
 const pageNum = ref(1);
-// const heartList = ref<HeartList>({
-//   boards: 
-//   {
-//         boardId: 0,
-//         boardTitle: "",
-//         createdAt: "",
-//         likeNumber: 0,
-//         thumbnail: "",
-//         views: 0
-
-//     }
-// ,
-//   pageNum: 0,
-//   length: 0,
-//   totalPage: 0
-// });
 const heartList = ref([]);
-
-const getHeartList = async (): Promise<HeartList> => {
+const getHeartList = async (): Promise<HeartListRes> => {
     console.log("getHeartList called");
-    const heartListGet = await axios.get<HeartList>(`http://localhost:8080/v1/api/mypage/heart/list?listNum=${listNum.value}&pageNum=${pageNum.value}`)
-    console.log(heartListGet.data);
-    heartList.value = heartListGet.data;
-    console.log("dkdkdkdk");
-    console.log(heartList.value);
-    return heartListGet;
+    try{
+        // const heartListGet = await axios.get<HeartListRes>(`http://localhost:8080/v1/api/mypage/heart/list?listNum=${listNum.value}&pageNum=${pageNum.value}`)
+        const heartListGet = await axios({
+            method:"get",
+            url: `http://localhost:8080/v1/api/mypage/heart/list?listNum=${listNum.value}&pageNum=${pageNum.value}`,
+            headers: {
+                "Content-Type": "application/json; charset=utf-8",
+                // Authorization: localStorage.getItem("token")
+            },
+        });
+        heartList.value = heartListGet.data.boards;
+        return heartListGet.data.boards;
+    } catch(err){
+        console.log("api 호출 중 오류 발생",err);
+        return Promise.reject(err);
+    }
 };
 
 
