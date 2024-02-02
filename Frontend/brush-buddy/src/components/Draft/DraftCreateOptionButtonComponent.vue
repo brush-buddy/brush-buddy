@@ -1,21 +1,28 @@
 <script setup lang="ts">
     const props = defineProps<
         {
-            text?: string
+            text?: string,
+            link? : string 
         }
     >(
     );
-    console.log(props.text);
 </script>
 
 <template>
-    <div class="option-button">
-        <img src="@/assets/icon/palette.svg"/>
-        <span class="inner-message"> {{ props.text }} </span>
-    </div>
+    <router-link class="btn-container" style="text-decoration: none" :to="link!">
+        <div class="option-button">
+            <img src="@/assets/icon/palette.svg"/>
+            <span class="inner-message"> {{ props.text }} </span>
+        </div>
+    </router-link>
+    
 </template>
 
 <style scoped>
+    .btn-container{
+        justify-content: center;
+    }
+
     .option-button{
         display: flex;
         flex-direction: row;
@@ -34,5 +41,6 @@
         font-weight: 400;
         line-height: 1.375rem; /* 129.412% */
         letter-spacing: -0.02688rem;
+        text-decoration: none;
     }
 </style>

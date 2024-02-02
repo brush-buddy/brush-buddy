@@ -5,9 +5,9 @@ import NavigationComponent from "../components/NavigationComponent.vue";
 <template>
   <div id="background">
     <div id="home">
-      <img src="@/assets/logo.png" alt="logo" id="logo" />
+      <img src="../assets/logo.png" alt="logo" id="logo" />
 
-      <img src="@/assets/kakao.png" alt="kakao" />
+      <img src="../assets/kakao.png" alt="kakao" />
     </div>
   </div>
 </template>
