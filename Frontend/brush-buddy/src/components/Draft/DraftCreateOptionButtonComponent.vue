@@ -9,10 +9,10 @@
 </script>
 
 <template>
-    <router-link class="btn-container" style="text-decoration: none" :to="link!">
+    <router-link class="btn-container" style="text-decoration: none" :to="{name : link!}">
         <div class="option-button">
             <img src="@/assets/icon/palette.svg"/>
-            <span class="inner-message"> {{ props.text }} </span>
+            <span class="inner-message"> {{ props.text }} </span> 
         </div>
     </router-link>
     

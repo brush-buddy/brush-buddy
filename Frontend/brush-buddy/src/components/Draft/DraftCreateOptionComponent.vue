@@ -27,8 +27,8 @@ onMounted(() => {
         <div class="button-box">
             <Transition name="slide-fade">
             <div v-show="buttonFadein" class="button-group">
-                <DraftCreateOptionButtonComponent link="/" class="button" text="대화로 이미지 만들기"/>
-                <DraftCreateOptionButtonComponent link="/" class="button" text="내 갤러리에서 고르기" />
+                <DraftCreateOptionButtonComponent link="ai-create" class="button" text="대화로 이미지 만들기"/>
+                <DraftCreateOptionButtonComponent link="home" class="button" text="내 갤러리에서 고르기" />
             </div>
         </Transition>
         </div>

@@ -35,7 +35,17 @@ const router = createRouter({
         name: 'draft',
         path: '/draft',
         component: DraftView
-      },
+        // children : [{
+        //   name: 'ai-create',
+        //   path: 'aiCreate',
+        //   component: () => import('../views/DraftCreateAIView.vue')
+        // }]
+      },{
+        name: 'ai-create',
+        path: '/aiCreate',
+        component: () => import('../views/DraftCreateAIView.vue')
+      }
+      ,
       {
         name: 'boardDetail',
         path: '/community/:id',
