@@ -1,8 +1,9 @@
-import CommunityView from '@/views/CommunityView.vue'
-import DiaryView from '@/views/DiaryView.vue'
-import DraftView from '@/views/DraftView.vue'
-import HomeView from '@/views/HomeView.vue'
-import SearchView from '@/views/SearchView.vue'
+import CommunityDetailView from '../views/CommunityDetailView.vue'
+import CommunityListView from '../views/CommunityBoardListView.vue'
+import DiaryView from '../views/DiaryView.vue'
+import DraftView from '../views/DraftView.vue'
+import HomeView from '../views/HomeView.vue'
+import SearchView from '../views/SearchView.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 
 
@@ -18,7 +19,7 @@ const router = createRouter({
       {
         name: 'community',
         path: '/community',
-        component: CommunityView
+        component: CommunityListView
       },
       {
         name: 'diary',
@@ -34,9 +35,15 @@ const router = createRouter({
         name: 'draft',
         path: '/draft',
         component: DraftView
+      },
+      {
+        name: 'boardDetail',
+        path: '/community/:id',
+        component:CommunityDetailView,
+
       }
 
   ]
 })
 
-export default router
+export default router;
