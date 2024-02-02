@@ -10,12 +10,8 @@ import NavigationComponent from "./components/NavigationComponent.vue";
     <div class="contentWrapper">
         <RouterView/>
         <NavigationComponent />
-
     </div>
   </div>
-
-
-
 </template>
 
 <style scoped>
@@ -33,4 +29,5 @@ display: flex;
 .contentWrapper {
   flex : 1;
 }
+
 </style>
