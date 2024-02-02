@@ -1,8 +1,8 @@
 <template>
-    <div>
-        <!-- <p>search</p> -->
-        <div id="background">
-    <div id="home">
+  <div>
+    <!-- <p>search</p> -->
+    <div id="background">
+      <div id="home">
         <p>Search</p>
         <p>Search</p>
         <p>Search</p>
@@ -31,15 +31,11 @@
         <p>Search</p>
         <p>Search</p>
         <p>Search</p>
+      </div>
     </div>
   </div>
-    </div>
 </template>
 
-<script setup lang="ts">
+<script setup lang="ts"></script>
 
-</script>
-
-<style scoped>
-
-</style>
+<style scoped></style>
