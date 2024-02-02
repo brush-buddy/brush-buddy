@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onMounted, ref} from 'vue';
-import SearchInputComponent from './SearchInputComponent.vue';
+import SearchInputComponent from '../components/common/SearchInputComponent.vue';
 const fadein = ref(false);
 
 onMounted(() => {
