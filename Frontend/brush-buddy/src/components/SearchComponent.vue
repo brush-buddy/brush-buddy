@@ -10,19 +10,7 @@
                 </v-button>
             </form>
         </div>
-        <template>
-            <v-tabs
-                fixed-tabs
-                bg-color="indigo-darken-2"
-            >
-                <v-tab>
-                Option
-                </v-tab>
-                <v-tab>
-                Another Option
-                </v-tab>
-            </v-tabs>
-            </template>
+        
         <div class = "conditionBar">
             <div class ="searchOption" style="display:flex; justify-content: center;">
                 <v-icon v-bind:color="communityColor" icon="mdi-account-multiple"></v-icon>
