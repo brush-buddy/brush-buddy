@@ -20,7 +20,7 @@
           </svg>
         </div>
         <div class="draft">
-        <img src="@/assets/images/draft_img.png" alt="draft" />
+        <img src="../assets/images/draft_img.png" alt="draft" />
         </div> 
     </div>
 </template>

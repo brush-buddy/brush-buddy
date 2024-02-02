@@ -10,7 +10,7 @@
 
 <template>
     <div class="option-button">
-        <img src="@/assets/icon/palette.svg"/>
+        <img src="../assets/icon/palette.svg"/>
         <span class="inner-message"> {{ props.text }} </span>
     </div>
 </template>
