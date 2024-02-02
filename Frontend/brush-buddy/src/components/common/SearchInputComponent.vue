@@ -10,7 +10,7 @@ const props = defineProps(
     <div class="input-box-container">
         <div class="input-box-sub-container">
             <!-- <div class="input-container"> -->
-                <input type="text" class="search-input-box" :placeholder="placeHolder"  />
+                <input type="text" class="search-input-box" :placeholder="props.placeHolder"  />
                 <v-btn>전송</v-btn>
             <!-- </div> -->
         </div>
