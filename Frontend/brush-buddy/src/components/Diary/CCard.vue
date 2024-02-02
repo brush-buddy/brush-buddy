@@ -6,6 +6,7 @@
 <script setup lang="ts">
 import { defineProps } from 'vue';
 const props = defineProps({board:Object});
+console.log("incard",props);
 </script>
 <style scoped>
 #cardWrapper{
