@@ -14,7 +14,7 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@RequestMapping("/v1/api/palette")
+@RequestMapping("/api/v1/palette")
 @RequiredArgsConstructor
 public class PaletteController {
     public final PaletteService paletteService;

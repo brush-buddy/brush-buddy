@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RestController
-@RequestMapping("/v1/api/mypage")
+@RequestMapping("/api/v1/mypage")
 @RequiredArgsConstructor
 public class MypageController {
     private final MypageService mypageService;
