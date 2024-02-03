@@ -17,17 +17,17 @@
 </template>
 
 <script setup lang="ts">
-import type{ BoardThumbnail } from '../api/type';
+import type{ BoardListRes } from '../api/type';
 import { useRouter } from 'vue-router'
 const router = useRouter();
 
 const props = defineProps<{
-  boardThumbnail: BoardThumbnail;
+  boardThumbnail: BoardListRes;
 }>();
-console.log(props.boardThumbnail);
-console.log("`````````````````");
+// console.log(props.boardThumbnail);
+// console.log("`````````````````");
 async function goToDetail() {
-  router.push({ name: 'boardDetail', params: { id: props.boardThumbnail.boardId} })
+  router.push({ name: 'boardDetail', params: { id: props.boardThumbnail.boards.boardId} })
 }
 
 // console.log(props.boardThumbnail.boardId);
