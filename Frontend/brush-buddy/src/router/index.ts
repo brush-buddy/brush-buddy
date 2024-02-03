@@ -4,6 +4,10 @@ import DiaryView from '../views/DiaryView.vue'
 import DraftView from '../views/DraftView.vue'
 import HomeView from '../views/HomeView.vue'
 import SearchView from '../views/SearchView.vue'
+import VMadeDraft from '../components/Diary/VMadeDraft.vue'
+import VPurchaseDraft from '../components/Diary/VPurchaseDraft.vue'
+import VBookmarkDraft from '../components/Diary/VBookmarkDraft.vue'
+import VHeartList from '../components/Diary/VHeartList.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 
 
@@ -24,7 +28,25 @@ const router = createRouter({
       {
         name: 'diary',
         path: '/diary',
-        component: DiaryView
+        component: DiaryView,
+        children: [
+          {
+            path: '/diary',
+            component: VMadeDraft
+          },
+          {
+            path: '/purchaseDraft',
+            component: VPurchaseDraft
+          },
+          {
+            path: '/bookmarkDraft',
+            component: VBookmarkDraft
+          },
+          {
+            path: '/heartList',
+            component: VHeartList
+          },
+        ]
       },
       {
         name: 'search',
