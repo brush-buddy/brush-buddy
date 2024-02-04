@@ -33,9 +33,11 @@ public class SecurityConfig {
                         exceptionHandling.authenticationEntryPoint(customJwtAuthenticationEntryPoint)) // 인증 실패 시 customJwtAuthenticationEntryPoint에서 처리
                 .authorizeHttpRequests(authorizeHttpRequests -> // 설정한 url은 인증없이 접근 가능하다.
                         authorizeHttpRequests
-//                                .requestMatchers(new AntPathRequestMatcher("/api/v1/login")).permitAll()
+                                .requestMatchers(new AntPathRequestMatcher("/api/v1/login")).permitAll()
                                 .requestMatchers(new AntPathRequestMatcher("/api/v1/auth/**")).permitAll()
                                 .requestMatchers(new AntPathRequestMatcher("/error")).permitAll()
+                                //swagger 허용
+                                .requestMatchers("/swagger-ui/**","/swagger-resources/**","/v3/api-docs/**").permitAll()
                                 .anyRequest().authenticated())
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)  // Http 요청이 UsernamePasswordAuthenticationFilter 전에 JwtAuthenticationFilter
                 .build();
