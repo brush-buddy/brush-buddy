@@ -2,10 +2,15 @@ pipeline {
     environment{
         back_repository = "fangdol888onssafy/brush-buddy-spring"
         front_repository = "fangdol888onssafy/brush-buddy-vue"
+        ai_repository = "summa1234/brushbuddy"
+
         back_img_name = "brush-buddy-spring"
         front_img_name ="brush-buddy-vue"
+        ai_img_name = "brush-buddy-ai"
+
         docker_compose_back_name = "spring"
         docker_compose_front_name = "vue"
+        docker_compose_ai_name = "ai"
 
         DOCKERHUB_CREDENTIALS = credentials("my-dockerhub-token")
         dockerImage = ''
@@ -76,6 +81,9 @@ pipeline {
                 }
             }
         }
+
+
+
         stage('BE - Remove Stopped Containers') {
             steps {
                 script {
@@ -181,6 +189,37 @@ pipeline {
                 }
             }     
         }
-        
+
+        stage('AI - Docker Image Build') {
+            steps {
+                dir("./Ai/brush-buddy") {
+                    script{
+                        dockerImage = docker.build ai_repository
+                    }
+                }
+            }
+        }
+
+        stage('AI - Docker Image Push') {
+            steps {
+                echo 'Push Docker'
+                script{
+                        dockerImage.push("latest")
+                }
+            }
+        }
+
+         stage('AI - Deploy') {
+            steps {
+                sshagent (credentials: ['aws_key']) {
+                    script{
+                        sh "ssh -o StrictHostKeyChecking=no  ${SSH_CONNECTION} uptime"
+                        //docker-compose
+                        sh "ssh -t ${SSH_CONNECTION} 'docker-compose pull ${docker_compose_ai_name}'"
+                        sh "ssh -t ${SSH_CONNECTION} 'docker-compose up -d ${docker_compose_ai_name}'"
+                    }
+                }
+            }     
+        }
     }
 }
