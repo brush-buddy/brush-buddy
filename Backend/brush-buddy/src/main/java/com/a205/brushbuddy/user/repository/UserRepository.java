@@ -5,7 +5,10 @@ import org.springframework.stereotype.Repository;
 
 import com.a205.brushbuddy.user.domain.User;
 
+import java.util.Optional;
+
 @Repository
-public interface UserRepository extends JpaRepository<User, Integer> {
-	User findByUserId(int userId);
+public interface UserRepository extends JpaRepository<User, Long> {
+//	User findByUserId(int userId);
+	Optional<User> findBySocialId(String socialId); // 소셜 로그인
 }
