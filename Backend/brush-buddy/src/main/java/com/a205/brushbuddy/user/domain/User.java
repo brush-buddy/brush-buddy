@@ -1,11 +1,10 @@
 package com.a205.brushbuddy.user.domain;
 
 
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-
-import jakarta.persistence.*;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 
@@ -15,7 +14,7 @@ import org.hibernate.annotations.ColumnDefault;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class User{
+public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -50,4 +49,14 @@ public class User{
     @ColumnDefault("false")
     private boolean userIsWithdraw;
 
+    @Column(name= "social_id", nullable = false)
+    private String socialId;
+
+    public void updateRefreshToken(String refreshToken) {
+        this.userRefreshtoken = refreshToken;
+    }
+
+    public void resetRefreshToken() {
+        this.userRefreshtoken = null;
+    }
 }
