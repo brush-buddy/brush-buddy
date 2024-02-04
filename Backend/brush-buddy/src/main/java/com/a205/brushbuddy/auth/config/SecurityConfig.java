@@ -38,6 +38,7 @@ public class SecurityConfig {
                                 .requestMatchers(new AntPathRequestMatcher("/error")).permitAll()
                                 //swagger 허용
                                 .requestMatchers("/swagger-ui/**","/swagger-resources/**","/v3/api-docs/**").permitAll()
+//                                .requestMatchers(new AntPathRequestMatcher("/oauth/token")).permitAll()
                                 .anyRequest().authenticated())
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)  // Http 요청이 UsernamePasswordAuthenticationFilter 전에 JwtAuthenticationFilter
                 .build();
