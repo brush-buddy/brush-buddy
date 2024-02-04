@@ -18,6 +18,6 @@ const vuetify = createVuetify({
 app.use(createPinia());
 app.use(router);
 app.use(vuetify);
-window.Kakao.init('Javascript 키'); // TODO: 키 삽입
+window.Kakao.init(import.meta.env.VITE_APP_KAKAO_API_JS_KEY);
 app.mount('#app');
 

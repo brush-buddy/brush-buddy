@@ -6,12 +6,16 @@ import router from "../router";
 const login = () => {
   console.log("login");
   
-  const redirect_uri = encodeURIComponent("http://localhost:8080/api/v1/user/login");
-  const client_id = "REST API KEY" // TODO: 키 삽입
+  const redirect_uri = encodeURIComponent(`${import.meta.env.VITE_APP_KAKAO_REDIRECT_URL}`);
+  const client_id = `${import.meta.env.VITE_APP_KAKAO_API_REST_KEY}` // TODO: 키 삽입
   const URI = `https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${client_id}&redirect_uri=${redirect_uri}`
-  const result = axios.get(URI);
+  
+  const params = {
+    redirectUri: `${import.meta.env.VITE_APP_KAKAO_REDIRECT_URL}`
+  }
+  
+  window.Kakao.Auth.authorize(params);
 }
-
 </script>
 
 <template>
