@@ -1,42 +1,59 @@
 <script setup lang="ts">
-const props = defineProps(
-    ['placeHolder']
-    );
+import axios from "axios";
+import { ref } from "vue";
 
-    //-그려줘라고 입력하면 그림을 만들어드려요
+const prompt = ref("");
+const props = defineProps(["placeHolder"]);
+
+//-그려줘라고 입력하면 그림을 만들어드려요
+
+axios
+  .post(`https://brush-buddy.duckdns.org/ai-generation`, { data: this.prompt })
+  .then((response) => {
+    console.log("응답 받음:", response.data);
+    // 성공적으로 서버에 데이터를 전송한 후 수행할 작업 추가
+  })
+  .catch((error) => {
+    console.error("에러 발생:", error);
+    // 에러 처리 로직 추가
+  });
 </script>
 
 <template>
-    <div class="input-box-container">
-        <div class="input-box-sub-container">
-            <!-- <div class="input-container"> -->
-                <input type="text" class="search-input-box" :placeholder="props.placeHolder"  />
-                <v-btn>전송</v-btn>
-            <!-- </div> -->
-        </div>
+  <div class="input-box-container">
+    <div class="input-box-sub-container">
+      <!-- <div class="input-container"> -->
+      <input
+        type="text"
+        v-model="prompt"
+        class="search-input-box"
+        :placeholder="props.placeHolder"
+      />
+      <v-btn @click="postData">전송</v-btn>
+      <!-- </div> -->
     </div>
+  </div>
 </template>
 
-    <style scoped>
-    .input-box-container{
-        display: flex;
-        width: 21.5rem;
-        height: 2.125rem;
-        flex-direction: column;
-        align-items: flex-start;
-        flex-shrink: 0;
-    }
+<style scoped>
+.input-box-container {
+  display: flex;
+  width: 21.5rem;
+  height: 2.125rem;
+  flex-direction: column;
+  align-items: flex-start;
+  flex-shrink: 0;
+}
 
-    .input-box-sub-container{
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-        flex: 1 0 0;
-        align-self: stretch;
-        
-    }
+.input-box-sub-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  flex: 1 0 0;
+  align-self: stretch;
+}
 
-    /* .input-container{
+/* .input-container{
         display: flex;
         height: var(--app-safari-address-bar-margin, 2.25rem);
         padding-left: 0.375rem;
@@ -48,24 +65,24 @@ const props = defineProps(
         background: var(--system-grey4, #D2D2D7);
     } */
 
-    .search-input-box{
-        height: var(--app-safari-address-bar-margin, 2.25rem);
-        padding-left: 0.375rem;
-        flex-direction: column;
-        justify-content: center;
-        align-items: flex-start;
-        align-self: stretch;
-        border-radius: 0.625rem;
-        opacity: 0.5;
-        background: var(--system-grey4, #D2D2D7);
+.search-input-box {
+  height: var(--app-safari-address-bar-margin, 2.25rem);
+  padding-left: 0.375rem;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  align-self: stretch;
+  border-radius: 0.625rem;
+  opacity: 0.5;
+  background: var(--system-grey4, #d2d2d7);
 
-        color: var(--label-primary, #000);
-        text-align: center;
-        font-family: ABeeZee;
-        font-size: 1.0625rem;
-        font-style: normal;
-        font-weight: 400;
-        line-height: 1.375rem; /* 129.412% */
-        letter-spacing: -0.02688rem;
-    }
+  color: var(--label-primary, #000);
+  text-align: center;
+  font-family: ABeeZee;
+  font-size: 1.0625rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 1.375rem; /* 129.412% */
+  letter-spacing: -0.02688rem;
+}
 </style>
