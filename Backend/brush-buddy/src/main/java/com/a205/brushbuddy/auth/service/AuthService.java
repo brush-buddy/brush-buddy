@@ -11,6 +11,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Map;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -46,12 +48,12 @@ public class AuthService {
 
     // 유저 정보 가져오기
     private User getUser(String socialAccessToken) {
-        String socialId = getSocialId(socialAccessToken);
+        String socialId = getSocialId(socialAccessToken).get("id");
         return signUp(socialId);
     }
 
     //액세스 토큰으로
-    private String getSocialId(String socialAccessToken) {
+    private Map<String,String> getSocialId(String socialAccessToken) {
           return kakaoService.getKakaoData(socialAccessToken);
     }
 
