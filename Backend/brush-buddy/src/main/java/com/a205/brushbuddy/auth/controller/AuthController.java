@@ -1,8 +1,12 @@
 package com.a205.brushbuddy.auth.controller;
 
+import com.a205.brushbuddy.auth.dto.KakaoTokenDto;
 import com.a205.brushbuddy.auth.dto.SignInResponse;
 import com.a205.brushbuddy.auth.service.AuthService;
 import com.a205.brushbuddy.auth.service.KakaoService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,8 +28,20 @@ public class AuthController {
 
     @GetMapping
     public ResponseEntity<?> signInWithAuthCode(@RequestParam("code") String code){
+        String tokens = kakaoService.getAccessToken(code);
+        String socialAccessToken;
 
-        String socialAccessToken  = kakaoService.getAccessToken(code);
+        System.out.println(tokens);
+
+        ObjectMapper om = new ObjectMapper();
+        try{
+           KakaoTokenDto dto = om.readValue(tokens, KakaoTokenDto.class);
+           socialAccessToken = dto.getToken_type()+ " " + dto.getAccess_token();
+        } catch (JsonMappingException e) {
+            throw new RuntimeException(e);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
         System.out.println(socialAccessToken);
         SignInResponse response = authService.signIn(socialAccessToken);
         return ResponseEntity.ok(response);

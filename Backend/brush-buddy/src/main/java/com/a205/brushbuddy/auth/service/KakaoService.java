@@ -37,13 +37,13 @@ public class KakaoService {
         return kakaoAuthApi.getAccessToken(clientId,clientSecret,grantType,redirectUri, code).getBody();
     }
 
-    public String getKakaoData(String socialAccessToken) {
+    public Map<String, String> getKakaoData(String socialAccessToken) {
         try {
             HttpHeaders headers = new HttpHeaders();
             headers.add("Authorization", socialAccessToken);
             HttpEntity<JsonArray> httpEntity = new HttpEntity<>(headers);
             ResponseEntity<Object> responseData = restTemplate.postForEntity("https://kapi.kakao.com/v2/user/me", httpEntity, Object.class);
-            return objectMapper.convertValue(responseData.getBody(), Map.class).get("id").toString();
+            return objectMapper.convertValue(responseData.getBody(), Map.class);
         } catch (Exception exception) {
             throw new IllegalStateException();
         }
