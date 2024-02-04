@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const kakaoHeader = {
-    'Authorization': '---------Admin 키-----------------', // TODO: 키 삽입
+    'Authorization': `${import.meta.env.VITE_APP_KAKAO_API_ADMIN_KEY}`, // TODO: 키 삽입
     'Content-type': 'application/x-www-form-urlencoded;charset=utf-8',
 };
 
@@ -10,8 +10,8 @@ const getKakaoToken = async (code : string) => {
     try {
         const data = {
             grant_type: 'authorization_code',
-            client_id: '---------------REST API 키------------------', // TODO: 키 삽입
-            redirect_uri: 'http://localhost:5173/',
+            client_id: `${import.meta.env.VITE_APP_KAKAO_API_REST_KEY}`, // TODO: 키 삽입
+            redirect_uri: `${import.meta.env.VITE_APP_KAKAO_REDIRECT_URL}`,
             code: code,
         };
         const queryString = Object.keys(data)
