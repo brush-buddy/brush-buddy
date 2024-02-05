@@ -35,15 +35,15 @@ const router = createRouter({
             component: VMadeDraft
           },
           {
-            path: '/purchaseDraft',
+            path: '/diary/purchaseDraft',
             component: VPurchaseDraft
           },
           {
-            path: '/bookmarkDraft',
+            path: '/diary/bookmarkDraft',
             component: VBookmarkDraft
           },
           {
-            path: '/heartList',
+            path: '/diary/heartList',
             component: VHeartList
           },
         ]

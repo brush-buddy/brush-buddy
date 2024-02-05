@@ -6,12 +6,8 @@ import NavigationComponent from "./components/NavigationComponent.vue";
 ,
 <template>
   <div style="height: 10px; width: 100vw;"></div>
-  <div class="Wrapper">
-    <div class="contentWrapper">
         <RouterView/>
         <NavigationComponent />
-    </div>
-  </div>
 </template>
 
 <style scoped>
