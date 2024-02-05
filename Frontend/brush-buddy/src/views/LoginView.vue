@@ -1,19 +1,22 @@
 <script setup>
 import {useRouter} from 'vue-router';
 import { instance } from '../api/axios.ts'
+import { useUserStore } from '../stores/user.ts'
 const router = useRouter();
 
 // 인가코드 받기
-const uri = window.location.search.substring(1);
+const uri = window.location.search.substring(1); //인가코드 추출
 let params = new URLSearchParams(uri)
 
-instance.get('/auth', {params: params})
-.then(({data}) => console.log(data))
-.catch(() => console.log("fail"));
+const user = useUserStore();
 
-// instance.defaults.headers.common['Authorization'] = params.get('at');
-
-router.push('/');
+instance.get('/auth', {params: params}) // 
+.then(({data}) => {
+    user.setAccessToken('Bearer ' + data) // 받은 인가코드에 대해서
+    instance.defaults.headers.common['Authorization'] = 'Bearer ' + data;
+    router.push('/');
+})
+.catch(() => {console.log("fail")});
 
 </script>
 

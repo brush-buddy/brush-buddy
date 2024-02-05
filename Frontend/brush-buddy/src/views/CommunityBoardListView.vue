@@ -18,6 +18,8 @@ import { ref, onMounted} from 'vue';
 import axios from "axios";
 import CommunityComponent from '../components/CommunityComponent.vue';
 import type{ BoardThumbnail } from '../api/type.ts';
+import { useUserStore } from '../stores/user';
+const userStore = useUserStore();
 
 const boardThumbnailDataFirst = ref<BoardThumbnail[]>([{
   boardId: '1',
@@ -78,9 +80,10 @@ onMounted(() => {
   axios({
     baseURL: '',
     method: 'get',
-    url: 'http://localhost:8080/v1/api/board/list', // URL에 한글이 포함될 경우 인코딩
+    url: 'http://localhost:8080/api/v1/board/list', // URL에 한글이 포함될 경우 인코딩
     headers: {
-      'Content-Type': 'application/json; charset=utf-8'
+      'Content-Type': 'application/json; charset=utf-8',
+      'Authorization': userStore.accessToken,
     }
   }).then(function (response : any) {
     console.log(response.data)
