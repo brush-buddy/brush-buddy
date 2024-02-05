@@ -5,12 +5,12 @@ import NavigationComponent from "./components/NavigationComponent.vue";
 </script>
 
 <template>
-  <div class="Wrapper">
-    <div class="contentWrapper">
+  <!-- <div class="Wrapper">
+    <div class="contentWrapper"> -->
         <RouterView/>
         <NavigationComponent />
-    </div>
-  </div>
+    <!-- </div>
+  </div> -->
 </template>
 
 <style scoped>
