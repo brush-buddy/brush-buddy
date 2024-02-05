@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onMounted, ref} from 'vue';
-import SearchInputComponent from '../components/common/SearchInputComponent.vue';
+import PromptInputComponent from '../components/common/PromptInputComponent.vue';
 const fadein = ref(false);
 
 onMounted(() => {
@@ -26,7 +26,7 @@ const nextFadein = () => {
         <div class="button-box">
             <Transition name="slide-fade">
             <div v-show="buttonFadein" class="button-group">
-               <SearchInputComponent/>
+               <PromptInputComponent/>
             </div>
         </Transition>
         </div>

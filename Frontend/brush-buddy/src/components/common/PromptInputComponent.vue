@@ -4,7 +4,7 @@ import axios from "axios";
 const prompt = ref<string>("");
 const makeImage = () => {
     console.log(prompt.value);
-    axios.post("http://localhost:3000/", {"propmt": prompt.value})
+    axios.post("http://localhost:8000/", {"propmt": prompt.value})
     .then((res) => {
         console.log(res);
     })
