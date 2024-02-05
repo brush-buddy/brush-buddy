@@ -81,6 +81,7 @@ onMounted(() => {
     baseURL: '',
     method: 'get',
     url: 'http://localhost:8080/api/v1/board/list', // URL에 한글이 포함될 경우 인코딩
+    withCredentials: true,
     headers: {
       'Content-Type': 'application/json; charset=utf-8',
       'Authorization': userStore.accessToken,
