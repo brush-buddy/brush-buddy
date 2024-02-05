@@ -4,6 +4,7 @@ import DiaryView from '../views/DiaryView.vue'
 import DraftView from '../views/DraftView.vue'
 import HomeView from '../views/HomeView.vue'
 import SearchView from '../views/SearchView.vue'
+import LoginView from '../views/LoginView.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 
 
@@ -15,6 +16,11 @@ const router = createRouter({
         name: 'home',
         path: '/',
         component: HomeView
+      },
+      {
+        name: 'login',
+        path: '/login',
+        component: LoginView
       },
       {
         name: 'community',
