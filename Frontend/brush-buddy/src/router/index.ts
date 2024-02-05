@@ -5,6 +5,7 @@ import DraftView from '../views/DraftView.vue'
 import HomeView from '../views/HomeView.vue'
 import SearchView from '../views/SearchView.vue'
 import DraftCreateAIView from '../views/DraftCreateAIView.vue'
+import DraftWriteView from '../views/DraftWrite.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 
 
@@ -47,7 +48,12 @@ const router = createRouter({
         name: 'boardAIView',
         path : "/draft/aiprompt",
         component : DraftCreateAIView,
-      }
+    },
+    {
+      name: 'boardWriteView',
+      path : "/community/write",
+      component : DraftWriteView,
+    }
 
   ]
 })
