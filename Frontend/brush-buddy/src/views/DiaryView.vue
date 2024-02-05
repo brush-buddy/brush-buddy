@@ -4,7 +4,9 @@
       <CProfile />
     </div>
       <CListTab/>
-      <router-view/>
+      <div>
+        <router-view/>
+      </div>
   </div>
 </template>
 
@@ -15,7 +17,7 @@ import { RouterView } from 'vue-router'
 import { ref } from 'vue'
 import axios from 'axios';
 import { provide } from 'vue'
-// const heartList = ref([]);
+
 
 // const provideHeartList = async () => {
 //   try {

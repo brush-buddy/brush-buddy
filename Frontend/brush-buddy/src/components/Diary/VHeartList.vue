@@ -1,9 +1,12 @@
 <template>
-    <v-infinite-scroll :height="300" :items="items" @load="load">
-    <div v-for="(item, index) in items" :key="item">
-        <CCard :board="item"/>
+    <div>
+        <v-infinite-scroll :items="items" :onLoad="load">
+        <div v-for="(item, index) in items" :key="item">
+            <CCard :board="item"/>
+        </div>
+        </v-infinite-scroll>
     </div>
-    </v-infinite-scroll>
+    <div id="navarea"></div>
 </template>
 <script setup lang="ts">
 import CCard from "./CCard.vue";
@@ -91,4 +94,9 @@ const load = async ({ done }: { done: (status: string) => void }) => {
     }
 }
 </script>
-<style scoped></style>
+<style scoped>
+#navarea{
+    height: 10vh;
+    width: 100%;
+}
+</style>
