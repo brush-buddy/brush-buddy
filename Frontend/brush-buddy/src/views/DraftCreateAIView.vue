@@ -53,7 +53,8 @@ const nextFadein = () => {
     }
 
     .button-box{ 
-        padding: var(--app-homescreen-row-app-margin, 2.1875rem) 5.125rem;
+        
+        
     }
 
     .button-group{

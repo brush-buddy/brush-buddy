@@ -30,8 +30,8 @@ import NavigationComponent from "../components/NavigationComponent.vue";
   align-items: center;
 }
 #home {
-  width: 292px;
-  height: 486px;
+  width: 18rem;
+  height: 25rem;
   flex-shrink: 0;
 
   border-radius: 20px;
@@ -50,7 +50,7 @@ import NavigationComponent from "../components/NavigationComponent.vue";
 }
 
 #logo {
-  width: 200px;
-  height: 200px;
+  width: 10rem;
+  height: 10rem;
 }
 </style>

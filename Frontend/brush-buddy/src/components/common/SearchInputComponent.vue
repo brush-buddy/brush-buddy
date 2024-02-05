@@ -1,20 +1,28 @@
 <script setup lang="ts">
-const props = defineProps(
-    ['placeHolder']
-    );
+import { ref } from 'vue';
+import axios from "axios";
+const prompt = ref<string>("");
+const makeImage = () => {
+    console.log(prompt.value);
+    axios.post("http://localhost:3000/", {"propmt": prompt.value})
+    .then((res) => {
+        console.log(res);
+    })
+
+}
 
     //-그려줘라고 입력하면 그림을 만들어드려요
 </script>
 
 <template>
+   
     <div class="input-box-container">
-        <div class="input-box-sub-container">
-            <!-- <div class="input-container"> -->
-                <input type="text" class="search-input-box" :placeholder="props.placeHolder"  />
-                <v-btn>전송</v-btn>
-            <!-- </div> -->
-        </div>
+        <!-- <div class="input-container"> -->
+            <input type="text" v-model = "prompt" class="search-input-box" placeholder="-그려줘라고 입력하면 그림을 만들어드려요" style="width: 18rem;" v-on:keyup.enter="makeImage()"/>
+            <v-btn @click = "makeImage()" icon="mdi-arrow-up" size="small" color = "success"></v-btn>
+        <!-- </div> -->
     </div>
+   
 </template>
 
     <style scoped>
@@ -22,9 +30,11 @@ const props = defineProps(
         display: flex;
         width: 21.5rem;
         height: 2.125rem;
-        flex-direction: column;
-        align-items: flex-start;
+        flex-direction: row;
+        align-items: center;
         flex-shrink: 0;
+        justify-content: space-around;
+
     }
 
     .input-box-sub-container{

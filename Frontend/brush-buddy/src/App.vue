@@ -5,21 +5,15 @@ import NavigationComponent from "./components/NavigationComponent.vue";
 </script>
 
 <template>
-  <div class="Wrapper">
-    <div class="contentWrapper">
+  
+    
         <RouterView/>
         <NavigationComponent />
-    </div>
-  </div>
+  
+  
 </template>
 
 <style scoped>
-NavigationComponent {
-  /* width: 375px;
-  height: 50px;
-  flex-shrink: 0;
-  z-index: 999; */
-}
 .Wrapper {
 display: flex;
   flex-direction: column;
