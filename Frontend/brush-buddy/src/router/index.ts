@@ -4,13 +4,14 @@ import DiaryView from '../views/DiaryView.vue'
 import DraftView from '../views/DraftView.vue'
 import HomeView from '../views/HomeView.vue'
 import SearchView from '../views/SearchView.vue'
+import DraftCreateAIView from '../views/DraftCreateAIView.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 
 
 const router = createRouter({
   history: createWebHistory(""),
   routes: [
-    
+
       {
         name: 'home',
         path: '/',
@@ -41,6 +42,11 @@ const router = createRouter({
         path: '/community/:id',
         component:CommunityDetailView,
 
+      },
+      {
+        name: 'boardAIView',
+        path : "/draft/aiprompt",
+        component : DraftCreateAIView,
       }
 
   ]
