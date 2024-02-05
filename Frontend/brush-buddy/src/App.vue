@@ -10,8 +10,8 @@ const palette = ref({"1" : "#FFFFF", "2":"#882abd", "3":"#3e4029", "4":"#26a31f"
 <template>
   
     
-        <RouterView/>
-        <!-- <DraftPipoMakeView pipo-url="https://picsum.photos/200/300?random=1" :pipo-palette="palette"/> -->
+        <!-- <RouterView/> -->
+        <DraftPipoMakeView pipo-url="https://picsum.photos/200/300?random=1" :pipo-palette="palette"/>
         <NavigationComponent />
   
   
