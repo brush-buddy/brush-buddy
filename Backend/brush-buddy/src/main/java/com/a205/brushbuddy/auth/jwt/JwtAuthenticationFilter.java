@@ -62,7 +62,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     // 사용자 아이디
-    private long getUserId(String token) {
+    private int getUserId(String token) {
         return jwtTokenProvider.getUserFromJwt(token);
     }
 }

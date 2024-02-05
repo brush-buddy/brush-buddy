@@ -21,7 +21,7 @@ public class User {
     @Column(name = "user_id", nullable = false)
     private Integer userId;
 
-    @Column(name = "user_refreshtoken", nullable = false, length = 100)
+    @Column(name = "user_refreshtoken", length = 255)
     private String userRefreshtoken;
 
     @Column(name = "user_nickname", nullable = false, length = 50)
@@ -49,7 +49,7 @@ public class User {
     @ColumnDefault("false")
     private boolean userIsWithdraw;
 
-    @Column(name= "social_id", nullable = false)
+    @Column(name= "user_social_id", nullable = false)
     private String socialId;
 
     public void updateRefreshToken(String refreshToken) {
