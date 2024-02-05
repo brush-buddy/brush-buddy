@@ -1,45 +1,19 @@
 <template>
-    <v-infinite-scroll :height="300" :items="items" @load="load">
+    <v-infinite-scroll :height="300" :items="items" :onload="load">
     <div v-for="(item, index) in items" :key="item">
         <CCard :board="item"/>
     </div>
     </v-infinite-scroll>
 </template>
+
 <script setup lang="ts">
 import CCard from "./CCard.vue";
-import { ref } from "vue";
+import { ref, inject } from "vue";
 import axios from "axios";
-
-// HeartList 불러오기
-interface HeartListRes {
-  boards: {
-    boardId: number;
-    boardTitle: string;
-    createdAt: string;
-    likeNumber: number;
-    thumbnail: string;
-    views: number;
-  };
-  pageNum: number;
-  length: number;
-  totalPage: number;
-}
-
+import type{ HeartListRes } from '../../api/type.ts';
+const items = inject<Array<any>>('heartList', []);
 const listNum = ref(3);
 const pageNum = ref(1);
-const firstCall = ref([ 
-      axios({
-    baseURL: '',
-    method: 'get',
-    url: 'http://localhost:8080/api/v1/mypage/heart/list?listNum=3&pageNum=1', 
-    headers: {
-      'Content-Type': 'application/json; charset=utf-8'
-    }
-  }).then(function (response : any) {
-    items.value = response.data.boards;
-    // boardThumbnailData.value = response.data;
-  })
-]);
 const totalPage = ref(0);
 const getHeartList = async (page: number): Promise<HeartListRes> => {
   console.log("getHeartList called");
@@ -62,8 +36,7 @@ const getHeartList = async (page: number): Promise<HeartListRes> => {
 };
 
 // 무한 스크롤 구현 
-const items = ref<number[]>([])
-
+// const items = ref<number[]>([])
 const api = async () => {
     pageNum.value = pageNum.value + 1;
   return new Promise<number>(resolve => {
@@ -78,7 +51,7 @@ const load = async ({ done }: { done: (status: string) => void }) => {
         // Perform API call => pageNum update
         const res = await api()
         const resList = await getHeartList(res)
-        items.value.push(...resList)
+        items.values.push(...resList)
 
         if(totalPage.value > pageNum.value){
             done('ok')
@@ -91,4 +64,5 @@ const load = async ({ done }: { done: (status: string) => void }) => {
     }
 }
 </script>
+
 <style scoped></style>
