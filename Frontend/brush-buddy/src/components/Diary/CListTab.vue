@@ -4,13 +4,13 @@
         <router-link to="/diary">
             <div class="tabButton">만든 도안</div>
         </router-link>
-        <router-link to="/diary/purchaseDraft">
+        <router-link to="/purchaseDraft">
             <div class="tabButton">구매 도안</div>
         </router-link>
-        <router-link to="/diary/bookmarkDraft">
+        <router-link to="/bookmarkDraft">
             <div class="tabButton">북마크 도안</div>
         </router-link>
-        <router-link to="/diary/heartList">
+        <router-link to="/heartList">
             <div class="tabButton">찜한 글</div>
         </router-link>
       </div>
