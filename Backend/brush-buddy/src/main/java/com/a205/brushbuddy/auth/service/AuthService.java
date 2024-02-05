@@ -1,9 +1,11 @@
 package com.a205.brushbuddy.auth.service;
 
+import com.a205.brushbuddy.auth.dto.KakaoUserData;
 import com.a205.brushbuddy.auth.dto.SignInResponse;
 import com.a205.brushbuddy.auth.jwt.JwtTokenProvider;
 import com.a205.brushbuddy.auth.jwt.UserAuthentication;
 import com.a205.brushbuddy.auth.vo.Token;
+import com.a205.brushbuddy.user.domain.Gender;
 import com.a205.brushbuddy.user.domain.User;
 import com.a205.brushbuddy.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -11,13 +13,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Map;
-
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class AuthService {
-    private static final int ACCESS_TOKEN_EXPIRATION = 7200000;
+    private static final int ACCESS_TOKEN_EXPIRATION = 1800000;
     private static final int REFRESH_TOKEN_EXPIRATION = 1209600000;
 
     private final JwtTokenProvider jwtTokenProvider;
@@ -27,7 +27,7 @@ public class AuthService {
     // 로그인
     @Transactional
     public SignInResponse signIn(String socialAccessToken) { // 액세스 토큰
-        User user = getUser(socialAccessToken);
+        User user = getUser(socialAccessToken); // 액세스 토큰의  유저 찾기
         Token token = getToken(user);
         return SignInResponse.of(token);
     }
@@ -48,41 +48,55 @@ public class AuthService {
 
     // 유저 정보 가져오기
     private User getUser(String socialAccessToken) {
-        String socialId = getSocialId(socialAccessToken).get("id");
-        return signUp(socialId);
+        KakaoUserData userData = getUserData(socialAccessToken);
+//        String socialId = getSocialId(socialAccessToken);
+        return signUp(userData);
+    }
+    private KakaoUserData getUserData(String socialAccessToken){
+        KakaoUserData kakaoUserData = new KakaoUserData();
+        kakaoUserData.setUserData(kakaoService.getKakaoData(socialAccessToken));
+        return kakaoUserData;
     }
 
-    //액세스 토큰으로
-    private Map<String,String> getSocialId(String socialAccessToken) {
-          return kakaoService.getKakaoData(socialAccessToken);
-    }
+//    //액세스 토큰으로
+//    private String getSocialId(String socialAccessToken) {
+//          return getUserData(socialAccessToken).get("id");
+//    }
 
     //회원 가입 - 이미 있다면 찾은거 반환
-    private User signUp(String socialId) {
+    private User signUp(KakaoUserData userData) {
+        String socialId = userData.getSocialId();
         return userRepository.findBySocialId(socialId)
-                .orElseGet(() -> saveUser(socialId));
+                .orElseGet(() -> saveUser(userData));
     }
 
     // 유저
-    private User saveUser(String socialId) {
+    private User saveUser(KakaoUserData userData) {
+
         User user = User.builder()
-                .socialId(socialId)
+                .userBirth(userData.getBirthYear())
+                .userGender(Gender.valueOf(userData.getGender()))
+                .socialId(userData.getSocialId())
+                .userIsAdmin(false)
+                .userMileage(0)
+                .userIsWithdraw(false)
+                .userNickname(userData.getNickName())
                 .build();
         return userRepository.save(user);
     }
 
-    // 사용자 정보를 통해 refreshToken을 User에 저장하고 Token을 가져옴
+    // 사용자 정보를 통해  refreshToken을 User에 저장하고 jwt Token을 반환
     private Token getToken(User user) {
-        Token token = generateToken(new UserAuthentication(user.getUserId(), null, null));
-        user.updateRefreshToken(token.getRefreshToken());
-        return token;
+        Token token = generateToken(new UserAuthentication(user.getUserId(), null, null)); // jwt 토큰 생성
+        user.updateRefreshToken(token.getRefreshToken()); // 우리 서버의 jwt 토큰을 저장
+        return token; // 토큰 반환
     }
 
     // 토큰 객체 생성
     private Token generateToken(Authentication authentication) {
         return Token.builder()
-                .accessToken(jwtTokenProvider.generateToken(authentication, ACCESS_TOKEN_EXPIRATION))
-                .refreshToken(jwtTokenProvider.generateToken(authentication, REFRESH_TOKEN_EXPIRATION))
+                .accessToken(jwtTokenProvider.generateToken(authentication, ACCESS_TOKEN_EXPIRATION)) // 액세스 토큰 생성
+                .refreshToken(jwtTokenProvider.generateToken(authentication, REFRESH_TOKEN_EXPIRATION)) // 리프레시 토큰 생성
                 .build();
     }
 
