@@ -62,9 +62,14 @@ public class AuthController {
 //        URI redirectUri  = new URI(url);
 //        HttpHeaders httpHeaders = new HttpHeaders();
 //        httpHeaders.setLocation(redirectUri);
+//        httpHeaders.set("Set-Cookie", response.refreshToken());
 
-//        return new ResponseEntity(response, httpHeaders, HttpStatus.FOUND);
-        return ResponseEntity.ok(response);
+        String cookie = authService.createHttpOnlyCookie(response.refreshToken()); // refresh-token을 http-only 쿠키로 전송
+
+        return ResponseEntity.ok()
+                .header("Set-Cookie", cookie)
+                .body(response.accessToken());
+//        return ResponseEntity.ok(response);
     }
 
     @ResponseBody
@@ -81,5 +86,12 @@ public class AuthController {
         int userId = Integer.parseInt(principal.getName());
         authService.withdraw(userId);
         return ResponseEntity.ok(null);
+    }
+
+    // refresh token으로 access token 재발급 하기
+    @ResponseBody
+    @GetMapping("/refresh")
+    public ResponseEntity<?> refresh(@CookieValue(value = "refreshtoken") String refreshToken){
+        return ResponseEntity.ok(authService.refresh(refreshToken));
     }
 }
