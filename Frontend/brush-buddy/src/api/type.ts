@@ -11,16 +11,3 @@ export interface BoardListRes{
     length: number;
     totalPage: number;
 }
-export interface HeartListRes {
-    boards: {
-      boardId: number;
-      boardTitle: string;
-      createdAt: string;
-      likeNumber: number;
-      thumbnail: string;
-      views: number;
-    };
-    pageNum: number;
-    length: number;
-    totalPage: number;
-  }
