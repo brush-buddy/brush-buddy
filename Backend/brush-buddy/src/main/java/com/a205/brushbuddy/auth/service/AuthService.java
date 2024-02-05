@@ -5,10 +5,13 @@ import com.a205.brushbuddy.auth.dto.SignInResponse;
 import com.a205.brushbuddy.auth.jwt.JwtTokenProvider;
 import com.a205.brushbuddy.auth.jwt.UserAuthentication;
 import com.a205.brushbuddy.auth.vo.Token;
+import com.a205.brushbuddy.exception.BaseException;
+import com.a205.brushbuddy.exception.ErrorCode;
 import com.a205.brushbuddy.user.domain.Gender;
 import com.a205.brushbuddy.user.domain.User;
 import com.a205.brushbuddy.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -45,6 +48,44 @@ public class AuthService {
         User user = findUser(userId);
         deleteUser(user);
     }
+
+    // refresh Token을 http-only 쿠키로 만드는 메소드
+    public String createHttpOnlyCookie(String refreshToken){
+        String cookieName = "refreshtoken";
+        String cookieValue = refreshToken; // 쿠키벨류엔 글자제한이 이써, 벨류로 만들어담아준다.
+        int maxAge = 60 * 60 * 24;
+//        Cookie cookie = new Cookie(cookieName, cookieValue);
+
+        ResponseCookie cookie = ResponseCookie.from(cookieName, cookieValue)
+                .path("/")
+                .sameSite("None")
+                .httpOnly(true)
+                .secure(true)
+                .maxAge(maxAge)
+                .build();
+
+        return cookie.toString();
+    }
+
+    // refresh token으로 access token 재발급하는 메소드
+    public String refresh(String refreshToken){
+        Integer userId = jwtTokenProvider.getUserFromJwt(refreshToken);
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new BaseException(ErrorCode.UNAUTHORIZED));
+        String realRefreshToken = user.getUserRefreshtoken(); // 저장된 refreshToken 가지고 오기
+
+        // refresh token이 같다면
+        if(realRefreshToken.equals(refreshToken)){
+            return createAccessToken(user);
+        }
+        else return null;
+    }
+
+    // refresh token으로 access token 생성하는 메소드
+    private String createAccessToken(User user){
+       return jwtTokenProvider.generateToken(new UserAuthentication(user.getUserId(),null,null), ACCESS_TOKEN_EXPIRATION);
+    }
+
 
     // 유저 정보 가져오기
     private User getUser(String socialAccessToken) {
