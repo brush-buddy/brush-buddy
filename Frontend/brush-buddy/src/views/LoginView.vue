@@ -3,22 +3,15 @@ import {useRouter} from 'vue-router';
 import { instance } from '../api/axios.ts'
 const router = useRouter();
 
+// 인가코드 받기
 const uri = window.location.search.substring(1);
-const params = new URLSearchParams(uri)
+let params = new URLSearchParams(uri)
 
-console.log(params.get('at'))
-console.log(params.get('rt'))
+instance.get('/auth', {params: params})
+.then(({data}) => console.log(data))
+.catch(() => console.log("fail"));
 
-// const code = new URLSearchParams(uri).get("code");
-// console.log(uri);
-// const params = {
-//     "code" : code
-// }
-// instance.get('/auth', {params: params})
-// .then(({data}) => console.log(data))
-// .catch(() => console.log("fail"));
-
-instance.defaults.headers.common['Authorization'] = params.get('at');
+// instance.defaults.headers.common['Authorization'] = params.get('at');
 
 router.push('/');
 
