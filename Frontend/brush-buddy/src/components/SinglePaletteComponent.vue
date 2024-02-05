@@ -1,8 +1,7 @@
 <template>
-    <div class="palette">
-    <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40"   fill="none">
-    <path d="M39.5 20C39.5 30.7696 30.7696 39.5 20 39.5C9.23045 39.5 0.5 30.7696 0.5 20C0.5 9.23045 9.23045 0.5 20 0.5C30.7696 0.5 39.5 9.23045 39.5 20Z" :fill="props.color" stroke="white"/>
-    </svg>
+    <div class="palette" :style="{backgroundColor : color}" >
+        
+   
     </div>
 </template>
 
@@ -15,5 +14,13 @@ const props = defineProps(["color"]);
 </script>
 
 <style scoped>
-
+.palette{
+    width: 2.3rem;
+    height: 2.3rem;
+    border-radius: 50%;
+    box-shadow: 0px 1px 1px 1px rgba(0, 0, 0, 0.25);
+    border: 1.5px solid rgb(201, 201, 201);
+    margin-right: -0.8rem;
+    
+}
 </style>

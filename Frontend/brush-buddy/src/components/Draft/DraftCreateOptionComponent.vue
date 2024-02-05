@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import DraftCreateOptionButtonComponent from './DraftCreateOptionButtonComponent.vue'
 import { onMounted, ref } from 'vue'
 import axios from 'axios'
 const fadein = ref(false)
@@ -16,15 +15,25 @@ onMounted(() => {
 const dialog = ref(false)
 const file = ref([]);
 
-const uploadImg = () => {
+const makeImage = () => {
   console.log(file.value[0])
+  const fileData = new FormData();
+  fileData.append("image", file.value[0])
+  console.log(fileData.get("image"));
   if (file.value) {
     const reader = new FileReader();
-    reader.readAsDataURL(file.value[0]);
-    reader.onload = () => {
-    	// console.dir(reader.result)	// base64
-      console.log(reader.result)
-        // AXIOS 호출하기
+    // reader.readAsDataURL(file.value[0]);
+    console.dir(reader.result as string);
+    reader.onloadend = () => {
+      console.log(reader.result as string);
+    	axios.post("http://localhost:8000/pipo-painting" , fileData,{
+        headers:{
+          'Content-Type': 'multipart/form-data'
+        }
+      })
+      .then((res) => {
+        console.log(res);
+      })
     }
 
   }
@@ -98,7 +107,7 @@ const preview = ref("../../assets/images/empty.png");
               <v-card-actions>
                 <v-spacer></v-spacer>
                 <v-btn color="pink-darken-1" variant="tonal" @click="dialog = false"> 취소 </v-btn>
-                <v-btn color="purple-darken-1" variant="tonal" @click="dialog = false; uploadImg()"> 만들기 </v-btn>
+                <v-btn color="purple-darken-1" variant="tonal" @click="dialog = false; makeImage()"> 만들기 </v-btn>
               </v-card-actions>
             </v-card>
           </v-dialog>
