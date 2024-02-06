@@ -18,13 +18,13 @@ class AiImage(BaseModel):
         load_dotenv(verbose=True)
 
         # 환경변수 불러오기
-        OPEN_AI_KEY = os.getenv("OPEN_AI_KEY")
-        client = OpenAI(api_key=OPEN_AI_KEY)
+        # OPEN_AI_KEY = os.getenv("OPEN_AI_KEY")
+        client = OpenAI(api_key="*")
 
         response = client.images.generate(
-            model="dall-e-2",
+            model="dall-e-3",
             prompt=prompt,
-            size="256x256",
+            size="1024x1024",
             quality="standard",
             n=1,
         )
