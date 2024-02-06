@@ -4,6 +4,7 @@ import com.a205.brushbuddy.auth.dto.KakaoTokenDto;
 import com.a205.brushbuddy.auth.dto.SignInResponse;
 import com.a205.brushbuddy.auth.service.AuthService;
 import com.a205.brushbuddy.auth.service.KakaoService;
+import com.a205.brushbuddy.auth.vo.Token;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -81,6 +82,12 @@ public class AuthController {
     // refresh token으로 access token 재발급 하기
     @GetMapping("/refresh")
     public ResponseEntity<?> refresh(@CookieValue(value = "refreshToken") String refreshToken){
-        return ResponseEntity.ok(authService.refresh(refreshToken));
+        Token token = authService.refresh(refreshToken);
+        // refresh-token을 http-only 쿠키로 전송
+        String cookie = authService.createHttpOnlyCookie("refreshToken", token.getRefreshToken());
+
+        return ResponseEntity.ok()
+                .header("Set-Cookie", cookie)
+                .body(token.getAccessToken()); // body에는 access token을 넣는다.
     }
 }
