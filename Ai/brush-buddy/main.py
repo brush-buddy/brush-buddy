@@ -27,6 +27,7 @@ origins = [
     "http://localhost:3000",
     "http://localhost:8080",
     "http://localhost:5173",
+    "http://localhost:5174",
     "https://localhost",
     "https://brush-buddy.duckdns.org/",
 ]
