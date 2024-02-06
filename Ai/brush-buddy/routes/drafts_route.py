@@ -22,18 +22,21 @@ draft_router = APIRouter(
 @draft_router.post(
     "/ai-generation", status_code=200, response_model=responseImage.Img_url
 )
-def ai_generate(prompt: requestPrompt.Prompt, user_id: int):
+def ai_generate(prompt: str):
+    user_id = 1
     # prompt -> 이미지 url
-    aigenerateimageurl = images.AiImage().createImage(prompt.prompt)
+    aigenerateimageurl = images.AiImage().createImage(prompt)
 
-    cnt = db.redis.save_callnum(user_id)
-    if int(cnt) > 20:
-        return JSONResponse(
-            status_code=status.HTTP_429_TOO_MANY_REQUESTS,
-            content={"error": "Too Many Requests"},
-        )
-    else:
-        return responseImage.Img_url(image_url=aigenerateimageurl)
+    # cnt = db.redis.save_callnum(user_id)
+    # if int(cnt) > 20:
+    #     return JSONResponse(
+    #         status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+    #         content={"error": "Too Many Requests"},
+    #     )
+    # else:
+    #     return responseImage.Img_url(image_url=aigenerateimageurl)
+
+    return responseImage.Img_url(image_url=aigenerateimageurl)
 
 
 # base64 이미지 받아서, 팔레트 json 데이터 return 하는 api
