@@ -10,15 +10,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URISyntaxException;
 import java.security.Principal;
 
 @Slf4j
-//@RestController
-@Controller
+@RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/auth")
 public class AuthController {
@@ -54,7 +52,6 @@ public class AuthController {
                 .body(response.accessToken()); // body에는 access token을 넣는다.
     }
 
-    @ResponseBody
     @PostMapping("/logout")
     public ResponseEntity<?> signOut(Principal principal) {
         int userId = Integer.parseInt(principal.getName());
@@ -68,7 +65,6 @@ public class AuthController {
                 .body(null);
     }
 
-    @ResponseBody
     @DeleteMapping
     public ResponseEntity<?> withdrawal(Principal principal) {
         int userId = Integer.parseInt(principal.getName());
@@ -83,7 +79,6 @@ public class AuthController {
     }
 
     // refresh token으로 access token 재발급 하기
-    @ResponseBody
     @GetMapping("/refresh")
     public ResponseEntity<?> refresh(@CookieValue(value = "refreshToken") String refreshToken){
         return ResponseEntity.ok(authService.refresh(refreshToken));
