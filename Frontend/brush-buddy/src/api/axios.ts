@@ -1,16 +1,13 @@
 import axios from 'axios';
 import { useUserStore } from '../stores/user';
 const url = import.meta.env.VITE_APP_SERVER_URL
-const instance = axios.create({
-  baseURL: url,
-  withCredentials: true
-});
 
 function localAxios(){
 
   const instance = axios.create({
     baseURL: url,
-    withCredentials: true
+    withCredentials: true,
+    
   });
 
   const userStore = useUserStore();
@@ -116,4 +113,4 @@ function localAxios(){
   return instance;
 }
 
-export  {localAxios , instance};
+export  {localAxios };

@@ -21,14 +21,16 @@ public class CustomJwtAuthenticationEntryPoint implements AuthenticationEntryPoi
 
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException {
-        setResponse(response);
+        setResponse(request, response);
     }
 
-    private void setResponse(HttpServletResponse response) throws IOException {
+    private void setResponse(HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.setCharacterEncoding("UTF-8");
         response.setContentType(APPLICATION_JSON_VALUE);
         response.setStatus(SC_UNAUTHORIZED);
         response.setStatus(401);
+        response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin")); // 오는 위치에 대해서 모두 허용한다.
+        response.setHeader("Access-Control-Allow-Credentials", "true");
         response.getWriter().println(objectMapper.writeValueAsString("유효하지 않은 토큰입니다."));
     }
 
