@@ -11,6 +11,9 @@ import com.a205.brushbuddy.exception.BaseException;
 import com.a205.brushbuddy.exception.ErrorCode;
 import com.a205.brushbuddy.util.JwtUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +24,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 
 @Slf4j
 @RestController
@@ -33,6 +37,11 @@ public class DraftController {
 
 	private final JwtUtil jwtUtil;
 
+	@Operation(description = "도안 리스트 ")
+	@ApiResponses({
+			@ApiResponse(responseCode = "200", description = "도안 리스트 반환 성공")
+	})
+	@ResponseBody
 	@GetMapping("/list")
 	public ResponseEntity<Page<DraftListResponseDto>> getDrafts(
 		@RequestParam(required = false) String search,
@@ -51,6 +60,11 @@ public class DraftController {
 
 	}
 
+	@Operation(description = "도안 상세정보")
+	@ApiResponses({
+			@ApiResponse(responseCode = "200", description = "도안 리스트 반환 성공")
+	})
+	@ResponseBody
 	@GetMapping("/{draftId}")
 	public ResponseEntity<DraftDetailResponseDto> getDraftDetail(@PathVariable("draftId") long draftId) {
 
@@ -61,6 +75,11 @@ public class DraftController {
 	
 	// 도안 및 팔레트 저장
 
+	@Operation(description = "도안 작성 ")
+	@ApiResponses({
+			@ApiResponse(responseCode = "200", description = "도안 리스트 반환 성공")
+	})
+	@ResponseBody
 	@PostMapping("/")
 	public ResponseEntity<DraftCreateResponseDto> createDraft(@RequestBody DraftCreateRequestDto draftCreateDto, HttpServletRequest request) throws
 		JsonProcessingException {
@@ -72,8 +91,16 @@ public class DraftController {
 
 
 	// 도안 정보(해시태그) 수정
+	@Operation(description = "도안 정보 해시태그 수정 ")
+	@ApiResponses({
+			@ApiResponse(responseCode = "200", description = "도안 수정 성공"),
+
+	})
+	@ResponseBody
 	@PostMapping("/{draftId}")
-	public ResponseEntity<String> updateDraft(@PathVariable long draftId, @RequestBody DraftCategoryModifyRequestDto draftCategoryModifyRequestDto) {
+	public ResponseEntity<String> updateDraft(@PathVariable long draftId, @RequestBody DraftCategoryModifyRequestDto draftCategoryModifyRequestDto, HttpServletRequest request) {
+		Integer userId = jwtUtil.getUserId(request)
+				.orElseThrow(() -> new BaseException(ErrorCode.INVALID_TOKEN)); // 헤더의 access token으로 userId 추출, null 반환시 유효하지 않은 토큰 오류 전송
 
 		boolean check = draftService.updateDraft(draftId, draftCategoryModifyRequestDto);
 		return new ResponseEntity<>("success", HttpStatus.OK);
@@ -81,6 +108,12 @@ public class DraftController {
 
 
 	// 도안 삭제
+	@Operation(description = "도안 정보 삭제")
+	@ApiResponses({
+			@ApiResponse(responseCode = "200", description = "도안 삭제 성공"),
+			@ApiResponse(responseCode = "401", description = "권한 없음")
+	})
+	@ResponseBody
 	@DeleteMapping("/{draftId}")
 	public ResponseEntity<String> deleteDraft(@PathVariable Long draftId, HttpServletRequest request) throws Exception{
 		Integer userId = jwtUtil.getUserId(request)
@@ -92,6 +125,11 @@ public class DraftController {
 
 
 	// 북마크
+	@Operation(description = "도안 북마크 작성")
+	@ApiResponses({
+			@ApiResponse(responseCode = "200", description = "도안 북마크 추가")
+	})
+	@ResponseBody
 	@PostMapping("/{draftId}/bookmark")
 	public ResponseEntity<String> createBookmark(@PathVariable Long draftId, HttpServletRequest request) throws Exception{
 		Integer userId = jwtUtil.getUserId(request)
@@ -100,6 +138,11 @@ public class DraftController {
 		return new ResponseEntity<>("success", HttpStatus.OK);
 	}
 
+	@Operation(description = "도안 북마크 삭제")
+	@ApiResponses({
+			@ApiResponse(responseCode = "200", description = "도안 리스트 반환 성공")
+	})
+	@ResponseBody
 	@DeleteMapping("/{draftId}/bookmark")
 	public ResponseEntity<String> deleteBookmark(@PathVariable Long draftId, HttpServletRequest request) {
 		Integer userId = jwtUtil.getUserId(request)
@@ -108,6 +151,12 @@ public class DraftController {
 		return new ResponseEntity<>("success", HttpStatus.OK);
 	}
 
+	@Operation(description = "도안 구매")
+	@ApiResponses({
+			@ApiResponse(responseCode = "200", description = "도안 구매 성공"),
+			@ApiResponse(responseCode = "403", description = "도안 잔액 부족")
+	})
+	@ResponseBody
 	@PostMapping("/{draftId}/purchase")
 	public ResponseEntity<String> buyDraft(@PathVariable Long draftId, HttpServletRequest request) throws Exception{
 		Integer userId = jwtUtil.getUserId(request)
