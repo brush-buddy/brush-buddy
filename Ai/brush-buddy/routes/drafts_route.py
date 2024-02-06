@@ -1,15 +1,16 @@
 import io
 import os
-from typing import Dict
+from typing import Dict, List,Annotated
 
 import numpy as np
-from fastapi import APIRouter, HTTPException, dependencies, status
+from fastapi import APIRouter, HTTPException, dependencies, status, File, Form, UploadFile
 from fastapi.responses import JSONResponse
 from models import drafts, image_ai
 from models.DTO import requestPrompt, responseImage, responsePipo
 from PIL import Image
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
+
 
 # from db.connection import get_db
 # from db.models.drafts import Draft
@@ -34,11 +35,13 @@ def ai_generate(prompt: requestPrompt.Prompt):
 
 # base64 이미지 받아서, 팔레트 json 데이터 return 하는 api
 @draft_router.post("/pipo-painting", status_code=200, response_model=responsePipo.Pipo)
-def to_pipo(inputbase64: str):
+async def to_pipo(image: UploadFile):
     # base64 이미지 downsize
-    input_np_Img = image_ai.AiImage().downSize(inputbase64)
+    print(image)
+    # input_np_Img = image_ai.AiImage().downSize(inputbase64)
+    #
+    # # downsize된 np이미지를 pipo_convert 함수에 넣어서, 팔레트 json 데이터 생성
+    # json_palette, draft_url = drafts.Draft().pipo_convert(input_np_Img)
 
-    # downsize된 np이미지를 pipo_convert 함수에 넣어서, 팔레트 json 데이터 생성
-    json_palette, draft_url = drafts.Draft().pipo_convert(input_np_Img)
-
-    return responsePipo.Pipo(image=draft_url, palette=json_palette)
+    return responsePipo.Pipo(image="draft_url", palette="{'1' : '2'}")
+    # return 'success!'

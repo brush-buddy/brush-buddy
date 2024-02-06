@@ -14,11 +14,13 @@ const palette = ref({
   '8': '#8c0a44',
   '9': '#7da717'
 })
+const isAI = ref(false)
+const prompt = ref('')
 </script>
 
 <template>
   <RouterView />
-  <!-- <DraftPipoMakeView pipo-url="https://picsum.photos/200/300?random=1" :pipo-palette="palette"/> -->
+  <!-- <DraftPipoMakeView pipo-url="https://picsum.photos/200/300?random=1" :pipo-palette="palette" :isAI="isAI" :prompt="prompt"/> -->
   <NavigationComponent />
 </template>
 
