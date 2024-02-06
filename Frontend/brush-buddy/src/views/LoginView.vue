@@ -1,6 +1,6 @@
 <script setup>
 import {useRouter} from 'vue-router';
-import { instance } from '../api/axios.ts'
+import { localAxios } from '../api/axios.ts'
 import { useUserStore } from '../stores/user.ts'
 const router = useRouter();
 
@@ -10,10 +10,9 @@ let params = new URLSearchParams(uri)
 
 const user = useUserStore();
 
-instance.get('/auth', {params: params}) // 
+localAxios().get('/auth', {params: params}) // 
 .then(({data}) => {
     user.setAccessToken('Bearer ' + data) // 받은 인가코드에 대해서
-    instance.defaults.headers.common['Authorization'] = 'Bearer ' + data;
     router.push('/');
 })
 .catch(() => {console.log("fail")});
