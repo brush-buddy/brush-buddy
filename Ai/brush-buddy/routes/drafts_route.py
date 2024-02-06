@@ -1,22 +1,14 @@
-import io
-import os
-from typing import Dict, List,Annotated
+import base64
+from io import BytesIO
+from typing import Dict, List
 
+import cv2
 import numpy as np
-from fastapi import APIRouter, HTTPException, dependencies, status, File, Form, UploadFile
-from fastapi.responses import JSONResponse
-from models import drafts, image_ai
+import requests
+from fastapi import APIRouter, HTTPException, UploadFile
+from models import drafts, images
 from models.DTO import requestPrompt, responseImage, responsePipo
 from PIL import Image
-from pydantic import BaseModel
-from sqlalchemy.orm import Session
-
-
-# from db.connection import get_db
-# from db.models.drafts import Draft
-
-# from apis import image
-
 
 draft_router = APIRouter(
     tags=["Draft"],
@@ -24,24 +16,28 @@ draft_router = APIRouter(
 
 
 # 프롬프트 받아서, ai호출해서 이미지 url return 하는 api
-@draft_router.post("/ai-generation", status_code=200)
+@draft_router.post(
+    "/ai-generation", status_code=200, response_model=responseImage.Img_url
+)
 def ai_generate(prompt: requestPrompt.Prompt):
     # prompt -> 이미지 url
-    print(prompt)
-    aigenerateimageurl = image_ai.AiImage().createImage(prompt.prompt)
-    img_url_response = responseImage.Img(image_url=aigenerateimageurl)
-    return img_url_response
+    aigenerateimageurl = images.AiImage().createImage(prompt.prompt)
+
+    return responseImage.Img_url(image_url=aigenerateimageurl)
 
 
 # base64 이미지 받아서, 팔레트 json 데이터 return 하는 api
 @draft_router.post("/pipo-painting", status_code=200, response_model=responsePipo.Pipo)
 async def to_pipo(image: UploadFile):
-    # base64 이미지 downsize
-    print(image)
-    # input_np_Img = image_ai.AiImage().downSize(inputbase64)
-    #
-    # # downsize된 np이미지를 pipo_convert 함수에 넣어서, 팔레트 json 데이터 생성
-    # json_palette, draft_url = drafts.Draft().pipo_convert(input_np_Img)
+    try:
+        # base64 이미지 받아서, numpy array로 변환
+        numpy_array = np.array(Image.open(BytesIO(await image.read()))).reshape(
+            -1, 349, 3
+        )
 
-    return responsePipo.Pipo(image="draft_url", palette="{'1' : '2'}")
-    # return 'success!'
+        json_string_palette, draft_url = drafts.Drafts().pipo_convert(numpy_array)
+
+        return responsePipo.Pipo(image=draft_url, palette=json_string_palette)
+
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Error decoding image: {str(e)}")
