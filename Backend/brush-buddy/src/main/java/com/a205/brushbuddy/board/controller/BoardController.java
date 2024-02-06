@@ -5,6 +5,10 @@ import com.a205.brushbuddy.board.domain.Board;
 import com.a205.brushbuddy.board.domain.Reply;
 import com.a205.brushbuddy.board.dto.*;
 import com.a205.brushbuddy.board.service.BoardService;
+import com.a205.brushbuddy.exception.BaseException;
+import com.a205.brushbuddy.exception.ErrorCode;
+import com.a205.brushbuddy.util.JwtUtil;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -20,10 +24,11 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class BoardController {
     private final BoardService boardService;
+    private final JwtUtil jwtUtil;
 
     // 게시글 검색 및 리스트 조회
     @GetMapping("/list")
-    public ResponseEntity<?> getBoardList(BoardListRequestDto requestDto) throws Exception{
+    public ResponseEntity<?> getBoardList(BoardListRequestDto requestDto){
         Pageable pageable = PageRequest.of(requestDto.getPageNum() -1, //현재 페이지
                 requestDto.getListNum(), // 페이지 당 개수
                 requestDto.getDirection(), //오름차순 or 내림차순
@@ -53,17 +58,16 @@ public class BoardController {
 
     // 게시판 작성
     @PostMapping("")
-    public ResponseEntity<?> writeBoard(@RequestBody BoardWriteRequestDto requestDto) throws Exception{
-        //TODO : userId JWT 토큰으로 부터 추출 및 유효성 조사
-        Integer userId = 1;
+    public ResponseEntity<?> writeBoard(@RequestBody BoardWriteRequestDto requestDto, HttpServletRequest request){
+        Integer userId = jwtUtil.getUserId(request)
+                .orElseThrow(() -> new BaseException(ErrorCode.INVALID_TOKEN));// 헤더의 access token으로 userId 추출, null 반환시 유효하지 않은 토큰 오류 전송
         boardService.writeBoard(userId, requestDto);
         return ResponseEntity.ok().build();
     }
 
     // 게시판 상세조회
     @GetMapping("/{boardId}")
-    public  ResponseEntity<?> detailBoard(@PathVariable long boardId) throws Exception{
-
+    public  ResponseEntity<?> detailBoard(@PathVariable long boardId){
         BoardDetailResponseDto result = boardService.getDetail(boardId);
         return ResponseEntity.ok().body(result);
     }
@@ -71,18 +75,19 @@ public class BoardController {
 
     //게시판 수정
     @PutMapping("/{boardId}")
-    public  ResponseEntity<?> modifyBoard(@PathVariable long boardId, @RequestBody BoardModifyRequestDto requestDto) throws Exception{
-        //TODO : userId JWT 토큰으로 부터 추출 및 유효성 조사
-        Integer userId = 1;
+    public  ResponseEntity<?> modifyBoard(@PathVariable long boardId, @RequestBody BoardModifyRequestDto requestDto, HttpServletRequest request) {
+        Integer userId = jwtUtil.getUserId(request)
+                .orElseThrow(() -> new BaseException(ErrorCode.INVALID_TOKEN));// 헤더의 access token으로 userId 추출, null 반환시 유효하지 않은 토큰 오류 전송
         boardService.modifyBoard(boardId, userId, requestDto);
         return ResponseEntity.ok().build();
     }
 
     //게시판 삭제
     @DeleteMapping("/{boardId}")
-    public  ResponseEntity<?> deleteBoard(@PathVariable long boardId) throws Exception{
-        //TODO : userId JWT 토큰으로 부터 추출 및 유효성 조사
-        Integer userId = 1;
+    public  ResponseEntity<?> deleteBoard(@PathVariable long boardId, HttpServletRequest request){
+        Integer userId = jwtUtil.getUserId(request)
+                .orElseThrow(() -> new BaseException(ErrorCode.INVALID_TOKEN));// 헤더의 access token으로 userId 추출, null 반환시 유효하지 않은 토큰 오류 전송
+        log.info(String.valueOf(userId));
         boardService.deleteBoard(userId, boardId);
         return ResponseEntity.ok().build();
     }
@@ -90,7 +95,7 @@ public class BoardController {
 
     //댓글 리스트 조회
     @GetMapping("/{boardId}/replies")
-    public  ResponseEntity<?> getReplies(@PathVariable long boardId, ReplyListRequestDto requestDto) throws Exception{
+    public  ResponseEntity<?> getReplies(@PathVariable long boardId, ReplyListRequestDto requestDto) {
         // pageable 생성
         Pageable pageable = PageRequest.of(requestDto.getPageNum() - 1 ,requestDto.getListNum(), Sort.Direction.DESC, "replyTimestamp");
 
@@ -118,36 +123,36 @@ public class BoardController {
 
     //댓글 작성
     @PostMapping("/{boardId}/replies")
-    public  ResponseEntity<?> writeReply(@PathVariable long boardId, @RequestBody ReplyWriteRequestDto replyWriteRequestDto) throws Exception{
-        //TODO : userId JWT 토큰으로 부터 추출 및 유효성 조사
-        Integer userId = 1;
+    public  ResponseEntity<?> writeReply(@PathVariable long boardId, @RequestBody ReplyWriteRequestDto replyWriteRequestDto,  HttpServletRequest request) {
+        Integer userId = jwtUtil.getUserId(request)
+                .orElseThrow(() -> new BaseException(ErrorCode.INVALID_TOKEN)); // 헤더의 access token으로 userId 추출, null 반환시 유효하지 않은 토큰 오류 전송
         boardService.writeReply(userId, boardId, replyWriteRequestDto);
         return ResponseEntity.ok().build();
     }
 
     //댓글 삭제
     @DeleteMapping("/{boardId}/replies/{replyId}")
-    public  ResponseEntity<?> deleteReply(@PathVariable long boardId, @PathVariable long replyId) throws Exception{
-        //TODO : userId JWT 토큰으로 부터 추출 및 유효성 조사
-        Integer userId = 1;
+    public  ResponseEntity<?> deleteReply(@PathVariable long boardId, @PathVariable long replyId, HttpServletRequest request) {
+        Integer userId = jwtUtil.getUserId(request)
+                .orElseThrow(() -> new BaseException(ErrorCode.INVALID_TOKEN)); // 헤더의 access token으로 userId 추출, null 반환시 유효하지 않은 토큰 오류 전송
         boardService.deleteReply(userId, replyId);
         return ResponseEntity.ok().build();
     }
 
     //좋아요 추가
     @PostMapping("/{boardId}/heart")
-    public  ResponseEntity<?> addHeart(@PathVariable long boardId) throws Exception{
-        //TODO : userId JWT 토큰으로 부터 추출 및 유효성 조사
-        Integer userId = 1;
+    public  ResponseEntity<?> addHeart(@PathVariable long boardId , HttpServletRequest request) {
+        Integer userId = jwtUtil.getUserId(request)
+                .orElseThrow(() -> new BaseException(ErrorCode.INVALID_TOKEN)); // 헤더의 access token으로 userId 추출, null 반환시 유효하지 않은 토큰 오류 전송
         boardService.addHeart(userId, boardId);
         return ResponseEntity.ok().build();
     }
 
     //좋아요 삭제
     @DeleteMapping ("/{boardId}/heart")
-    public  ResponseEntity<?> deleteHeart(@PathVariable long boardId) throws Exception{
-        //TODO : userId JWT 토큰으로 부터 추출 및 유효성 조사
-        Integer userId = 1;
+    public  ResponseEntity<?> deleteHeart(@PathVariable long boardId, HttpServletRequest request){
+        Integer userId = jwtUtil.getUserId(request)
+                .orElseThrow(() -> new BaseException(ErrorCode.INVALID_TOKEN)); // 헤더의 access token으로 userId 추출, null 반환시 유효하지 않은 토큰 오류 전송
         boardService.deleteHeart(userId, boardId);
         return ResponseEntity.ok().build();
     }
