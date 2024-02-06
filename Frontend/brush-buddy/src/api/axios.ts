@@ -1,5 +1,6 @@
 import axios, { type AxiosResponse } from 'axios';
 import { useUserStore } from '../stores/user';
+import { postRefresh, signOut } from './user';
 const url = import.meta.env.VITE_APP_SERVER_URL
 
 function localAxios(){
@@ -89,7 +90,7 @@ async function resetTokenAndReattemptRequest(error : any) {
 
     return retryOriginalRequest; // pending 됐다가 onAccessTokenFetched가 호출될 때 resolve
   } catch (error) {
-    signOut();
+    await signOut();
     return Promise.reject(error);
   }
 }
@@ -102,27 +103,15 @@ function onAccessTokenFetched(accessToken:string) {
   subscribers.forEach((callback:any) => callback(accessToken));
   subscribers = [];
 }
-
-function signOut() {
-  // removeUserToken('access');
-  userStore.setAccessToken(''); // accessToken 날리기
-  // removeUserToken('refresh');
-  document.cookie = "refreshToken=;Max-Age=0;"; // refreshToken이 담긴 쿠키 날리기
-  window.location.href = '/';
-}
-
   return instance;
 }
+
 
 const instance = axios.create({
   baseURL: url,
   withCredentials: true,
-  
 });
 
-function postRefresh() : Promise<AxiosResponse>{
-  return instance.get('/auth/refresh');
-}
 
 
-export  {localAxios };
+export  { localAxios, instance };
