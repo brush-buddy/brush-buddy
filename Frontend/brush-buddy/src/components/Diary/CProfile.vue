@@ -12,7 +12,20 @@
         <div>다채로운 하루 되세요!</div>
       </div>
     </div>
-    <div id="modify">프로필 수정</div>
+    <v-dialog width="500">
+      <template v-slot:activator="{ props }">
+        <div id="modify" v-bind="props">프로필 수정</div>
+      </template>
+      <template v-slot:default="{ isActive }">
+        <v-card title="프로필 수정">
+          <CModifyProfile/>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn text="Close Dialog" @click="isActive.value = false"></v-btn>
+          </v-card-actions>
+        </v-card>
+      </template>
+    </v-dialog>
     <div id="milage">
       <div>보유한 마일리지</div>
       <div id="amount">
@@ -23,6 +36,7 @@
   </div>
 </template>
 <script setup lang="ts">
+import CModifyProfile from "./CModifyProfile.vue";
 </script>
 <style scoped>
 #wrapper {
