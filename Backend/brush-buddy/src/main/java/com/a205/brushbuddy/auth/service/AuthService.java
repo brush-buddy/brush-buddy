@@ -120,8 +120,10 @@ public class AuthService {
     //회원 가입 - 이미 있다면 찾은거 반환
     private User signUp(KakaoUserData userData) {
         String socialId = userData.getSocialId();
-        return userRepository.findBySocialId(socialId)
+        User user = userRepository.findBySocialId(socialId)
                 .orElseGet(() -> saveUser(userData));
+        user.setUserIsWithdraw(false); // 재가입 한 사람 다시 살려내기
+        return user;
     }
 
     // 유저
@@ -162,6 +164,6 @@ public class AuthService {
 
     // User 제거
     private void deleteUser(User user) {
-        userRepository.delete(user);
+        user.setUserIsWithdraw(true);
     }
 }

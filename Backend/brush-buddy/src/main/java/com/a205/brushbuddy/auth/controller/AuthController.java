@@ -8,6 +8,7 @@ import com.a205.brushbuddy.auth.vo.Token;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -54,9 +55,12 @@ public class AuthController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<?> signOut(Principal principal) {
-        int userId = Integer.parseInt(principal.getName());
-        authService.signOut(userId); // 리프레시 토큰 삭제
+    public ResponseEntity<?> signOut(@Nullable Principal principal) {
+        // 액세스 토큰이 있다면
+        if(principal != null){
+            int userId = Integer.parseInt(principal.getName());
+            authService.signOut(userId); // DB내 저장된 리프레시 토큰 삭제
+        }
 
         // 쿠키 만료 시키기
         String cookie = authService.setHttpOnlyCookieInvalidate("refreshToken");
@@ -68,8 +72,9 @@ public class AuthController {
 
     @DeleteMapping
     public ResponseEntity<?> withdrawal(Principal principal) {
+        // 액세스 토큰이 있다면
         int userId = Integer.parseInt(principal.getName());
-        authService.withdraw(userId);
+        authService.withdraw(userId);// DB내 저장된 리프레시 토큰 삭제
 
         // 쿠키 만료 시키기
         String cookie = authService.setHttpOnlyCookieInvalidate("refreshToken");
