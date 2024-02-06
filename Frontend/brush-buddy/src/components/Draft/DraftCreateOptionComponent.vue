@@ -13,43 +13,38 @@ onMounted(() => {
 })
 
 const dialog = ref(false)
-const file = ref([]);
+const file = ref([])
 
 const makeImage = () => {
   console.log(file.value[0])
-  const fileData = new FormData();
-  fileData.append("image", file.value[0])
-  console.log(fileData.get("image"));
+  let fileData = new FormData()
+  fileData.append('image', file.value[0])
+  console.log(fileData.get('image'))
+  console.log(fileData)
   if (file.value) {
-    const reader = new FileReader();
     // reader.readAsDataURL(file.value[0]);
-    console.dir(reader.result as string);
-    reader.onloadend = () => {
-      console.log(reader.result as string);
-    	axios.post("http://localhost:8000/pipo-painting" , fileData,{
-        headers:{
-          'Content-Type': 'multipart/form-data'
+
+    axios
+      .post('http://localhost:8000/api/v1/draft/pipo-painting', fileData, {
+        headers: {
+          'content-type': 'multipart/form-data'
         }
       })
       .then((res) => {
-        console.log(res);
+        console.log(res)
       })
-    }
-
   }
 }
-const preview = ref("../../assets/images/empty.png");
+const preview = ref('../../assets/images/empty.png')
 
-  const previewFile = (e: any) => {
-    console.log(e[0]);
-    const reader = new FileReader();
-   reader?.readAsDataURL(e[0]);
-   reader.onloadend = () => {
-     preview.value = reader.result as string;
-   };
-
-
-  };
+const previewFile = (e: any) => {
+  console.log(e[0])
+  const reader = new FileReader()
+  reader?.readAsDataURL(e[0])
+  reader.onloadend = () => {
+    preview.value = reader.result as string
+  }
+}
 </script>
 
 <template>
@@ -83,31 +78,37 @@ const preview = ref("../../assets/images/empty.png");
             </template>
             <v-card style="padding: 1rem">
               <v-card-title>
-                <span class="text-h5" >사진</span>
+                <span class="text-h5">사진</span>
               </v-card-title>
-              <v-row style="display: flex; justify-content: center; padding: 1rem;">
-                <img :src="preview" style="width: 4rem;">
+              <v-row style="display: flex; justify-content: center; padding: 1rem">
+                <img :src="preview" style="width: 4rem" />
               </v-row>
 
-              <v-row style="display : flex; justify-content: center; margin: 1rem;">
-              <template v-if="file.length === 0"></template>
-              
-              <v-file-input
-                    accept="image/png, image/jpeg, image/bmp"
-                    placeholder="Pick an avatar"
-                    prepend-icon="mdi-camera"
-                    label="Image"
-                    style="width: 80%"
-                    v-model = "file"
-                    color = "pink-darken-1"
-                    background-color = "pink-darken-1"
-                    @change="previewFile(file)"
+              <v-row style="display: flex; justify-content: center; margin: 1rem">
+                <template v-if="file.length === 0"></template>
+
+                <v-file-input
+                  accept="image/png, image/jpeg, image/bmp"
+                  placeholder="Pick an avatar"
+                  prepend-icon="mdi-camera"
+                  label="Image"
+                  style="width: 80%"
+                  v-model="file"
+                  color="pink-darken-1"
+                  background-color="pink-darken-1"
+                  @change="previewFile(file)"
                 ></v-file-input>
               </v-row>
               <v-card-actions>
                 <v-spacer></v-spacer>
                 <v-btn color="pink-darken-1" variant="tonal" @click="dialog = false"> 취소 </v-btn>
-                <v-btn color="purple-darken-1" variant="tonal" @click="dialog = false; makeImage()"> 만들기 </v-btn>
+                <v-btn
+                  color="purple-darken-1"
+                  variant="tonal"
+                  @click="(dialog = false), makeImage()"
+                >
+                  만들기
+                </v-btn>
               </v-card-actions>
             </v-card>
           </v-dialog>
@@ -147,10 +148,6 @@ const preview = ref("../../assets/images/empty.png");
   height: 12.3125rem;
   flex-shrink: 0;
   position: relative;
-}
-
-.button-box {
-
 }
 
 .button-group {
