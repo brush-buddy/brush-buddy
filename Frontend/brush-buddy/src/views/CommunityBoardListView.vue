@@ -33,23 +33,27 @@ const boardThumbnailDataFirst = ref<BoardThumbnail[]>([]);
 const boardThumbnailDataSecond = ref<BoardThumbnail[]>([]);
 
 // 비동기 API 함수
-async function api(pageNum: number, listNum: number = 5): Promise<BoardThumbnail[]> {
-  try {
-    const response = await axios({
-      baseURL: "",
-      method: "get",
-      url: `http://localhost:8080/v1/api/board/list?listNum=${listNum}&pageNum=${pageNum}`,
-      headers: {
-        "Content-Type": "application/json; charset=utf-8",
-      },
-    });
-    return response.data.boards;
-  } catch (error) {
-    console.error("API 호출 중 오류 발생:", error);
-    return [];
-  }
+// async function api(pageNum: number, listNum: number = 5): Promise<BoardThumbnail[]> {
+//   try {
+//     const response = await axios({
+//       baseURL: "",
+//       method: "get",
+//       url: `http://localhost:8080/api/v1/board/list?listNum=${listNum}&pageNum=${pageNum}`,
+//       headers: {
+//         "Content-Type": "application/json; charset=utf-8",
+//       },
+//     });
+//     return response.data.boards;
+//   } catch (error) {
+//     console.error("API 호출 중 오류 발생:", error);
+//     return [];
+//   }  
+// }
+async function api(pageNum: number, listNum: number = 5): Promise<BoardThumbnail[]>
+{
+   const {data} = await localAxios().get(`/board/list?listNum=${listNum}&pageNum=${pageNum}`)
+    return data.boards;
 }
-
 // 무한 스크롤 로드 함수
 async function load({ done }: { done: (status: string) => void }) {
   // const pageNum = Math.ceil(boardThumbnailDataFirst.value.length / 5) + 1;
