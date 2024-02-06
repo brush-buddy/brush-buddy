@@ -19,7 +19,7 @@ import lombok.ToString;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-public class KakaopayReadyResponse {
+public class KakaopayReadyResponseDto {
 	private String tid;
 	// URL 변수 중 필수
 	private String nextRedirectPcUrl;
@@ -37,7 +37,7 @@ public class KakaopayReadyResponse {
 	public static String[] name;
 
 	public String[] getAll() {
-		return new String[] {tid, nextRediretAppUrl, nextRedirectMobileUrl, nextRedirectPcUrl, androidAppScheme,
-			iosAppScheme, createdAt.toString()};
+		return new String[] { tid, nextRediretAppUrl, nextRedirectMobileUrl, nextRedirectPcUrl, androidAppScheme,
+				iosAppScheme, createdAt.toString() };
 	}
 }

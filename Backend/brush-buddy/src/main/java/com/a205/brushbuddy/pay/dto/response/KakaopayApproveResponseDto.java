@@ -19,7 +19,7 @@ import lombok.ToString;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-public class KakaopayApproveResponse {
+public class KakaopayApproveResponseDto {
 	private String aid;
 	private String tid;
 	private String cid;
@@ -27,8 +27,8 @@ public class KakaopayApproveResponse {
 	private String partnerOrderId;
 	private String partnerUserId;
 	private String paymentMethodType;
-	private KakaopayAmount amount;
-	private KakaopayCardInfo cardInfo;
+	private KakaopayAmountDto amount;
+	private KakaopayCardInfoDto cardInfo;
 	private String itemName;
 	private String itemCode;
 	private String quantity;

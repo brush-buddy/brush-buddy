@@ -13,7 +13,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class KakaopayCardInfo {
+public class KakaopayCardInfoDto {
     private String kakaopayPurchaseCorp;
     private String kakaopayPurchaseCorpCode;
     private String kakaopayIssuerCorp;

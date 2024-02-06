@@ -13,7 +13,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class KakaopayAmount {
+public class KakaopayAmountDto {
     private int total;
     private int taxFree;
     private int vat;

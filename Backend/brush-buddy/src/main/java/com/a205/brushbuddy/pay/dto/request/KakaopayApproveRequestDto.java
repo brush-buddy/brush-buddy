@@ -15,7 +15,7 @@ import lombok.ToString;
 @Setter
 @ToString
 @NoArgsConstructor
-public class KakaopayApproveRequest {
+public class KakaopayApproveRequestDto {
     @Value("${spring.kakao.pay.cid-key}")
     private String cid;
     private String tid;

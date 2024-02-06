@@ -10,18 +10,20 @@ import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Data
 @Table(name = "mileage")
+@NoArgsConstructor
 public class Mileage {
     @Id
     @GeneratedValue
     @Column(name = "mileage_id", nullable = false)
-    private long mileageId;
+    private Long mileageId;
 
     @Column(name = "user_id", nullable = false)
-    private long userId;
+    private Long userId;
 
     @Column(name = "workplace_id", nullable = true)
     private Integer workplaceId;
