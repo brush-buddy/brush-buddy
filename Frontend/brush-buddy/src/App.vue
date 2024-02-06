@@ -11,14 +11,11 @@ const kakaoLogin = () => {
       
     }
 </script>
-
+,
 <template>
-  <div class="Wrapper">
-    <div class="contentWrapper">
+  <div style="height: 10px; width: 100vw;"></div>
         <RouterView/>
         <NavigationComponent />
-    </div>
-  </div>
 </template>
 
 <style scoped>
@@ -35,7 +32,6 @@ NavigationComponent {
 }
 .contentWrapper {
   flex : 1;
-
 }
 
 </style>
