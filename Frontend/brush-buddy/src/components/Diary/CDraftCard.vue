@@ -41,5 +41,6 @@ console.log("incard",props);
 #timestamp{
     font-size: small;
     color: gray;
+    margin-left: 1vh;
 }
 </style>

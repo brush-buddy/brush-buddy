@@ -19,15 +19,11 @@
     "axios": "^1.6.7",
     "infinite-loading-vue3-ts": "^1.0.5",
     "pinia": "^2.1.7",
-
     "vue": "^3.4.15",
     "vue-router": "^4.2.5",
     "vue-search-input": "^1.1.14",
-
     "styled-components": "^6.1.8",
     "styled-reset": "^4.5.2",
-    "vue": "^3.3.11",
-
     "vuetify": "^3.5.2"
   },
   "devDependencies": {

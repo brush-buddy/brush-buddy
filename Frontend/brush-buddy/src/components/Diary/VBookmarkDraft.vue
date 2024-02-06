@@ -22,9 +22,7 @@
         draftTimestamp: string;
         draftDownload: number;
         draftBookmark: number
-        // likeNumber: number;
-        // thumbnail: string;
-        // views: number;
+
       };
       pageNum: number;
       length: number;
