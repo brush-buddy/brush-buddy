@@ -40,6 +40,7 @@ public class SecurityConfig {
                                 .requestMatchers("/swagger-ui/**","/swagger-resources/**","/v3/api-docs/**").permitAll()
 //                                .requestMatchers(new AntPathRequestMatcher("/oauth/token")).permitAll()
                                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                                .requestMatchers(HttpMethod.GET,"/api/v1/auth/refresh").permitAll()
                                 .anyRequest().authenticated())
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)  // Http 요청이 UsernamePasswordAuthenticationFilter 전에 JwtAuthenticationFilter
                 .build();

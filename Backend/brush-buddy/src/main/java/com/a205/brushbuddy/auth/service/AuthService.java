@@ -22,8 +22,8 @@ import static com.a205.brushbuddy.auth.jwt.JwtValidationType.VALID_JWT;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class AuthService {
-    private static final int ACCESS_TOKEN_EXPIRATION = 1800000;
-    private static final int REFRESH_TOKEN_EXPIRATION = 1209600000;
+    private static final int ACCESS_TOKEN_EXPIRATION = 1800000; // 30분
+    private static final int REFRESH_TOKEN_EXPIRATION = 1209600000; // 2주
 
     private final JwtTokenProvider jwtTokenProvider;
     private final UserRepository userRepository;
@@ -80,9 +80,10 @@ public class AuthService {
         return cookie.toString();
     }
 
-    // refresh token으로 access token 재발급하는 메소드
-    public String refresh(String refreshToken){
-        if(!jwtTokenProvider.validateToken(refreshToken).equals(VALID_JWT)){
+    // refresh token으로 access token, refresh token 재발급하는 메소드
+    @Transactional
+    public Token refresh(String refreshToken){
+        if(!jwtTokenProvider.validateToken(refreshToken).equals(VALID_JWT)){ // 유효하지 않은 토큰이면 401 에러
             throw new BaseException(ErrorCode.INVALID_TOKEN);
         }
         Integer userId = jwtTokenProvider.getUserFromJwt(refreshToken); //  정보 추출
@@ -95,20 +96,14 @@ public class AuthService {
             throw new BaseException(ErrorCode.INVALID_TOKEN);
         }
 
-        // refresh token이 같다면 액세스 토큰 반환
+        // refresh token이 같다면 토큰 생성 해서 반환
         if(realRefreshToken.equals(refreshToken)){
-            return createAccessToken(user);
+              return getToken(user); // Token 재생성 및 user 리프레시 토큰 컬럼에 저장한다.
         }
 
         // 리프레시 토큰이 같지 않다면 토큰 오류 반환
         throw new BaseException(ErrorCode.UNAUTHORIZED);
     }
-
-    // refresh token으로 access token 생성하는 메소드
-    private String createAccessToken(User user){
-       return jwtTokenProvider.generateToken(new UserAuthentication(user.getUserId(),null,null), ACCESS_TOKEN_EXPIRATION);
-    }
-
 
     // 유저 정보 가져오기
     private User getUser(String socialAccessToken) {
@@ -121,11 +116,6 @@ public class AuthService {
         kakaoUserData.setUserData(kakaoService.getKakaoData(socialAccessToken));
         return kakaoUserData;
     }
-
-//    //액세스 토큰으로
-//    private String getSocialId(String socialAccessToken) {
-//          return getUserData(socialAccessToken).get("id");
-//    }
 
     //회원 가입 - 이미 있다면 찾은거 반환
     private User signUp(KakaoUserData userData) {
