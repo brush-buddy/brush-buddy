@@ -22,6 +22,12 @@ const vuetify = createVuetify({
 });
 const pinia = createPinia();
 
+declare global {
+  interface Window {
+    Kakao: any;
+  }
+}
+
 window.Kakao.init(import.meta.env.VITE_APP_KAKAO_API_JS_KEY);
 createApp(App).use(router).use(vuetify).use(pinia).mount('#app');
 
