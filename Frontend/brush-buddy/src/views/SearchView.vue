@@ -1,42 +1,11 @@
 <template>
     <div>
-        <!-- <p>search</p> -->
-        <div id="background">
-    <div id="home">
-        <p>Search</p>
-        <p>Search</p>
-        <p>Search</p>
-        <p>Search</p>
-        <p>Search</p>
-        <p>Search</p>
-        <p>Search</p>
-        <p>Search</p>
-        <p>Search</p>
-        <p>Search</p>
-        <p>Search</p>
-        <p>Search</p>
-        <p>Search</p>
-        <p>Search</p>
-        <p>Search</p>
-        <p>Search</p>
-        <p>Search</p>
-        <p>Search</p>
-        <p>Search</p>
-        <p>Search</p>
-        <p>Search</p>
-        <p>Search</p>
-        <p>Search</p>
-        <p>Search</p>
-        <p>Search</p>
-        <p>Search</p>
-        <p>Search</p>
-        <p>Search</p>
-    </div>
-  </div>
+        <SearchComponent />
     </div>
 </template>
 
 <script setup lang="ts">
+import SearchComponent from '../components/SearchComponent.vue';
 
 </script>
 
