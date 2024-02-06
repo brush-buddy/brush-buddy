@@ -22,15 +22,8 @@ import java.security.Principal;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/auth")
 public class AuthController {
-
     private final AuthService authService;
     private  final KakaoService kakaoService;
-//    @PostMapping
-//    public ResponseEntity<?> signIn(@RequestHeader("Authorization") String socialAccessToken) {
-//        SignInResponse response = authService.signIn(socialAccessToken);
-//        return ResponseEntity.ok(response);
-//    }
-
 
     @GetMapping
     public ResponseEntity<?> signInWithAuthCode(@RequestParam("code") String code) throws URISyntaxException {
@@ -53,31 +46,26 @@ public class AuthController {
         // 카카오 엑세스 토큰으로 로그인 진행 -> 우리 서버의 jwt로 만든다.
         SignInResponse response = authService.signIn(socialAccessToken);
 
-        //프론트로 해당 데이터 전송
-//        String urlTemplate = "http://localhost:5173/login?at={p1}";
-//        String url = UriComponentsBuilder.fromHttpUrl(urlTemplate)
-//                .buildAndExpand(response.accessToken())
-//                .toUriString();
-//
-//        URI redirectUri  = new URI(url);
-//        HttpHeaders httpHeaders = new HttpHeaders();
-//        httpHeaders.setLocation(redirectUri);
-//        httpHeaders.set("Set-Cookie", response.refreshToken());
-
-        String cookie = authService.createHttpOnlyCookie(response.refreshToken()); // refresh-token을 http-only 쿠키로 전송
+        // refresh-token을 http-only 쿠키로 전송
+        String cookie = authService.createHttpOnlyCookie("refreshToken", response.refreshToken());
 
         return ResponseEntity.ok()
                 .header("Set-Cookie", cookie)
-                .body(response.accessToken());
-//        return ResponseEntity.ok(response);
+                .body(response.accessToken()); // body에는 access token을 넣는다.
     }
 
     @ResponseBody
     @PostMapping("/logout")
     public ResponseEntity<?> signOut(Principal principal) {
         int userId = Integer.parseInt(principal.getName());
-        authService.signOut(userId);
-        return ResponseEntity.ok(null);
+        authService.signOut(userId); // 리프레시 토큰 삭제
+
+        // 쿠키 만료 시키기
+        String cookie = authService.setHttpOnlyCookieInvalidate("refreshToken");
+
+        return ResponseEntity.ok()
+                .header("Set-Cookie", cookie)
+                .body(null);
     }
 
     @ResponseBody
@@ -85,13 +73,19 @@ public class AuthController {
     public ResponseEntity<?> withdrawal(Principal principal) {
         int userId = Integer.parseInt(principal.getName());
         authService.withdraw(userId);
-        return ResponseEntity.ok(null);
+
+        // 쿠키 만료 시키기
+        String cookie = authService.setHttpOnlyCookieInvalidate("refreshToken");
+
+        return ResponseEntity.ok()
+                .header("Set-Cookie", cookie)
+                .body(null);
     }
 
     // refresh token으로 access token 재발급 하기
     @ResponseBody
     @GetMapping("/refresh")
-    public ResponseEntity<?> refresh(@CookieValue(value = "refreshtoken") String refreshToken){
+    public ResponseEntity<?> refresh(@CookieValue(value = "refreshToken") String refreshToken){
         return ResponseEntity.ok(authService.refresh(refreshToken));
     }
 }

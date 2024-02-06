@@ -16,6 +16,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static com.a205.brushbuddy.auth.jwt.JwtValidationType.VALID_JWT;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -50,11 +52,8 @@ public class AuthService {
     }
 
     // refresh Token을 http-only 쿠키로 만드는 메소드
-    public String createHttpOnlyCookie(String refreshToken){
-        String cookieName = "refreshtoken";
-        String cookieValue = refreshToken; // 쿠키벨류엔 글자제한이 이써, 벨류로 만들어담아준다.
+    public String createHttpOnlyCookie(String cookieName, String cookieValue){
         int maxAge = 60 * 60 * 24;
-//        Cookie cookie = new Cookie(cookieName, cookieValue);
 
         ResponseCookie cookie = ResponseCookie.from(cookieName, cookieValue)
                 .path("/")
@@ -67,18 +66,42 @@ public class AuthService {
         return cookie.toString();
     }
 
+    //리프레시 토큰 담긴 쿠키 만료 시키기
+    public String setHttpOnlyCookieInvalidate(String cookieName){
+
+        ResponseCookie cookie = ResponseCookie.from(cookieName, null)
+                .path("/")
+                .sameSite("None")
+                .httpOnly(true)
+                .secure(true)
+                .maxAge(0) // 쿠키 바로 만료
+                .build();
+
+        return cookie.toString();
+    }
+
     // refresh token으로 access token 재발급하는 메소드
     public String refresh(String refreshToken){
-        Integer userId = jwtTokenProvider.getUserFromJwt(refreshToken);
+        if(!jwtTokenProvider.validateToken(refreshToken).equals(VALID_JWT)){
+            throw new BaseException(ErrorCode.INVALID_TOKEN);
+        }
+        Integer userId = jwtTokenProvider.getUserFromJwt(refreshToken); //  정보 추출
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new BaseException(ErrorCode.UNAUTHORIZED));
+                .orElseThrow(() -> new BaseException(ErrorCode.UNAUTHORIZED)); //유저 정보 추출
         String realRefreshToken = user.getUserRefreshtoken(); // 저장된 refreshToken 가지고 오기
 
-        // refresh token이 같다면
+        // 저장된 토큰이 유효하지 않다면 오류 반환
+        if(!jwtTokenProvider.validateToken(realRefreshToken).equals(VALID_JWT)){
+            throw new BaseException(ErrorCode.INVALID_TOKEN);
+        }
+
+        // refresh token이 같다면 액세스 토큰 반환
         if(realRefreshToken.equals(refreshToken)){
             return createAccessToken(user);
         }
-        else return null;
+
+        // 리프레시 토큰이 같지 않다면 토큰 오류 반환
+        throw new BaseException(ErrorCode.UNAUTHORIZED);
     }
 
     // refresh token으로 access token 생성하는 메소드
