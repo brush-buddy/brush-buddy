@@ -7,7 +7,11 @@ import com.a205.brushbuddy.draft.dto.response.DraftCreateResponseDto;
 import com.a205.brushbuddy.draft.dto.response.DraftDetailResponseDto;
 import com.a205.brushbuddy.draft.dto.response.DraftListResponseDto;
 import com.a205.brushbuddy.draft.service.DraftService;
+import com.a205.brushbuddy.exception.BaseException;
+import com.a205.brushbuddy.exception.ErrorCode;
+import com.a205.brushbuddy.util.JwtUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,12 +31,14 @@ public class DraftController {
 	@Autowired
 	private DraftService draftService;
 
+	private final JwtUtil jwtUtil;
 
 	@GetMapping("/list")
 	public ResponseEntity<Page<DraftListResponseDto>> getDrafts(
 		@RequestParam(required = false) String search,
 		@RequestParam(defaultValue = "5") int size,
-		@RequestParam(defaultValue = "0") int page) {
+		@RequestParam(defaultValue = "0") int page
+	) {
 		if(search == null) {
 			DraftListRequestDto draftListRequestDto = new DraftListRequestDto(search);
 			Page<DraftListResponseDto> draftList = draftService.getDraftList(PageRequest.of(page, size, Sort.by("draftId").descending()));
@@ -56,10 +62,11 @@ public class DraftController {
 	// 도안 및 팔레트 저장
 
 	@PostMapping("/")
-	public ResponseEntity<DraftCreateResponseDto> createDraft(@RequestBody DraftCreateRequestDto draftCreateDto) throws
+	public ResponseEntity<DraftCreateResponseDto> createDraft(@RequestBody DraftCreateRequestDto draftCreateDto, HttpServletRequest request) throws
 		JsonProcessingException {
-		int userId = 1;
-		return new ResponseEntity<>(draftService.createDraft(1,draftCreateDto), HttpStatus.OK);
+		Integer userId = jwtUtil.getUserId(request)
+				.orElseThrow(() -> new BaseException(ErrorCode.INVALID_TOKEN)); // 헤더의 access token으로 userId 추출, null 반환시 유효하지 않은 토큰 오류 전송
+		return new ResponseEntity<>(draftService.createDraft(userId, draftCreateDto), HttpStatus.OK);
 
 	}
 
@@ -75,8 +82,10 @@ public class DraftController {
 
 	// 도안 삭제
 	@DeleteMapping("/{draftId}")
-	public ResponseEntity<String> deleteDraft(@PathVariable Long draftId) throws Exception{
-		int userId = 2;
+	public ResponseEntity<String> deleteDraft(@PathVariable Long draftId, HttpServletRequest request) throws Exception{
+		Integer userId = jwtUtil.getUserId(request)
+				.orElseThrow(() -> new BaseException(ErrorCode.INVALID_TOKEN)); // 헤더의 access token으로 userId 추출, null 반환시 유효하지 않은 토큰 오류 전송
+
 		draftService.deleteDraft(userId, draftId);
 		return new ResponseEntity<>("success", HttpStatus.OK);
 	}
@@ -84,22 +93,26 @@ public class DraftController {
 
 	// 북마크
 	@PostMapping("/{draftId}/bookmark")
-	public ResponseEntity<String> createBookmark(@PathVariable Long draftId) throws Exception{
-		int userId = 1;
+	public ResponseEntity<String> createBookmark(@PathVariable Long draftId, HttpServletRequest request) throws Exception{
+		Integer userId = jwtUtil.getUserId(request)
+				.orElseThrow(() -> new BaseException(ErrorCode.INVALID_TOKEN)); // 헤더의 access token으로 userId 추출, null 반환시 유효하지 않은 토큰 오류 전송
 		draftService.createBookmarkDraft(userId, draftId);
 		return new ResponseEntity<>("success", HttpStatus.OK);
 	}
 
 	@DeleteMapping("/{draftId}/bookmark")
-	public ResponseEntity<String> deleteBookmark(@PathVariable Long draftId) throws Exception{
-		int userId = 1;
+	public ResponseEntity<String> deleteBookmark(@PathVariable Long draftId, HttpServletRequest request) {
+		Integer userId = jwtUtil.getUserId(request)
+				.orElseThrow(() -> new BaseException(ErrorCode.INVALID_TOKEN)); // 헤더의 access token으로 userId 추출, null 반환시 유효하지 않은 토큰 오류 전송
 		draftService.deleteBookmarkDraft(userId, draftId);
 		return new ResponseEntity<>("success", HttpStatus.OK);
 	}
 
 	@PostMapping("/{draftId}/purchase")
-	public ResponseEntity<String> buyDraft(@PathVariable Long draftId) throws Exception{
-		int userId = 1;
+	public ResponseEntity<String> buyDraft(@PathVariable Long draftId, HttpServletRequest request) throws Exception{
+		Integer userId = jwtUtil.getUserId(request)
+				.orElseThrow(() -> new BaseException(ErrorCode.INVALID_TOKEN)); // 헤더의 access token으로 userId 추출, null 반환시 유효하지 않은 토큰 오류 전송
+
 		draftService.buyDraft(userId, draftId);
 		return new ResponseEntity<>("success", HttpStatus.OK);
 	}
