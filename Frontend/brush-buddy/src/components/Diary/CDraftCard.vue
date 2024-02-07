@@ -6,13 +6,13 @@
             </div>
         </div>
         <div id="timestamp">
-            {{ props.draft.draftTimestamp }}
+            {{ draft.draftTimestamp }}
         </div>
     </div>
 </template>
 <script setup lang="ts">
 import { defineProps } from 'vue';
-const props = defineProps({draft:Object});
+const props = defineProps(["draft"]);
 console.log("incard",props);
 </script>
 <style scoped>

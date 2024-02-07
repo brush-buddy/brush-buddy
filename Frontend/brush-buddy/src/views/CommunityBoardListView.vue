@@ -28,7 +28,7 @@
 import { ref, computed, onMounted } from 'vue'
 import axios from 'axios'
 import { useRouter } from 'vue-router'
-import CommunityComponent from '../components/community/CommunityComponent.vue'
+import CommunityComponent from '../components/Community/CommunityComponent.vue'
 import type { BoardThumbnail } from '../api/type'
 
 const currentPage = ref(0)
