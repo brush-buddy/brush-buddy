@@ -8,7 +8,7 @@ from pydantic import BaseModel
 class AwsS3(BaseModel):
     # S3 연결 함수
     def s3_connection(self):
-        # os 환경변수 불러오기
+        # os 환경변수 로그
         load_dotenv(verbose=True)
 
         # 환경변수 불러오기
