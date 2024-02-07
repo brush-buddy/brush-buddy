@@ -5,19 +5,20 @@ import 'vuetify/styles'
 import { createVuetify } from 'vuetify'
 import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
-import { aliases, mdi } from 'vuetify/iconsets/mdi'
-import "@mdi/font/css/materialdesignicons.min.css";
-
+import '@mdi/font/css/materialdesignicons.css' // Ensure you are using css-loader\
+import 'vuetify/styles'
 const vuetify = createVuetify({
-    components,
-    directives,
-    icons: {
-        defaultSet: 'mdi',
-        aliases,
-        sets: {
-          mdi
-        }
-      },
-    });
-createApp(App).use(router).use(vuetify).mount('#app');
+  components,
+  directives,
+  icons: {
+    defaultSet: 'mdi', // This is already the default value - only for display purposes
+  },
+})
+
+
+app.use(createPinia());
+app.use(router);
+app.use(vuetify);
+
+app.mount('#app');
 
