@@ -1,33 +1,27 @@
 import App from './App.vue';
 import router from './router';
 import { createApp } from 'vue';
-import 'vuetify/styles'
+import { createPinia } from 'pinia'
+const app = createApp(App);
+
+// Vuetify
 import { createVuetify } from 'vuetify'
 import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
-import { aliases, mdi } from 'vuetify/iconsets/mdi'
-import "@mdi/font/css/materialdesignicons.min.css";
-import { createPinia } from 'pinia';
-
+import '@mdi/font/css/materialdesignicons.css' // Ensure you are using css-loader\
+import 'vuetify/styles'
 const vuetify = createVuetify({
-    components,
-    directives,
-    icons: {
-        defaultSet: 'mdi',
-        aliases,
-        sets: {
-          mdi
-        }
-      },
-});
-const pinia = createPinia();
+  components,
+  directives,
+  icons: {
+    defaultSet: 'mdi', // This is already the default value - only for display purposes
+  },
+})
 
-declare global {
-  interface Window {
-    Kakao: any;
-  }
-}
 
-window.Kakao.init(import.meta.env.VITE_APP_KAKAO_API_JS_KEY);
-createApp(App).use(router).use(vuetify).use(pinia).mount('#app');
+app.use(createPinia());
+app.use(router);
+app.use(vuetify);
+
+app.mount('#app');
 
