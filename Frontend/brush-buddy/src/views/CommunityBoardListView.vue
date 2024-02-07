@@ -21,6 +21,11 @@
       </footer>
     </div>
   </div>
+  <router-link to="/community/write">
+    <div id="goWriteButton">
+      <WriteButtonComponent/>
+    </div>
+  </router-link>
   <div style="height: 5rem; width: 100vw"></div>
 </template>
 
@@ -30,6 +35,7 @@ import axios from 'axios'
 import { useRouter } from 'vue-router'
 import CommunityComponent from '../components/Community/CommunityComponent.vue'
 import type { BoardThumbnail } from '../api/type'
+import WriteButtonComponent from '../components/Community/WriteButtonComponent.vue'
 
 const currentPage = ref(0)
 const showloader = ref(false)
@@ -53,7 +59,7 @@ const scrollTrigger = () => {
         setTimeout(() => {
           axios
             .get(
-              'http://localhost:8080/v1/api/board/list?direction=DESC&listNum=10&pageNum=' +
+              'http://localhost:8080/api/v1/board/list?direction=DESC&listNum=10&pageNum=' +
                 currentPage.value
             )
             .then((response: any) => {
@@ -81,7 +87,7 @@ const scrollTrigger = () => {
 
 onMounted(() => {
   axios
-    .get('http://localhost:8080/v1/api/board/list?direction=DESC&listNum=10&pageNum=0')
+    .get('http://localhost:8080/api/v1/board/list?direction=DESC&listNum=10&pageNum=0')
     .then((response: any) => {
       console.log('onload!')
       pageCount.value = response.data.totalPage
@@ -94,6 +100,7 @@ onMounted(() => {
     })
   scrollTrigger()
 })
+
 </script>
 
 <style scoped>
@@ -137,7 +144,11 @@ footer #scroll-trigger {
   border-top: 5px solid #fff;
   animation: animate 1.5s infinite linear;
 }
-
+#goWriteButton{
+  position: fixed;
+  bottom: 10vh;
+  right: 3vw;
+}
 @keyframes animate {
   0% {
     transform: translate(-50%, -50%) rotate(0deg);
