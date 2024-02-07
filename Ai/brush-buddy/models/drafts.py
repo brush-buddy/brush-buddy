@@ -28,6 +28,10 @@ class Drafts(BaseModel):
         # aws s3 연결
         s3 = aws.s3_connection()
 
+        # 입력 이미지 데이터 타입 확인 및 변환
+        if np_image.dtype != "uint8":  # 이미지 데이터 타입이 'uint8'이 아닌 경우
+            np_image = np_image.astype("uint8")  # 데이터 타입을 'uint8'로 변환
+
         # 피포 페인팅화 시작 ============================================
         painting = Painting(np_image)
 
@@ -36,18 +40,18 @@ class Drafts(BaseModel):
         painting_img, color_index_map = painting.run(**kwargs)
         color_indexs, color_rbg_values = painting.get_clustered_color_info(painting_img)
 
-        byte_stream = BytesIO()
-        np.save(byte_stream, painting_img)
-        byte_stream.seek(0)
-
         # s3에 색칠된 도안 업로드 ========================================
         file_name = f"colored_draft_{t_stamp}.png"  # 업로드할 파일 이름
         bucket_name = "brushbuddy0"  # 버켓 주소
-        key = f"{file_name}"  # s3  내부 이미지 파일 이름
+        key = file_name  # s3  내부 이미지 파일 이름
+
+        colored_file_path = f"./colored_img/{file_name}"  # 업로드할 파일 이름
+
+        cv2.imwrite(colored_file_path, painting_img)
 
         # aws s3에 색칠된 도안 "colored_draft_YYYYMMDDHH.png"로 저장
         try:
-            s3.upload_fileobj(byte_stream, bucket_name, key)
+            s3.upload_file(file_name, bucket_name, key)
         except Exception as e:
             print(e)
 
@@ -87,20 +91,21 @@ class Drafts(BaseModel):
         # output : numbering 된 np.array 형태의 도안
         numbering_img = numbering.run(img_lab, lab, color_label=color_label)
 
-        numbering_file_name = f"numbering_draft_{t_stamp}.PNG"
+        numbering_file_path = (
+            f"./numbering_img/numbering_draft_{t_stamp}.PNG"  # 업로드할 파일 이름
+        )
+
+        numbering_file_name = f"numbering_draft_{t_stamp}.PNG"  # 업로드할 파일 이름
+
+        cv2.imwrite(numbering_file_path, numbering_img)
 
         # s3에 numbering 된 도안 업로드 ========================================
 
-        byte_stream_2 = BytesIO()
-        np.save(byte_stream_2, numbering_img)
-        byte_stream_2.seek(0)
-
-        file_name = f"{numbering_file_name}"  # 업로드할 파일 이름
-        numbered_key = f"{numbering_file_name}"  # s3  내부 이미지 파일 이름
+        numbered_key = numbering_file_name  # s3  내부 이미지 파일 이름
 
         # aws s3에 색칠된 도안 "colored_draft_YYYYMMDDHH.png"로 저장
         try:
-            s3.upload_fileobj(byte_stream_2, bucket_name, numbered_key)
+            s3.upload_file(numbering_file_name, bucket_name, numbered_key)
         except Exception as e:
             print(e)
 
