@@ -54,7 +54,7 @@ import { useRouter } from "vue-router";
 const router = useRouter();
 
 const props = defineProps<{
-  boardThumbnail: BoardListRes;
+  boardThumbnail: BoardThumbnail;
 }>();
 async function goToDetail() {
   router.push({ name: "boardDetail", params: { id: props.boardThumbnail.boardId } });

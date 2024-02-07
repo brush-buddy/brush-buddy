@@ -23,7 +23,7 @@ const handleFileChange = (event: Event) => {
   const target = event.target as HTMLInputElement;
   if (target.files) {
     console.log(target.files.length)
-    selectedFile.value.push(...target.files);
+    // selectedFile.value.push(...target.files);
   }
   console.log(selectedFile);
 };

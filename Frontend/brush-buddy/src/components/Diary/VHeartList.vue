@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-infinite-scroll :items="items" :onLoad="load">
-      <div v-for="(item, index) in items" :key="item">
+      <div v-for="(item, index) in items" :key="index">
         <CCard :board="item" />
       </div>
     </v-infinite-scroll>
@@ -12,24 +12,11 @@
 import CCard from "./CCard.vue";
 import { ref } from "vue";
 import axios from "axios";
-
-// HeartList 불러오기
-interface HeartListRes {
-  boards: {
-    boardId: number;
-    boardTitle: string;
-    createdAt: string;
-    likeNumber: number;
-    thumbnail: string;
-    views: number;
-  };
-  pageNum: number;
-  length: number;
-  totalPage: number;
-}
+import type { HeartList, HeartListRes } from "../../api/type.ts";
 
 const listNum = ref(3);
 const pageNum = ref(1);
+// const firstCall = ref([]);
 const firstCall = ref([
   axios({
     baseURL: "",
@@ -38,10 +25,16 @@ const firstCall = ref([
     headers: {
       "Content-Type": "application/json; charset=utf-8",
     },
-  }).then(function (response: any) {
-    items.value = response.data.boards;
-    // boardThumbnailData.value = response.data;
-  }),
+  })
+    .then(function (response: any) {
+      console.log("first call ", response.data.boards);
+      items.value = response.data.boards;
+      console.log("first call value", items.value);
+      // boardThumbnailData.value = response.data;
+    })
+    .catch(function (error: any) {
+      console.log(error.message);
+    }),
 ]);
 const totalPage = ref(0);
 const getHeartList = async (page: number): Promise<HeartListRes> => {
@@ -57,15 +50,16 @@ const getHeartList = async (page: number): Promise<HeartListRes> => {
     });
     totalPage.value = heartListGet.data.totalPage;
     return heartListGet.data.boards;
-  } catch (err) {
+  } catch (err: any) {
     console.log("api 호출 중 오류 발생", err);
     return Promise.reject(err);
   }
 };
 
 // 무한 스크롤 구현
-const items = ref<number[]>([]);
+const items = ref<HeartList[]>([]);
 
+// pageNum update
 const api = async () => {
   pageNum.value = pageNum.value + 1;
   return new Promise<number>((resolve) => {
@@ -77,11 +71,15 @@ const api = async () => {
 
 const load = async ({ done }: { done: (status: string) => void }) => {
   try {
-    // Perform API call => pageNum update
+    // Perform API call
     const res = await api();
     const resList = await getHeartList(res);
-    items.value.push(...resList);
+    console.log("resList", resList);
+    if (resList && Array.isArray(resList) && resList.length > 0) {
+      resList.forEach((res: HeartList) => items.value.push(res));
+    }
 
+    console.log("items.value", items.value);
     if (totalPage.value > pageNum.value) {
       done("ok");
     } else {
@@ -94,9 +92,8 @@ const load = async ({ done }: { done: (status: string) => void }) => {
 };
 </script>
 <style scoped>
-#navarea{
-    height: 10vh;
-    width: 100%;
+#navarea {
+  height: 10vh;
+  width: 100%;
 }
 </style>
-
