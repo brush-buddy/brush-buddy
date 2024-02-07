@@ -20,9 +20,6 @@ interface HeartListRes {
     draftId: number;
     draftThumbnail: string;
     draftTimestamp: string;
-    // likeNumber: number;
-    // thumbnail: string;
-    // views: number;
   }[];
   pageNum: number;
   length: number;
