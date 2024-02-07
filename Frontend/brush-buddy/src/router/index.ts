@@ -4,6 +4,8 @@ import DiaryView from '../views/DiaryView.vue'
 import DraftView from '../views/DraftView.vue'
 import HomeView from '../views/HomeView.vue'
 import SearchView from '../views/SearchView.vue'
+import DraftCreateAIView from '../views/DraftCreateAIView.vue'
+import DraftWriteView from '../views/DraftWrite.vue'
 import VMadeDraft from '../components/Diary/VMadeDraft.vue'
 import VPurchaseDraft from '../components/Diary/VPurchaseDraft.vue'
 import VBookmarkDraft from '../components/Diary/VBookmarkDraft.vue'
@@ -14,7 +16,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 const router = createRouter({
   history: createWebHistory(""),
   routes: [
-    
+
       {
         name: 'home',
         path: '/',
@@ -63,7 +65,17 @@ const router = createRouter({
         path: '/community/:id',
         component:CommunityDetailView,
 
-      }
+      },
+      {
+        name: 'boardAIView',
+        path : "/draft/aiprompt",
+        component : DraftCreateAIView,
+    },
+    {
+      name: 'boardWriteView',
+      path : "/community/write",
+      component : DraftWriteView,
+    }
 
   ]
 })

@@ -1,82 +1,124 @@
 <template>
-  <!-- <div style="height: 1rem;"></div> -->
   <div style="display: flex; justify-content: space-around">
     <div>
-    <div class = "columns" style="display: flex; flex-direction: column; justify-content: center;">
-        <template v-for="(card, i) in boardThumbnailDataFirst" :key="i">
-          <CommunityComponent :boardThumbnail="card" />
-        </template>
+      <div v-for="(card, i) in boardThumbnailDataFirst" :key="i">
+        <CommunityComponent :boardThumbnail="card" />
+      </div>
+    </div>
+    <div>
+      <div v-for="(card, i) in boardThumbnailDataSecond" :key="i">
+        <CommunityComponent :boardThumbnail="card" />
+      </div>
 
+      <div id="communityWrite">
+        <v-btn
+          icon="mdi-pencil-outline"
+          color="purple-lighten-3"
+          size="x-large"
+          onclick="goWrite()"
+        ></v-btn>
+      </div>
     </div>
-  </div>
-  <div>
-    <div  class = "columns" style="display: flex; flex-direction: column; justify-content: center;">
-        <template v-for="(card, i) in boardThumbnailDataSecond" :key="i">
-          <CommunityComponent :boardThumbnail="card" />
-        </template>    
-    </div>
-  </div>  
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
-import axios from "axios";
-import InfiniteLoading from "infinite-loading-vue3-ts";
-import CommunityComponent from "../components/CommunityComponent.vue";
-import type { BoardThumbnail } from "../api/type.ts";
+import { ref, onMounted } from 'vue'
+import axios from 'axios'
+import { useRouter } from 'vue-router'
+import CommunityComponent from '../components/CommunityComponent.vue'
+import type { BoardThumbnail } from '../api/type.ts'
 
-const boardThumbnailDataFirst = ref<BoardThumbnail[]>([]);
-const boardThumbnailDataSecond = ref<BoardThumbnail[]>([]);
+const router = useRouter()
 
-// 비동기 API 함수
-async function api(pageNum: number, listNum: number = 5): Promise<BoardThumbnail[]> {
-  try {
-    const response = await axios({
-      baseURL: "",
-      method: "get",
-      url: `http://localhost:8080/v1/api/board/list?listNum=${listNum}&pageNum=${pageNum}`,
-      headers: {
-        "Content-Type": "application/json; charset=utf-8",
-      },
-    });
-    return response.data.boards;
-  } catch (error) {
-    console.error("API 호출 중 오류 발생:", error);
-    return [];
+const boardThumbnailDataFirst = ref<BoardThumbnail[]>([
+  {
+    boardId: '1',
+    boardTitle: 'Example Board',
+    thumbnail: 'https://picsum.photos/100/200',
+    likeNumber: 100,
+    views: 500
+  },
+  {
+    boardId: '2',
+    boardTitle: 'Example Board',
+    thumbnail: 'https://picsum.photos/200/300',
+    likeNumber: 100,
+    views: 300
+  },
+  {
+    boardId: '1',
+    boardTitle: 'Example Board',
+    thumbnail: 'https://picsum.photos/400/200',
+    likeNumber: 100,
+    views: 500
+  },
+  {
+    boardId: '2',
+    boardTitle: 'Example Board',
+    thumbnail: 'https://picsum.photos/200/300',
+    likeNumber: 100,
+    views: 300
   }
-}
+])
 
-// 무한 스크롤 로드 함수
-async function load({ done }: { done: (status: string) => void }) {
-  // const pageNum = Math.ceil(boardThumbnailDataFirst.value.length / 5) + 1;
-  const pageNum =
-    Math.ceil((boardThumbnailDataFirst.value.length + boardThumbnailDataSecond.value.length) / 5) +
-    1;
-  const res = await api(pageNum);
+const boardThumbnailDataSecond = ref<BoardThumbnail[]>([
+  {
+    boardId: '1',
+    boardTitle: 'Example Board',
+    thumbnail: 'https://picsum.photos/300/100',
+    likeNumber: 100,
+    views: 500
+  },
+  {
+    boardId: '2',
+    boardTitle: 'Example Board',
+    thumbnail: 'https://picsum.photos/300/300',
+    likeNumber: 100,
+    views: 300
+  },
+  {
+    boardId: '1',
+    boardTitle: 'Example Board',
+    thumbnail: 'https://picsum.photos/200/100',
+    likeNumber: 300,
+    views: 500
+  },
+  {
+    boardId: '2',
+    boardTitle: 'Example Board',
+    thumbnail: 'https://picsum.photos/200/400',
+    likeNumber: 100,
+    views: 300
+  }
+])
 
-  res.forEach((board, i) => {
-    if (i % 2 === 0) {
-      boardThumbnailDataFirst.value.push(board);
-    } else {
-      boardThumbnailDataSecond.value.push(board);
+const num = 1
+
+onMounted(() => {
+  axios({
+    baseURL: '',
+    method: 'get',
+    url: 'http://localhost:8080/v1/api/board/list', // URL에 한글이 포함될 경우 인코딩
+    headers: {
+      'Content-Type': 'application/json; charset=utf-8'
     }
-  });
+  }).then(function (response: any) {
+    console.log(response.data)
 
-  done("ok");
-}
+    // boardThumbnailData.value = response.data;
+  })
 
-onMounted(async () => {
-  await load({ done: () => {} });
-});
+  const goWrite = () => {
+    router.push('/community/write')
+  }
+})
 </script>
 
 <style scoped>
-.column {
-  display: flex;
-  width: 50%;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+#communityWrite {
+  position: fixed;
+  bottom: 7rem;
+  right: 2rem;
 }
 </style>
