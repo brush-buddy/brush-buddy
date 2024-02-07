@@ -1,7 +1,7 @@
 <template>
   <div>
-    <p class="communityTitle">{{ community['title'] }}</p>
-
+    <p class="communityTitle" default="blanktitle" >{{ community['title'] }}</p>
+    <DraftDetailComponent />
     <div>
       <v-carousel hide-delimiters>
         <v-carousel-item
@@ -16,14 +16,19 @@
     <p>{{ community.contents }}</p>
 
     <p>{{ community }}</p>
-    <ReplyComponent />
+    <div id="reply">
+      <ReplyComponent />
+    </div>
+    <div class="blank">
+    </div>
   </div>
+  
 </template>
 
 <script setup lang="ts">
 import { useRoute } from 'vue-router'
 import { onMounted, inject, ref } from 'vue'
-import ReplyComponent from '../components/common/ReplyComponent.vue'
+import ReplyComponent from '../components/DraftDetail/CReply.vue'
 import axios from 'axios'
 const route = useRoute()
 const boardId = route.params.id
@@ -49,7 +54,7 @@ onMounted(() => {
   axios({
     baseURL: '',
     method: 'get',
-    url: 'http://localhost:8080/v1/api/board/' + boardId, // URL에 한글이 포함될 경우 인코딩
+    url: 'http://localhost:8080/api/v1/board/' + boardId, // URL에 한글이 포함될 경우 인코딩
     headers: {
       'Content-Type': 'application/json; charset=utf-8'
     }
@@ -60,4 +65,13 @@ onMounted(() => {
 })
 </script>
 
-<style scoped></style>
+<style scoped>
+#reply {
+  margin-bottom: 6rem;
+}
+
+.blank{
+  margin-bottom: 6rem;
+}
+
+</style>

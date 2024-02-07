@@ -2,26 +2,23 @@
     <div class = "rect">
         <div id = "category">
             <div id = "category1">
-            <CategoryBtnComponent :title=title1 :color=color1 />
+            <DraftCategoryButton :title=title1 :color=color1 />
             </div>
             <div id = "category2">
-            <CategoryBtnComponent :title=title2 :color=color2 />
+            <DraftCategoryButton :title=title2 :color=color2 />
             </div>
         </div>
         <div id = "draft">
             <BookmarkedDraftImgComponent/>
         </div>
-        <div id = "palette">
-            <PaletteComponent/>
-        </div>
+    
         
     </div>
 </template>
 
 <script setup lang="ts">
-import BookmarkedDraftImgComponent from "../components/BookmarkedDraftImgComponent.vue";
-import PaletteComponent from "./EclipsePaletteComponent.vue";
-import CategoryBtnComponent from "../components/CategoryBtnComponent.vue";
+import BookmarkedDraftImgComponent from "./DraftBookmarked.vue";
+import DraftCategoryButton from "../DraftDetail/DraftCategoryButton.vue";
 import { ref } from 'vue'
 
 const title1 = ref('물고기')
@@ -52,11 +49,7 @@ const color2 = ref('#FF7575')
         margin-bottom : -2rem;
         z-index: 1;
     }
-    #palette {
-        position: relative;
-        margin-bottom : 0.5rem;
-        z-index: 2;
-    }
+
     .rect {
         position: relative;
         background: #FFFFFF;    

@@ -62,9 +62,7 @@ const previewFile = (e: any) => {
       <Transition name="slide-fade">
         <div v-show="buttonFadein" class="button-group">
           <router-link to="/draft/aiprompt" style="text-decoration: none; color: inherit">
-            <v-btn class="option-button" prepend-icon="mdi-palette-outline" color="primary"
-              >새 이미지 생성하기</v-btn
-            >
+            <v-btn class="option-button" prepend-icon="mdi-palette-outline" color="primary">새 이미지 생성하기</v-btn>
           </router-link>
           <v-dialog v-model="dialog" persistent width="18rem">
             <template v-slot:activator="{ props }">

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import SinglePaletteComponent from '../components/SinglePaletteComponent.vue'
+import SinglePaletteComponent from '../components/common/SinglePaletteComponent.vue'
 const props = defineProps({
   pipoUrl: String,
   pipoPalette: {},
