@@ -1,7 +1,7 @@
 import type { AxiosResponse } from "axios";
 import { localAxios } from "./axios";
 
-type searchParam = {
+type BoardSearchParam = {
     search? : String, // 제목, 내용 기준 검색
     order? : String, // 나열할 기준 (DB컬럼명)
     listNum? : Number, // 페이지 당 가져올 개수 
@@ -38,7 +38,7 @@ type ReplyListElement = {
 }
 
 export type {
-        searchParam,
+        BoardSearchParam,
         BoardImage,
         BoardDetail,
         BoardListElement,
@@ -47,7 +47,7 @@ export type {
 
 //게시글 리스트 조회 api
 const getBoardList = async (
-    params: searchParam
+    params: BoardSearchParam
     ) : Promise<AxiosResponse> => {
    return await localAxios().get('/board/list', {params : params})
 }
@@ -84,7 +84,7 @@ const deleteBoard =  async (
 //게시글 댓글 리스트 조회 api
 const getReplyList =  async (
     boardId : Number,
-    params : searchParam
+    params : BoardSearchParam
 ) : Promise<AxiosResponse> => {
     return await localAxios().get(`/board/${boardId}/replies`, {params :params})
 }

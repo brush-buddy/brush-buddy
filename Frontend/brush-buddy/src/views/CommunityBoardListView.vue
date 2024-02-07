@@ -21,46 +21,31 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
-import axios from "axios";
 // import { useUserStore } from '../stores/user';
 // const userStore = useUserStore();
-import { localAxios } from '../api/axios';
+import { getBoardList } from '../api/board';
 import InfiniteLoading from "infinite-loading-vue3-ts";
 import CommunityComponent from "../components/CommunityComponent.vue";
 import type { BoardThumbnail } from "../api/type.ts";
+import type { BoardSearchParam, BoardListElement } from "../api/board"
 
 const boardThumbnailDataFirst = ref<BoardThumbnail[]>([]);
 const boardThumbnailDataSecond = ref<BoardThumbnail[]>([]);
 
-// 비동기 API 함수
-// async function api(pageNum: number, listNum: number = 5): Promise<BoardThumbnail[]> {
-//   try {
-//     const response = await axios({
-//       baseURL: "",
-//       method: "get",
-//       url: `http://localhost:8080/api/v1/board/list?listNum=${listNum}&pageNum=${pageNum}`,
-//       headers: {
-//         "Content-Type": "application/json; charset=utf-8",
-//       },
-//     });
-//     return response.data.boards;
-//   } catch (error) {
-//     console.error("API 호출 중 오류 발생:", error);
-//     return [];
-//   }  
-// }
-async function api(pageNum: number, listNum: number = 5): Promise<BoardThumbnail[]>
-{
-   const {data} = await localAxios().get(`/board/list?listNum=${listNum}&pageNum=${pageNum}`)
-    return data.boards;
-}
 // 무한 스크롤 로드 함수
 async function load({ done }: { done: (status: string) => void }) {
   // const pageNum = Math.ceil(boardThumbnailDataFirst.value.length / 5) + 1;
   const pageNum =
     Math.ceil((boardThumbnailDataFirst.value.length + boardThumbnailDataSecond.value.length) / 5) +
     1;
-  const res = await api(pageNum);
+
+    //검색 조건 
+    const params : BoardSearchParam ={
+      pageNum : pageNum,
+      listNum : 5
+    }
+    const { data } = await getBoardList(params) // 게시판 리스트 조회
+    const res: BoardListElement = data.boards; // 결과로 부터 게시판 데이터 추출
 
   res.forEach((board, i) => {
     if (i % 2 === 0) {
