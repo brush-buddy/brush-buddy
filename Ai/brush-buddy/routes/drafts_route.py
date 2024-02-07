@@ -22,10 +22,10 @@ draft_router = APIRouter(
 @draft_router.post(
     "/ai-generation", status_code=200, response_model=responseImage.Img_url
 )
-def ai_generate(prompt: str):
+async def ai_generate(prompt: requestPrompt.Prompt):
     user_id = 1
     # prompt -> 이미지 url
-    aigenerateimageurl = images.AiImage().createImage(prompt)
+    aigenerateimageurl = images.AiImage().createImage(prompt.prompt)
 
     # cnt = db.redis.save_callnum(user_id)
     # if int(cnt) > 20:
