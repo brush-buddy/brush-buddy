@@ -13,6 +13,7 @@ import CCard from "./CCard.vue";
 import { ref } from "vue";
 import axios from "axios";
 import type { HeartList, HeartListRes } from "../../api/type.ts";
+// import { InfiniteScrollStatus } from 'vuetify';
 
 const listNum = ref(3);
 const pageNum = ref(1);
@@ -69,7 +70,13 @@ const api = async () => {
   });
 };
 
-const load = async ({ done }: { done: (status: string) => void }) => {
+
+type InfiniteScrollSide =  any
+type InfiniteScrollStatus =  any
+const load = async (options: {
+  side: InfiniteScrollSide;
+  done: (status: InfiniteScrollStatus) => void;
+}): Promise<void> => {
   try {
     // Perform API call
     const res = await api();
@@ -81,13 +88,13 @@ const load = async ({ done }: { done: (status: string) => void }) => {
 
     console.log("items.value", items.value);
     if (totalPage.value > pageNum.value) {
-      done("ok");
+      options.done("ok");
     } else {
-      done("empty");
+      options.done("empty");
     }
   } catch (error) {
     console.error("Error during load:", error);
-    done("error");
+    options.done("error");
   }
 };
 </script>

@@ -83,24 +83,31 @@ const api = async () => {
   });
 };
 
-const load = async ({ done }: { done: (status: string) => void }) => {
+
+type InfiniteScrollSide =  any
+type InfiniteScrollStatus =  any
+const load = async (options: {
+  side: InfiniteScrollSide;
+  done: (status: InfiniteScrollStatus) => void;
+}): Promise<void> => {
   try {
-    // Perform API call => pageNum update
+    // Perform API call
     const res = await api();
     const resList = await getHeartList(res);
-    console.log(resList);
+    console.log("resList", resList);
     if (resList && Array.isArray(resList) && resList.length > 0) {
       resList.forEach((res: HeartList) => items.value.push(res));
     }
 
+    console.log("items.value", items.value);
     if (totalPage.value > pageNum.value) {
-      done("ok");
+      options.done("ok");
     } else {
-      done("empty");
+      options.done("empty");
     }
   } catch (error) {
     console.error("Error during load:", error);
-    done("error");
+    options.done("error");
   }
 };
 </script>
