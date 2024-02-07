@@ -1,6 +1,6 @@
 import axios, { type AxiosResponse } from 'axios';
 import { useUserStore } from '../stores/user';
-import { postRefresh, signOut } from './user';
+import { getRefresh, signOut } from './user';
 const url = import.meta.env.VITE_APP_SERVER_URL
 
 function localAxios(){
@@ -36,8 +36,6 @@ function localAxios(){
       // Any status codes that falls outside the range of 2xx cause this function to trigger
       // Do something with response error
       const { response: errorResponse } = error;
-      console.log(errorResponse)
-      console.log(error)
       
       const originalRequest = error.config;
 
@@ -79,7 +77,7 @@ async function resetTokenAndReattemptRequest(error : any) {
     if (!isAlreadyFetchingAccessToken) {
       isAlreadyFetchingAccessToken = true; // 문닫기 (한 번만 요청)
 
-      const { data } = await postRefresh();
+      const { data } = await getRefresh();
 
       userStore.setAccessToken('Bearer '+data); // refresh token은 쿠키에 담긴다.
       // storeUserToken('refresh', data.refresh);

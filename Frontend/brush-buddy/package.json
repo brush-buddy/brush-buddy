@@ -9,7 +9,8 @@
     "preview": "vite preview",
     "build-only": "vite build",
     "type-check": "vue-tsc --build --force",
-    "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore"
+    "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore",
+    "local": "vite --mode development"
   },
   "dependencies": {
     "@ant-design/icons": "^5.2.6",
@@ -17,13 +18,14 @@
     "@mdi/font": "^7.4.47",
     "@mdi/js": "^7.4.47",
     "axios": "^1.6.7",
+    "cors": "^2.8.5",
     "infinite-loading-vue3-ts": "^1.0.5",
     "pinia": "^2.1.7",
+    "styled-components": "^6.1.8",
+    "styled-reset": "^4.5.2",
     "vue": "^3.4.15",
     "vue-router": "^4.2.5",
     "vue-search-input": "^1.1.14",
-    "styled-components": "^6.1.8",
-    "styled-reset": "^4.5.2",
     "vuetify": "^3.5.2"
   },
   "devDependencies": {
