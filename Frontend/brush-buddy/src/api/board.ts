@@ -1,5 +1,11 @@
-import { instance } from "./axios";
+import { localAxios } from "./axios";
 
 const getBoardList = (params:any , success:any , fail:any) => {
-    instance.get(params.get)
+    localAxios().get('/board/list')
 }
+
+const writeBoard = () => {
+    localAxios().post('/board')
+}
+
+export {getBoardList , writeBoard};
