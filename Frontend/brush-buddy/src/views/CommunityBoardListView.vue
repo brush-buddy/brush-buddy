@@ -26,7 +26,7 @@
 import { ref, onMounted } from 'vue'
 import axios from 'axios'
 import { useRouter } from 'vue-router'
-import CommunityComponent from '../components/CommunityComponent.vue'
+import CommunityComponent from '@/components/Community/CommunityComponent.vue'
 import type { BoardThumbnail } from '../api/type.ts'
 
 const router = useRouter()
