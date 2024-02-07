@@ -13,11 +13,9 @@ import CCard from "./CCard.vue";
 import { ref } from "vue";
 import axios from "axios";
 import type { HeartList, HeartListRes } from "../../api/type.ts";
-// import { InfiniteScrollStatus } from 'vuetify';
 
 const listNum = ref(3);
 const pageNum = ref(1);
-// const firstCall = ref([]);
 const firstCall = ref([
   axios({
     baseURL: "",

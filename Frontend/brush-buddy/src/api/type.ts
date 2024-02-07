@@ -13,7 +13,7 @@ export interface BoardListRes{
 }
 
 export interface BoardThumbnail{
-        boardId : number;
+        boardId : string;
         boardTitle : string;
         thumbnail : string;
         likeNumber : number;
