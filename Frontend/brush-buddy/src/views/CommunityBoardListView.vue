@@ -45,9 +45,9 @@ async function load({ done }: { done: (status: string) => void }) {
       listNum : 5
     }
     const { data } = await getBoardList(params) // 게시판 리스트 조회
-    const res: BoardListElement = data.boards; // 결과로 부터 게시판 데이터 추출
+    const res: BoardListElement[] = data.boards; // 결과로 부터 게시판 데이터 추출
 
-  res.forEach((board, i) => {
+  res.forEach((board : BoardListElement,  i : number) => {
     if (i % 2 === 0) {
       boardThumbnailDataFirst.value.push(board);
     } else {
