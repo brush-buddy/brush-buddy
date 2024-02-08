@@ -1,43 +1,25 @@
 <template>
-    <div id="cardWrapper">
-        <div id="container">
-            <div id="title">{{ board.boardTitle }}</div>
-            <div id="thumbnailBox">
-                <div id="thumbnail">
-                    <img :src="board.thumbnail" alt="Thumbnail">
-                </div>
-            </div>
-            <div id="rel">
-                <img src="../../assets/icon/view.png" alt="view" width="20rem" height="20rem">
-                <div>&nbsp;{{ board.likeNumber }}&nbsp;&nbsp;</div>
-                <img src="../../assets/icon/heart_filled.png" alt="view" width="20rem" height="20rem">
-                <div>&nbsp;{{ board.views }}</div>
-            </div>
+  <div id="cardWrapper">
+    <div id="container">
+      <div id="title">{{ board.boardTitle }}</div>
+      <div id="thumbnailBox">
+        <div id="thumbnail">
+          <img :src="board.thumbnail" alt="Thumbnail" />
         </div>
       </div>
       <div id="rel">
-        <img
-          src="../../assets/icon/view.png"
-          alt="view"
-          width="20rem"
-          height="20rem"
-        />
+        <img src="../../assets/icon/view.png" alt="view" width="20rem" height="20rem" />
         <div>&nbsp;{{ board.likeNumber }}&nbsp;&nbsp;</div>
-        <img
-          src="../../assets/icon/heart_filled.png"
-          alt="view"
-          width="20rem"
-          height="20rem"
-        />
+        <img src="../../assets/icon/heart_filled.png" alt="view" width="20rem" height="20rem" />
         <div>&nbsp;{{ board.views }}</div>
       </div>
     </div>
   </div>
 </template>
 <script setup lang="ts">
-import { defineProps } from 'vue';
+import { defineProps } from 'vue'
 
-const prop = defineProps(["board"]);
+const prop = defineProps(['board'])
 // console.log("incard",prop.board);
 </script>
 <style scoped>
