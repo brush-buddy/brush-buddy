@@ -26,13 +26,13 @@
 
 <script setup lang="ts">
 import { ref, inject, onMounted } from "vue";
-import { localAxios } from "../api/axios";
-import { useRouter } from "vue-router";
-import CommunityComponent from "../components/Community/CommunityComponent.vue";
-import type { BoardThumbnail } from "../api/type";
+import { localAxios } from "../../api/axios";
+import CommunityComponent from "../../components/Community/CommunityComponent.vue";
+import type { BoardThumbnail } from "../../api/type";
 
-const axios = inject("axios");
+const props = defineProps({});
 
+const searchValue = ref("");
 const boardThumbnailDataFirst = ref<BoardThumbnail[]>([]);
 const boardThumbnailDataSecond = ref<BoardThumbnail[]>([]);
 
@@ -54,8 +54,13 @@ const scrollTrigger = () => {
         setTimeout(() => {
           localAxios()
             .get(
-              "http://localhost:8080/api/v1/board/list?direction=DESC&listNum=10&pageNum=" +
-                currentPage.value
+              searchValue.value == ""
+                ? "http://localhost:8080/api/v1/board/list?direction=DESC&listNum=10&pageNum=" +
+                    currentPage.value
+                : "http://localhost:8080/api/v1/board/list?direction=DESC&listNum=10&pageNum=" +
+                    currentPage.value +
+                    "&search=" +
+                    searchValue.value
             )
             .then((response: any) => {
               console.log(response.data.boards);
@@ -107,6 +112,27 @@ onMounted(() => {
     });
   scrollTrigger();
 });
+
+const searchList = (searchString: string) => {
+  searchValue.value = searchString;
+  boardThumbnailDataFirst.value = [];
+  boardThumbnailDataSecond.value = [];
+  currentPage.value = 1;
+  localAxios()
+    .get(
+      "http://localhost:8080/api/v1/board/list?direction=DESC&listNum=10&pageNum=1&search=" +
+        searchString
+    )
+    .then((response: any) => {
+      pageCount.value = response.data.totalPage;
+      for (let i = 0; i < response.data.boards.length; i++) {
+        if (i % 2 === 1)
+          boardThumbnailDataSecond.value.push(response.data.boards[i]);
+        else boardThumbnailDataFirst.value.push(response.data.boards[i]);
+      }
+      currentPage.value += 1;
+    });
+};
 </script>
 
 <style scoped>

@@ -13,19 +13,28 @@
     <div class="conditionBar">
       <router-link
         to="/search/community"
-        style="text-decoration: none; display: flex; flex-direction: none"
+        style="text-decoration: none; display: flex; align-items: center"
       >
-        <div class="searchOption" style="display: flex; justify-content: center">
-          <v-icon v-bind:color="communityColor" icon="mdi-account-multiple"></v-icon>
+        <div
+          class="searchOption"
+          style="display: flex; justify-content: center"
+        >
+          <v-icon
+            v-bind:color="communityColor"
+            icon="mdi-account-multiple"
+          ></v-icon>
           <p>커뮤니티 검색</p>
         </div>
       </router-link>
       <router-link
         to="/search/draft"
-        style="text-decoration: none; display: flex; flex-direction: none"
+        style="text-decoration: none; display: flex; align-items: center"
       >
         <div style="width: 1rem; height: 1rem"></div>
-        <div class="searchOption" style="display: flex; justify-content: center">
+        <div
+          class="searchOption"
+          style="display: flex; justify-content: center"
+        >
           <v-icon v-bind:color="draftColor" icon="mdi-image-album"></v-icon>
           <p>도안 검색</p>
         </div>
@@ -36,14 +45,15 @@
 
 <script setup lang="ts">
 // Optionally import default styling
-import 'vue-search-input/dist/styles.css'
-import { ref } from 'vue'
-const searchVal = ref('')
+import "vue-search-input/dist/styles.css";
+import { ref } from "vue";
+const searchVal = ref("");
 // import { DefineComponent } from 'vue';
-const communitySelect = ref(false)
-const communityColor = ref('purple')
-const draftSelect = ref(false)
-const draftColor = ref('purple')
+
+const communityColor = ref("purple");
+const communitySelect = ref(false);
+const draftSelect = ref(false);
+const draftColor = ref("purple");
 </script>
 
 <style scoped>
@@ -75,8 +85,9 @@ const draftColor = ref('purple')
   /* align-items: center; */
   border-bottom: 1px solid #ccc;
   box-shadow: 5px #ccc;
+  margin-bottom: 0.7rem;
 }
-input[type='text']:focus {
+input[type="text"]:focus {
   outline: 1px #ffffff; /* oranges! yey */
 }
 
