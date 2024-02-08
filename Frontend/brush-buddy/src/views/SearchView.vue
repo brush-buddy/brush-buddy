@@ -1,45 +1,12 @@
 <template>
-    <div>
-        <!-- <p>search</p> -->
-        <div id="background">
-    <div id="home">
-        <p>Search</p>
-        <p>Search</p>
-        <p>Search</p>
-        <p>Search</p>
-        <p>Search</p>
-        <p>Search</p>
-        <p>Search</p>
-        <p>Search</p>
-        <p>Search</p>
-        <p>Search</p>
-        <p>Search</p>
-        <p>Search</p>
-        <p>Search</p>
-        <p>Search</p>
-        <p>Search</p>
-        <p>Search</p>
-        <p>Search</p>
-        <p>Search</p>
-        <p>Search</p>
-        <p>Search</p>
-        <p>Search</p>
-        <p>Search</p>
-        <p>Search</p>
-        <p>Search</p>
-        <p>Search</p>
-        <p>Search</p>
-        <p>Search</p>
-        <p>Search</p>
-    </div>
+  <div>
+    <SearchComponent />
+    <router-view />
   </div>
-    </div>
 </template>
 
 <script setup lang="ts">
-
+import SearchComponent from '../components/common/SearchInputComponent.vue'
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

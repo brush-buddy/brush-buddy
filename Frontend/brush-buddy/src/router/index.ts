@@ -9,11 +9,11 @@ import VMadeDraft from '../components/Diary/VMadeDraft.vue'
 import VPurchaseDraft from '../components/Diary/VPurchaseDraft.vue'
 import VBookmarkDraft from '../components/Diary/VBookmarkDraft.vue'
 import VHeartList from '../components/Diary/VHeartList.vue'
-import WriteComponentVue from '@/components/Community/WriteComponent.vue'
 import DraftCreateAIView from '../views/DraftCreateAIView.vue'
-import DraftWriteView from '../views/DraftWrite.vue'
+import WriteComponent from '../components/Community/WriteComponent.vue'
 import { createRouter, createWebHistory } from 'vue-router'
-
+import SDraftListComponentVue from '../components/Search/SDraftListComponent.vue'
+import SCommunityListComponentVue from '../components/Search/SCommunityListComponent.vue'
 
 const router = createRouter({
   history: createWebHistory(""),
@@ -60,7 +60,24 @@ const router = createRouter({
       {
         name: 'search',
         path: '/search',
-        component: SearchView
+        component: SearchView,
+        children: [
+          {
+            path: '/search',
+            component: SCommunityListComponentVue,
+          },
+          {
+            path: '/search/community',
+            component: SCommunityListComponentVue,
+          },
+          
+          {
+            path: '/search/draft',
+            component: SDraftListComponentVue,
+          },
+          
+          
+        ]
       },
       {
         name: 'draft',
@@ -81,7 +98,7 @@ const router = createRouter({
     {
       name: 'boardWriteView',
       path : "/community/write",
-      component : WriteComponentVue,
+      component : WriteComponent,
     }
 
   ]

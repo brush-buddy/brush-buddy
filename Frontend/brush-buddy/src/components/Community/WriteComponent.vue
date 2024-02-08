@@ -1,7 +1,7 @@
 <template>
   <form @submit.prevent="submitForm">
-    <!-- <input> -->
-    <label for="input-file"> 업로드 </label>
+    <v-text-field label="Title"></v-text-field>
+    <label for="input-file"> 업로드 버튼 </label>
     <input type="file" multiple id="input-file" style="display: none" @change="handleFileChange" />
     <div v-if="selectedFiles.length > 0">
       <p>선택된 파일들:</p>
@@ -11,7 +11,15 @@
         </li>
       </ul>
     </div>
-    <button type="submit">제출</button>
+        <v-textarea
+          label="Three rows"
+          auto-grow
+          variant="outlined"
+          rows="3"
+          row-height="25"
+          shaped
+        ></v-textarea>
+    <button type="submit">제출 버튼</button>
   </form>
 </template>
 
