@@ -1,6 +1,8 @@
 package com.a205.brushbuddy.mypage.controller;
 
 
+import com.a205.brushbuddy.exception.BaseException;
+import com.a205.brushbuddy.exception.ErrorCode;
 import com.a205.brushbuddy.mypage.dto.request.MypageBookmarkedDraftListRequestDto;
 import com.a205.brushbuddy.mypage.dto.request.MypageGeneratedDraftListRequestDto;
 import com.a205.brushbuddy.mypage.dto.request.MypageHeartBoardListRequestDto;
@@ -10,6 +12,8 @@ import com.a205.brushbuddy.mypage.dto.response.MypageGeneratedDraftListResponseD
 import com.a205.brushbuddy.mypage.dto.response.MypageHeartBoardListResponseDto;
 import com.a205.brushbuddy.mypage.dto.response.MypagePurchasedDraftListResponseDto;
 import com.a205.brushbuddy.mypage.service.MypageService;
+import com.a205.brushbuddy.util.JwtUtil;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
@@ -25,12 +29,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class MypageController {
     private final MypageService mypageService;
+    private final JwtUtil jwtUtil;
 
     // 좋아요 누른 게시글 리스트 조회
     @GetMapping("/heart/list")
-    public ResponseEntity<?> getHeartList(MypageHeartBoardListRequestDto requestDto) throws Exception{
-        //TODO : userId JWT 토큰으로 부터 추출 및 유효성 조사
-        Integer userId = 1;
+    public ResponseEntity<?> getHeartList(MypageHeartBoardListRequestDto requestDto, HttpServletRequest request) throws Exception{
+        Integer userId = jwtUtil.getUserId(request)
+                .orElseThrow(() -> new BaseException(ErrorCode.INVALID_TOKEN)); // 헤더의 access token으로 userId 추출, null 반환시 유효하지 않은 토큰 오류 전송
         Pageable pageable  = PageRequest.of(requestDto.getPageNum() - 1,
                 requestDto.getListNum(),
                 requestDto.getDirection(),
@@ -41,9 +46,9 @@ public class MypageController {
 
     //생성한 도안 리스트 조회
     @GetMapping("/generate/list")
-    public ResponseEntity<?> getGeneratedList(MypageGeneratedDraftListRequestDto requestDto) throws Exception{
-        //TODO : userId JWT 토큰으로 부터 추출 및 유효성 조사
-        Integer userId = 1;
+    public ResponseEntity<?> getGeneratedList(MypageGeneratedDraftListRequestDto requestDto, HttpServletRequest request) throws Exception{
+        Integer userId = jwtUtil.getUserId(request)
+                .orElseThrow(() -> new BaseException(ErrorCode.INVALID_TOKEN)); // 헤더의 access token으로 userId 추출, null 반환시 유효하지 않은 토큰 오류 전송
         Pageable pageable  = PageRequest.of(requestDto.getPageNum() - 1,
                 requestDto.getListNum(),
                 requestDto.getDirection(),
@@ -54,9 +59,9 @@ public class MypageController {
 
     //북마크한 도안 리스트 조회
     @GetMapping("/bookmarks/list")
-    public ResponseEntity<?> getBookmarkedList(MypageBookmarkedDraftListRequestDto requestDto) throws Exception{
-        //TODO : userId JWT 토큰으로 부터 추출 및 유효성 조사
-        Integer userId = 1;
+    public ResponseEntity<?> getBookmarkedList(MypageBookmarkedDraftListRequestDto requestDto, HttpServletRequest request) throws Exception{
+        Integer userId = jwtUtil.getUserId(request)
+                .orElseThrow(() -> new BaseException(ErrorCode.INVALID_TOKEN)); // 헤더의 access token으로 userId 추출, null 반환시 유효하지 않은 토큰 오류 전송
         Pageable pageable  = PageRequest.of(requestDto.getPageNum() - 1,
                 requestDto.getListNum(),
                 requestDto.getDirection(),
@@ -67,9 +72,9 @@ public class MypageController {
 
     //구매한 도안 내역 리스트 조회
     @GetMapping("/payments/list")
-    public ResponseEntity<?> getPaymentsList(MypagePurchasedDraftListRequestDto requestDto) throws Exception{
-        //TODO : userId JWT 토큰으로 부터 추출 및 유효성 조사
-        Integer userId = 1;
+    public ResponseEntity<?> getPaymentsList(MypagePurchasedDraftListRequestDto requestDto, HttpServletRequest request) throws Exception{
+        Integer userId = jwtUtil.getUserId(request)
+                .orElseThrow(() -> new BaseException(ErrorCode.INVALID_TOKEN)); // 헤더의 access token으로 userId 추출, null 반환시 유효하지 않은 토큰 오류 전송
         Pageable pageable  = PageRequest.of(requestDto.getPageNum() - 1,
                 requestDto.getListNum(),
                 requestDto.getDirection(),

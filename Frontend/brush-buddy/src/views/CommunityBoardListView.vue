@@ -1,124 +1,159 @@
 <template>
   <div style="display: flex; justify-content: space-around">
-    <div>
+    <div style="display: flex; flex-direction: column; align-items: center">
       <div v-for="(card, i) in boardThumbnailDataFirst" :key="i">
         <CommunityComponent :boardThumbnail="card" />
       </div>
+
+      <footer>
+        <div ref="scrollTriggerElement2" id="scroll-trigger"></div>
+        <div class="circle-loader" v-if="showloader"></div>
+      </footer>
     </div>
-    <div>
+    <div style="display: flex; flex-direction: column; align-items: center">
       <div v-for="(card, i) in boardThumbnailDataSecond" :key="i">
         <CommunityComponent :boardThumbnail="card" />
       </div>
 
-      <div id="communityWrite">
-        <v-btn
-          icon="mdi-pencil-outline"
-          color="purple-lighten-3"
-          size="x-large"
-          onclick="goWrite()"
-        ></v-btn>
-      </div>
+      <footer>
+        <div ref="scrollTriggerElement" id="scroll-trigger"></div>
+        <div class="circle-loader" v-if="showloader"></div>
+      </footer>
     </div>
   </div>
+  <div style="height: 5rem; width: 100vw"></div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
-import axios from 'axios'
-import { useRouter } from 'vue-router'
-import CommunityComponent from '@/components/Community/CommunityComponent.vue'
-import type { BoardThumbnail } from '../api/type.ts'
+import { ref, computed, onMounted } from "vue";
+import axios from "axios";
+import { useRouter } from "vue-router";
+import CommunityComponent from "../components/Community/CommunityComponent.vue";
+import type { BoardThumbnail } from "../api/type";
 
-const router = useRouter()
+const currentPage = ref(0);
+const showloader = ref(false);
+const boardThumbnailDataFirst = ref<BoardThumbnail[]>([]);
 
-const boardThumbnailDataFirst = ref<BoardThumbnail[]>([
-  {
-    boardId: '1',
-    boardTitle: 'Example Board',
-    thumbnail: 'https://picsum.photos/100/200',
-    likeNumber: 100,
-    views: 500
-  },
-  {
-    boardId: '2',
-    boardTitle: 'Example Board',
-    thumbnail: 'https://picsum.photos/200/300',
-    likeNumber: 100,
-    views: 300
-  },
-  {
-    boardId: '1',
-    boardTitle: 'Example Board',
-    thumbnail: 'https://picsum.photos/400/200',
-    likeNumber: 100,
-    views: 500
-  },
-  {
-    boardId: '2',
-    boardTitle: 'Example Board',
-    thumbnail: 'https://picsum.photos/200/300',
-    likeNumber: 100,
-    views: 300
+const boardThumbnailDataSecond = ref<BoardThumbnail[]>([]);
+
+const pageCount = ref(1);
+
+const scrollTriggerElement = ref(null);
+const scrollTriggerElement2 = ref(null);
+
+const scrollTrigger = () => {
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.intersectionRatio > 0 && currentPage.value < pageCount.value) {
+        console.log("load!");
+
+        console.log(currentPage.value + " " + pageCount.value);
+        showloader.value = true;
+        setTimeout(() => {
+          axios
+            .get(
+              "http://localhost:8080/v1/api/board/list?direction=DESC&listNum=10&pageNum=" +
+                currentPage.value
+            )
+            .then((response: any) => {
+              console.log(response.data.boards);
+              pageCount.value = response.data.totalPage;
+
+              for (let i = 0; i < response.data.boards.length; i++) {
+                if (i % 2 === 1)
+                  boardThumbnailDataSecond.value.push(response.data.boards[i]);
+                else
+                  boardThumbnailDataFirst.value.push(response.data.boards[i]);
+              }
+              currentPage.value += 1;
+              showloader.value = false;
+            });
+          currentPage.value += 1;
+          showloader.value = false;
+        }, 3000); // simulate Ajax-Call ;-)
+      }
+    });
+  });
+  if (
+    !(
+      scrollTriggerElement.value === null ||
+      scrollTriggerElement2.value === null
+    )
+  ) {
+    observer.observe(scrollTriggerElement.value);
+    observer.observe(scrollTriggerElement2.value);
   }
-])
-
-const boardThumbnailDataSecond = ref<BoardThumbnail[]>([
-  {
-    boardId: '1',
-    boardTitle: 'Example Board',
-    thumbnail: 'https://picsum.photos/300/100',
-    likeNumber: 100,
-    views: 500
-  },
-  {
-    boardId: '2',
-    boardTitle: 'Example Board',
-    thumbnail: 'https://picsum.photos/300/300',
-    likeNumber: 100,
-    views: 300
-  },
-  {
-    boardId: '1',
-    boardTitle: 'Example Board',
-    thumbnail: 'https://picsum.photos/200/100',
-    likeNumber: 300,
-    views: 500
-  },
-  {
-    boardId: '2',
-    boardTitle: 'Example Board',
-    thumbnail: 'https://picsum.photos/200/400',
-    likeNumber: 100,
-    views: 300
-  }
-])
-
-const num = 1
+};
 
 onMounted(() => {
-  axios({
-    baseURL: '',
-    method: 'get',
-    url: 'http://localhost:8080/v1/api/board/list', // URL에 한글이 포함될 경우 인코딩
-    headers: {
-      'Content-Type': 'application/json; charset=utf-8'
-    }
-  }).then(function (response: any) {
-    console.log(response.data)
-
-    // boardThumbnailData.value = response.data;
-  })
-
-  const goWrite = () => {
-    router.push('/community/write')
-  }
-})
+  axios
+    .get(
+      "http://localhost:8080/api/v1/board/list?direction=DESC&listNum=10&pageNum=0"
+    )
+    .then((response: any) => {
+      console.log("onload!");
+      pageCount.value = response.data.totalPage;
+      console.log("total Page " + pageCount.value);
+      for (let i = 0; i < response.data.boards.length; i++) {
+        if (i % 2 === 1)
+          boardThumbnailDataSecond.value.push(response.data.boards[i]);
+        else boardThumbnailDataFirst.value.push(response.data.boards[i]);
+      }
+      currentPage.value += 1;
+    });
+  scrollTrigger();
+});
 </script>
 
 <style scoped>
-#communityWrite {
-  position: fixed;
-  bottom: 7rem;
-  right: 2rem;
+article {
+  margin: 0 auto;
+  width: 100%;
+}
+
+article section {
+  width: 100%;
+  /* margin-bottom: 20px; */
+  /* border-radius: 10px; */
+  background-color: #efefef;
+  color: #04525a;
+  overflow: hidden;
+}
+
+article section p {
+  margin: 0;
+}
+
+footer {
+  position: relative;
+  width: 50vw;
+  height: 100px;
+}
+
+footer #scroll-trigger {
+  height: 50px;
+}
+
+.circle-loader {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: 5px solid rgba(255, 255, 255, 0.2);
+  border-top: 5px solid #fff;
+  animation: animate 1.5s infinite linear;
+}
+
+@keyframes animate {
+  0% {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+  100% {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
 }
 </style>
