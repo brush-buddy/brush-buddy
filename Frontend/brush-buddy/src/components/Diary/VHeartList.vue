@@ -11,9 +11,8 @@
 <script setup lang="ts">
 import CCard from "./CCard.vue";
 import { ref } from "vue";
-// import axios from "axios";
-import {localAxios} from "../../api/axios";
 import type { HeartList, HeartListRes } from "../../api/type";
+import {localAxios} from "../../api/axios";
 
 const listNum = ref(3);
 const pageNum = ref(1);
