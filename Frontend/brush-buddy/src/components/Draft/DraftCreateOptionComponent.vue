@@ -1,50 +1,50 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
-import axios from 'axios'
-const fadein = ref(false)
-const buttonFadein = ref(false)
+import { onMounted, ref } from "vue";
+import axios from "axios";
+const fadein = ref(false);
+const buttonFadein = ref(false);
 
 const nextFadein = () => {
-  buttonFadein.value = true
-}
+  buttonFadein.value = true;
+};
 
 onMounted(() => {
-  fadein.value = true
-})
+  fadein.value = true;
+});
 
-const dialog = ref(false)
-const file = ref([])
+const dialog = ref(false);
+const file = ref([]);
 
 const makeImage = () => {
-  console.log(file.value[0])
-  let fileData = new FormData()
-  fileData.append('image', file.value[0])
-  console.log(fileData.get('image'))
-  console.log(fileData)
+  console.log(file.value[0]);
+  let fileData = new FormData();
+  fileData.append("image", file.value[0]);
+  console.log(fileData.get("image"));
+  console.log(fileData);
   if (file.value) {
     // reader.readAsDataURL(file.value[0]);
 
     axios
-      .post('http://localhost:8000/api/v1/draft/pipo-painting', fileData, {
+      .post("http://localhost:8000/api/v1/draft/pipo-painting", fileData, {
         headers: {
-          'content-type': 'multipart/form-data'
-        }
+          "content-type": "multipart/form-data",
+        },
       })
       .then((res) => {
-        console.log(res)
-      })
+        console.log(res);
+      });
   }
-}
-const preview = ref('../../assets/images/empty.png')
+};
+const preview = ref("../../assets/images/empty.png");
 
 const previewFile = (e: any) => {
-  console.log(e[0])
-  const reader = new FileReader()
-  reader?.readAsDataURL(e[0])
+  console.log(e[0]);
+  const reader = new FileReader();
+  reader?.readAsDataURL(e[0]);
   reader.onloadend = () => {
-    preview.value = reader.result as string
-  }
-}
+    preview.value = reader.result as string;
+  };
+};
 </script>
 
 <template>
@@ -61,8 +61,16 @@ const previewFile = (e: any) => {
     <div class="button-box">
       <Transition name="slide-fade">
         <div v-show="buttonFadein" class="button-group">
-          <router-link to="/draft/aiprompt" style="text-decoration: none; color: inherit">
-            <v-btn class="option-button" prepend-icon="mdi-palette-outline" color="primary">새 이미지 생성하기</v-btn>
+          <router-link
+            to="/draft/aiprompt"
+            style="text-decoration: none; color: inherit"
+          >
+            <v-btn
+              class="option-button"
+              prepend-icon="mdi-palette-outline"
+              color="primary"
+              >새 이미지 생성하기</v-btn
+            >
           </router-link>
           <v-dialog v-model="dialog" persistent width="18rem">
             <template v-slot:activator="{ props }">
@@ -78,11 +86,15 @@ const previewFile = (e: any) => {
               <v-card-title>
                 <span class="text-h5">사진</span>
               </v-card-title>
-              <v-row style="display: flex; justify-content: center; padding: 1rem">
+              <v-row
+                style="display: flex; justify-content: center; padding: 1rem"
+              >
                 <img :src="preview" style="width: 4rem" />
               </v-row>
 
-              <v-row style="display: flex; justify-content: center; margin: 1rem">
+              <v-row
+                style="display: flex; justify-content: center; margin: 1rem"
+              >
                 <template v-if="file.length === 0"></template>
 
                 <v-file-input
@@ -99,7 +111,13 @@ const previewFile = (e: any) => {
               </v-row>
               <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn color="pink-darken-1" variant="tonal" @click="dialog = false"> 취소 </v-btn>
+                <v-btn
+                  color="pink-darken-1"
+                  variant="tonal"
+                  @click="dialog = false"
+                >
+                  취소
+                </v-btn>
                 <v-btn
                   color="purple-darken-1"
                   variant="tonal"
@@ -201,7 +219,7 @@ const previewFile = (e: any) => {
 }
 .inner-message {
   color: var(--system-white, #fff);
-  font-family: 'Abril Fatface';
+  font-family: "Abril Fatface";
   font-size: 1.0625rem;
   font-style: normal;
   font-weight: 400;
