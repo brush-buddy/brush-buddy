@@ -12,9 +12,9 @@ const kakaoLogin = () => {
 </script>
 
 <template>
-  <RouterView />
-  <!-- <DraftPipoMakeView pipo-url="https://picsum.photos/200/300?random=1" :pipo-palette="palette" :isAI="isAI" :prompt="prompt"/> -->
-  <NavigationComponent />
+  <div style="height: 10px; width: 100vw;"></div>
+        <RouterView/>
+        <NavigationComponent />
 </template>
 
 <style scoped>
@@ -24,6 +24,6 @@ const kakaoLogin = () => {
   /* height: 100vh; */
 }
 .contentWrapper {
-  flex: 1;
+  flex : 1;
 }
 </style>
