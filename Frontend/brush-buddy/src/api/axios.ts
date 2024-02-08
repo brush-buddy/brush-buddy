@@ -4,7 +4,6 @@ import { getRefresh, signOut } from './user';
 const url = import.meta.env.VITE_APP_SERVER_URL
 
 function localAxios(){
-
   const userStore = useUserStore();
 
   const instance = axios.create({

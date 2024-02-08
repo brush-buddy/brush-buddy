@@ -12,7 +12,7 @@
 <script setup lang="ts">
 import CDraftCard from "./CDraftCard.vue";
 import { ref } from "vue";
-import axios from "axios";
+import {localAxios} from "../../api/axios";
 
 // madeDraft 불러오기
 interface HeartListRes {
@@ -34,39 +34,61 @@ interface HeartList {
 const listNum = ref(3);
 const pageNum = ref(1);
 const firstCall = ref([
-  axios({
-    baseURL: "",
-    method: "get",
-    url: "http://localhost:8080/api/v1/mypage/generate/list?listNum=3&pageNum=1",
-    headers: {
-      "Content-Type": "application/json; charset=utf-8",
-    },
-  }).then(function (response: any) {
-    console.log("first call", response);
-    items.value = response.data.drafts;
-    // boardThumbnailData.value = response.data;
-  }),
+    localAxios().get('/mypage/generate/list?listNum=3&pageNum=1')
+    .then(function (response: any) {
+      items.value = response.data.boards;
+    })
+    .catch(function (error: any) {
+      console.log(error.message);
+    }),
 ]);
 const totalPage = ref(0);
 const getHeartList = async (page: number): Promise<HeartListRes> => {
   console.log("getHeartList called");
   try {
-    const heartListGet = await axios({
-      method: "get",
-      url: `http://localhost:8080/api/v1/mypage/generate/list?listNum=${listNum.value}&pageNum=${page}`,
-      headers: {
-        "Content-Type": "application/json; charset=utf-8",
-        // Authorization: localStorage.getItem("token")
-      },
-    });
-    console.log(heartListGet.data.drafts);
-    totalPage.value = heartListGet.data.totalPage;
-    return heartListGet.data.drafts;
-  } catch (err) {
+    const heartListGet = await localAxios().get(`/mypage/generate/list?listNum=${listNum.value}&pageNum=${page}`);
+    return heartListGet.data.boards;
+  } catch (err: any) {
     console.log("api 호출 중 오류 발생", err);
     return Promise.reject(err);
   }
 };
+// const listNum = ref(3);
+// const pageNum = ref(1);
+// const firstCall = ref([
+//   axios({
+//     baseURL: "",
+//     method: "get",
+//     url: "http://localhost:8080/api/v1/mypage/generate/list?listNum=3&pageNum=1",
+//     headers: {
+//       "Content-Type": "application/json; charset=utf-8",
+//     },
+//   }).then(function (response: any) {
+//     console.log("first call", response);
+//     items.value = response.data.drafts;
+//     // boardThumbnailData.value = response.data;
+//   }),
+// ]);
+// const totalPage = ref(0);
+// const getHeartList = async (page: number): Promise<HeartListRes> => {
+//   console.log("getHeartList called");
+//   try {
+//     const heartListGet = await axios({
+//       method: "get",
+//       url: `http://localhost:8080/api/v1/mypage/generate/list?listNum=${listNum.value}&pageNum=${page}`,
+//       headers: {
+//         "Content-Type": "application/json; charset=utf-8",
+//         // Authorization: localStorage.getItem("token")
+//       },
+//     });
+//     console.log(heartListGet.data.drafts);
+//     totalPage.value = heartListGet.data.totalPage;
+//     return heartListGet.data.drafts;
+//   } catch (err) {
+//     console.log("api 호출 중 오류 발생", err);
+//     return Promise.reject(err);
+//   }
+// };
 
 // 무한 스크롤 구현
 const items = ref<HeartList[]>([]);
@@ -80,14 +102,8 @@ const api = async () => {
   });
 };
 
-<<<<<<< HEAD
-
-type InfiniteScrollSide =  any
-type InfiniteScrollStatus =  any
-=======
 type InfiniteScrollSide = any;
 type InfiniteScrollStatus = any;
->>>>>>> fd330c6f24f457fdb9b341788e7dea64f03c3035
 const load = async (options: {
   side: InfiniteScrollSide;
   done: (status: InfiniteScrollStatus) => void;

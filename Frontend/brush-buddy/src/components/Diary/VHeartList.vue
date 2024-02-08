@@ -11,25 +11,16 @@
 <script setup lang="ts">
 import CCard from "./CCard.vue";
 import { ref } from "vue";
-import axios from "axios";
-import type { HeartList, HeartListRes } from "../../api/type.ts";
+// import axios from "axios";
+import {localAxios} from "../../api/axios";
+import type { HeartList, HeartListRes } from "../../api/type";
 
 const listNum = ref(3);
 const pageNum = ref(1);
 const firstCall = ref([
-  axios({
-    baseURL: "",
-    method: "get",
-    url: "http://localhost:8080/api/v1/mypage/heart/list?listNum=3&pageNum=1",
-    headers: {
-      "Content-Type": "application/json; charset=utf-8",
-    },
-  })
+    localAxios().get('/mypage/heart/list?listNum=3&pageNum=1')
     .then(function (response: any) {
-      console.log("first call ", response.data.boards);
       items.value = response.data.boards;
-      console.log("first call value", items.value);
-      // boardThumbnailData.value = response.data;
     })
     .catch(function (error: any) {
       console.log(error.message);
@@ -39,15 +30,7 @@ const totalPage = ref(0);
 const getHeartList = async (page: number): Promise<HeartListRes> => {
   console.log("getHeartList called");
   try {
-    const heartListGet = await axios({
-      method: "get",
-      url: `http://localhost:8080/api/v1/mypage/heart/list?listNum=${listNum.value}&pageNum=${page}`,
-      headers: {
-        "Content-Type": "application/json; charset=utf-8",
-        // Authorization: localStorage.getItem("token")
-      },
-    });
-    totalPage.value = heartListGet.data.totalPage;
+    const heartListGet = await localAxios().get(`/mypage/heart/list?listNum=${listNum.value}&pageNum=${page}`);
     return heartListGet.data.boards;
   } catch (err: any) {
     console.log("api 호출 중 오류 발생", err);
@@ -78,12 +61,9 @@ const load = async (options: {
     // Perform API call
     const res = await api();
     const resList = await getHeartList(res);
-    console.log("resList", resList);
     if (resList && Array.isArray(resList) && resList.length > 0) {
       resList.forEach((res: HeartList) => items.value.push(res));
     }
-
-    console.log("items.value", items.value);
     if (totalPage.value > pageNum.value) {
       options.done("ok");
     } else {
