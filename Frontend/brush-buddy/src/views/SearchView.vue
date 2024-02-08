@@ -1,14 +1,12 @@
 <template>
-    <div>
-        <SearchComponent />
-    </div>
+  <div>
+    <SearchComponent />
+    <router-view />
+  </div>
 </template>
 
 <script setup lang="ts">
-import SearchInputComponent from '../components/SearchInputComponent.vue';
-
+import SearchComponent from "../components/SearchComponent.vue";
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>
