@@ -18,7 +18,7 @@ import SCommunityListComponentVue from '../components/Search/SCommunityListCompo
 const router = createRouter({
   history: createWebHistory(""),
   routes: [
-    
+
       {
         name: 'home',
         path: '/',
