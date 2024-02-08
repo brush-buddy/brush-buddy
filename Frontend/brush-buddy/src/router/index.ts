@@ -12,7 +12,8 @@ import VHeartList from '../components/Diary/VHeartList.vue'
 import DraftCreateAIView from '../views/DraftCreateAIView.vue'
 import DraftWriteView from '../views/DraftWrite.vue'
 import { createRouter, createWebHistory } from 'vue-router'
-
+import SDraftListComponentVue from '../components/Search/SDraftListComponent.vue'
+import SCommunityListComponentVue from '../components/Search/SCommunityListComponent.vue'
 
 const router = createRouter({
   history: createWebHistory(""),
@@ -59,7 +60,24 @@ const router = createRouter({
       {
         name: 'search',
         path: '/search',
-        component: SearchView
+        component: SearchView,
+        children: [
+          {
+            path: '/search',
+            component: SCommunityListComponentVue,
+          },
+          {
+            path: '/search/community',
+            component: SCommunityListComponentVue,
+          },
+          
+          {
+            path: '/search/draft',
+            component: SDraftListComponentVue,
+          },
+          
+          
+        ]
       },
       {
         name: 'draft',
