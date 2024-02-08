@@ -8,8 +8,8 @@ from typing import Dict, List
 import cv2
 import db
 import numpy as np
+import redis
 import requests
-import tensorflow as tf
 from fastapi import APIRouter, File, HTTPException, UploadFile
 from models import drafts, images
 from models.DTO import requestPrompt, responseImage, responsePipo
@@ -26,21 +26,28 @@ draft_router = APIRouter(
 @draft_router.post(
     "/ai-generation", status_code=200, response_model=responseImage.Img_url
 )
-async def ai_generate(prompt: requestPrompt.Prompt):
-    user_id = 1
+async def ai_generate(prompt: requestPrompt.Prompt, user_id: int = 1):
+    user = user_id
     # prompt -> 이미지 url
     aigenerateimageurl = images.AiImage().createImage(prompt.prompt)
 
-    # cnt = db.redis.save_callnum(user_id)
-    # if int(cnt) > 20:
-    #     return JSONResponse(
-    #         status_code=status.HTTP_429_TOO_MANY_REQUESTS,
-    #         content={"error": "Too Many Requests"},
-    #     )
-    # else:
-    #     return responseImage.Img_url(image_url=aigenerateimageurl)
+    r = redis.StrictRedis(host="localhost", port=6379, db=0)
 
-    return responseImage.Img_url(image_url=aigenerateimageurl)
+    r.incr(user, 1)
+    print(r.get(user), "callnum")  # callnum 확인용
+    call_num = r.get(user)
+
+    # cnt = db.redis.save_callnum(user)
+
+    if int(call_num) > 20:
+        return JSONResponse(
+            status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+            content={"error": "Too Many Requests"},
+        )
+    else:
+        return responseImage.Img_url(image_url=aigenerateimageurl)
+
+    # return responseImage.Img_url(image_url=aigenerateimageurl)
 
 
 # base64 이미지 받아서, 팔레트 json 데이터 return 하는 api
