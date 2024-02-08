@@ -9,7 +9,6 @@ import cv2
 import db
 import numpy as np
 import requests
-import tensorflow as tf
 from fastapi import APIRouter, File, HTTPException, UploadFile
 from models import drafts, images
 from models.DTO import requestPrompt, responseImage, responsePipo
