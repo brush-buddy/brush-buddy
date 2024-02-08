@@ -1,14 +1,31 @@
 <script setup lang="ts">
+import axios from "axios";
 import NavigationComponent from "../components/NavigationComponent.vue";
+import router from "../router";
+
+const login = () => {
+  console.log("login");
+  
+  const redirect_uri = encodeURIComponent(`${import.meta.env.VITE_APP_KAKAO_REDIRECT_URL}`);
+  const client_id = `${import.meta.env.VITE_APP_KAKAO_API_REST_KEY}` // TODO: 키 삽입
+  const URI = `https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${client_id}&redirect_uri=${redirect_uri}`
+  
+  const params = {
+    redirectUri: `${import.meta.env.VITE_APP_KAKAO_REDIRECT_URL}`
+  }
+  
+  window.Kakao.Auth.authorize(params);
+}
 </script>
 
 <template>
   <div id="background">
     <div id="home">
       <img src="../assets/logo.png" alt="logo" id="logo" />
-
-      <img src="../assets/kakao.png" alt="kakao" />
+      
+      <img src="../assets/kakao.png" alt="kakao" @click="login" />  
     </div>
+
   </div>
 </template>
 

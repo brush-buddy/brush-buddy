@@ -19,6 +19,8 @@ public class QUser extends EntityPathBase<User> {
 
     public static final QUser user = new QUser("user");
 
+    public final StringPath socialId = createString("socialId");
+
     public final StringPath userBirth = createString("userBirth");
 
     public final EnumPath<Gender> userGender = createEnum("userGender", Gender.class);

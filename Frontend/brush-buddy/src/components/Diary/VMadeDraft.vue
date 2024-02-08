@@ -80,9 +80,14 @@ const api = async () => {
   });
 };
 
+<<<<<<< HEAD
 
 type InfiniteScrollSide =  any
 type InfiniteScrollStatus =  any
+=======
+type InfiniteScrollSide = any;
+type InfiniteScrollStatus = any;
+>>>>>>> fd330c6f24f457fdb9b341788e7dea64f03c3035
 const load = async (options: {
   side: InfiniteScrollSide;
   done: (status: InfiniteScrollStatus) => void;
