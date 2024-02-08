@@ -30,77 +30,85 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
-import axios from 'axios'
-import { useRouter } from 'vue-router'
-import CommunityComponent from '../components/Community/CommunityComponent.vue'
-import type { BoardThumbnail } from '../api/type'
-import WriteButtonComponent from '../components/Community/WriteButtonComponent.vue'
+import { ref, computed, onMounted } from "vue";
+import axios from "axios";
+import { useRouter } from "vue-router";
+import CommunityComponent from "../components/Community/CommunityComponent.vue";
+import type { BoardThumbnail } from "../api/type";
 
-const currentPage = ref(0)
-const showloader = ref(false)
-const boardThumbnailDataFirst = ref<BoardThumbnail[]>([])
+const currentPage = ref(0);
+const showloader = ref(false);
+const boardThumbnailDataFirst = ref<BoardThumbnail[]>([]);
 
-const boardThumbnailDataSecond = ref<BoardThumbnail[]>([])
+const boardThumbnailDataSecond = ref<BoardThumbnail[]>([]);
 
-const pageCount = ref(1)
+const pageCount = ref(1);
 
-const scrollTriggerElement = ref(null)
-const scrollTriggerElement2 = ref(null)
+const scrollTriggerElement = ref(null);
+const scrollTriggerElement2 = ref(null);
 
 const scrollTrigger = () => {
   const observer = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
       if (entry.intersectionRatio > 0 && currentPage.value < pageCount.value) {
-        console.log('load!')
+        console.log("load!");
 
-        console.log(currentPage.value + ' ' + pageCount.value)
-        showloader.value = true
+        console.log(currentPage.value + " " + pageCount.value);
+        showloader.value = true;
         setTimeout(() => {
           axios
             .get(
-              'http://localhost:8080/api/v1/board/list?direction=DESC&listNum=10&pageNum=' +
+              "http://localhost:8080/v1/api/board/list?direction=DESC&listNum=10&pageNum=" +
                 currentPage.value
             )
             .then((response: any) => {
-              console.log(response.data.boards)
-              pageCount.value = response.data.totalPage
+              console.log(response.data.boards);
+              pageCount.value = response.data.totalPage;
 
               for (let i = 0; i < response.data.boards.length; i++) {
-                if (i % 2 === 1) boardThumbnailDataSecond.value.push(response.data.boards[i])
-                else boardThumbnailDataFirst.value.push(response.data.boards[i])
+                if (i % 2 === 1)
+                  boardThumbnailDataSecond.value.push(response.data.boards[i]);
+                else
+                  boardThumbnailDataFirst.value.push(response.data.boards[i]);
               }
-              currentPage.value += 1
-              showloader.value = false
-            })
-          currentPage.value += 1
-          showloader.value = false
-        }, 3000) // simulate Ajax-Call ;-)
+              currentPage.value += 1;
+              showloader.value = false;
+            });
+          currentPage.value += 1;
+          showloader.value = false;
+        }, 3000); // simulate Ajax-Call ;-)
       }
-    })
-  })
-  if (!(scrollTriggerElement.value === null || scrollTriggerElement2.value === null)) {
-    observer.observe(scrollTriggerElement.value)
-    observer.observe(scrollTriggerElement2.value)
+    });
+  });
+  if (
+    !(
+      scrollTriggerElement.value === null ||
+      scrollTriggerElement2.value === null
+    )
+  ) {
+    observer.observe(scrollTriggerElement.value);
+    observer.observe(scrollTriggerElement2.value);
   }
-}
+};
 
 onMounted(() => {
   axios
-    .get('http://localhost:8080/api/v1/board/list?direction=DESC&listNum=10&pageNum=0')
+    .get(
+      "http://localhost:8080/api/v1/board/list?direction=DESC&listNum=10&pageNum=0"
+    )
     .then((response: any) => {
-      console.log('onload!')
-      pageCount.value = response.data.totalPage
-      console.log('total Page ' + pageCount.value)
+      console.log("onload!");
+      pageCount.value = response.data.totalPage;
+      console.log("total Page " + pageCount.value);
       for (let i = 0; i < response.data.boards.length; i++) {
-        if (i % 2 === 1) boardThumbnailDataSecond.value.push(response.data.boards[i])
-        else boardThumbnailDataFirst.value.push(response.data.boards[i])
+        if (i % 2 === 1)
+          boardThumbnailDataSecond.value.push(response.data.boards[i]);
+        else boardThumbnailDataFirst.value.push(response.data.boards[i]);
       }
-      currentPage.value += 1
-    })
-  scrollTrigger()
-})
-
+      currentPage.value += 1;
+    });
+  scrollTrigger();
+});
 </script>
 
 <style scoped>

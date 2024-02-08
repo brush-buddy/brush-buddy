@@ -4,12 +4,21 @@ import DiaryView from '../views/DiaryView.vue'
 import DraftView from '../views/DraftView.vue'
 import HomeView from '../views/HomeView.vue'
 import SearchView from '../views/SearchView.vue'
+<<<<<<< HEAD
 import DraftCreateAIView from '../views/DraftCreateAIView.vue'
+=======
+import LoginView from '../views/LoginView.vue'
+>>>>>>> fd330c6f24f457fdb9b341788e7dea64f03c3035
 import VMadeDraft from '../components/Diary/VMadeDraft.vue'
 import VPurchaseDraft from '../components/Diary/VPurchaseDraft.vue'
 import VBookmarkDraft from '../components/Diary/VBookmarkDraft.vue'
 import VHeartList from '../components/Diary/VHeartList.vue'
+<<<<<<< HEAD
 import WriteComponentVue from '@/components/Community/WriteComponent.vue'
+=======
+import DraftCreateAIView from '../views/DraftCreateAIView.vue'
+import DraftWriteView from '../views/DraftWrite.vue'
+>>>>>>> fd330c6f24f457fdb9b341788e7dea64f03c3035
 import { createRouter, createWebHistory } from 'vue-router'
 
 
@@ -21,6 +30,11 @@ const router = createRouter({
         name: 'home',
         path: '/',
         component: HomeView
+      },
+      {
+        name: 'login',
+        path: '/login',
+        component: LoginView
       },
       {
         name: 'community',
@@ -65,7 +79,11 @@ const router = createRouter({
         path: '/community/:id',
         component:CommunityDetailView,
 
+<<<<<<< HEAD
       },
+=======
+    },
+>>>>>>> fd330c6f24f457fdb9b341788e7dea64f03c3035
       {
         name: 'boardAIView',
         path : "/draft/aiprompt",
@@ -74,7 +92,11 @@ const router = createRouter({
     {
       name: 'boardWriteView',
       path : "/community/write",
+<<<<<<< HEAD
       component : WriteComponentVue,
+=======
+      component : DraftWriteView,
+>>>>>>> fd330c6f24f457fdb9b341788e7dea64f03c3035
     }
 
   ]

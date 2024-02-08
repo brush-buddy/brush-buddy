@@ -27,7 +27,7 @@ onMounted(() => {
   axios({
     baseURL: '',
     method: 'get',
-    url: 'http://localhost:8080/v1/api/board/' + boardId, // URL에 한글이 포함될 경우 인코딩
+    url: 'http://localhost:8080/api/v1/board/' + boardId, // URL에 한글이 포함될 경우 인코딩
     headers: {
       'Content-Type': 'application/json; charset=utf-8'
     }

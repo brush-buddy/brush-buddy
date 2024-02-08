@@ -1,5 +1,6 @@
 <template>
   <form @submit.prevent="submitForm">
+    <!-- <input> -->
     <label for="input-file"> 업로드 </label>
     <input type="file" multiple id="input-file" style="display: none" @change="handleFileChange" />
     <div v-if="selectedFiles.length > 0">
@@ -35,7 +36,7 @@ const handleFileChange = (event: Event) => {
 
       // 배열에 대해 forEach 사용
       filesArray.forEach((one: File) => {
-        if(/^image\//.test(one.type)){
+        if(/^image\//.test(one.type)){ 
           // 이미지 미리보기 URL 생성
           const previewURL = URL.createObjectURL(one);
           imagePreviews.value.push(previewURL);
