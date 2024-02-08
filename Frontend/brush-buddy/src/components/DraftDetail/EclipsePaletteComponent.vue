@@ -20,7 +20,7 @@
 
 <script setup lang="ts">
 
-import SinglePaletteComponent from "./SinglePaletteComponent.vue";
+import SinglePaletteComponent from "../common/SinglePaletteComponent.vue";
 import { ref } from 'vue'
 
 const color1 = ref('#46C2C8')
