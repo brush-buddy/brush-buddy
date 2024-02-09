@@ -2,25 +2,25 @@
   <div class="rect">
     <div id="category">
       <div id="category1">
-        <CategoryBtnComponent :title="title1" :color="color1" />
+        <CButton :title="title1" :color="color1" />
       </div>
       <div id="category2">
-        <CategoryBtnComponent :title="title2" :color="color2" />
+        <CButton :title="title2" :color="color2" />
       </div>
     </div>
     <div id="draft">
-      <BookmarkedDraftImgComponent />
+      <DraftBookmarked />
     </div>
     <div id="palette">
-      <PaletteComponent />
+      <EclipsePaletteComponent />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import BookmarkedDraftImgComponent from '../../components/BookmarkedDraftImgComponent.vue'
-import PaletteComponent from '.././EclipsePaletteComponent.vue'
-import CategoryBtnComponent from '../../components/CategoryBtnComponent.vue'
+import DraftBookmarked from '../Draft/DraftBookmarked.vue'
+import EclipsePaletteComponent from '../DraftDetail/EclipsePaletteComponent.vue'
+import CButton from '../Community/CButton.vue'
 import { ref } from 'vue'
 
 const title1 = ref('물고기')

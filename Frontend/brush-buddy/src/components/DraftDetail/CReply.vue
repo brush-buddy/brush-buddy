@@ -1,6 +1,6 @@
 <template>
   <div class="wrap">
-    <div class = "profile-wrap">
+    <div class="profile-wrap">
       <div id="profile-avartar">
         <img src="@/assets/logo.png" alt="프로필사진" />
       </div>
@@ -18,13 +18,13 @@
         </v-container>
       </div>
       <div class="btnout">
-        <v-btn
+        <!-- <v-btn
           color="#C5C6EF"
           variant="tonal"
           @click="(dialog = false), sendreply()"
         >
           send
-        </v-btn>
+        </v-btn> -->
       </div>
     </div>
   </div>
@@ -39,17 +39,12 @@ const text = ref('send')
 
 const sendreply = () => {
   if (text.value === 'send') {
-    axios
-      .post('http://localhost:8000/api/v1/draft/pipo-painting',)
-      .then((res) => {
-        console.log(res)
-      })
+    axios.post('http://localhost:8000/api/v1/draft/pipo-painting').then((res) => {
+      console.log(res)
+    })
   }
 }
-
 </script>
-
-
 
 <style scoped>
 #naeyoung {
@@ -57,10 +52,10 @@ const sendreply = () => {
 }
 
 .v-container {
-    width: 100%;
-    padding: 0;
-    margin-right: auto;
-    margin-left: auto;
+  width: 100%;
+  padding: 0;
+  margin-right: auto;
+  margin-left: auto;
 }
 
 .fixed-size-textarea {
@@ -93,7 +88,7 @@ const sendreply = () => {
   width: 80%;
   display: flex;
   flex-direction: column;
-  margin : 2rem 1rem 2rem 1rem;
+  margin: 2rem 1rem 2rem 1rem;
   /* margin-right: 3rem; */
 }
 
@@ -103,7 +98,7 @@ const sendreply = () => {
   width: 4rem;
   height: 4rem;
   padding: 1rem;
-  margin-left:1rem;
+  margin-left: 1rem;
   overflow: hidden;
   > img {
     width: 100%;
