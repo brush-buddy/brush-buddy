@@ -2,7 +2,7 @@ package com.a205.brushbuddy.machine.domain;
 
 
 import com.a205.brushbuddy.user.domain.User;
-import com.a205.brushbuddy.workplace.Workplace;
+import com.a205.brushbuddy.workplace.domain.Workplace;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
