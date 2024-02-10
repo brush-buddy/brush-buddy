@@ -14,10 +14,7 @@
     "local": "vite --mode development"
   },
   "dependencies": {
-    "@ant-design/icons": "^5.2.6",
-    "@ant-design/icons-vue": "^7.0.1",
     "@mdi/font": "^7.4.47",
-    "@mdi/js": "^7.4.47",
     "axios": "^1.6.7",
     "cors": "^2.8.5",
     "infinite-loading-vue3-ts": "^1.0.5",

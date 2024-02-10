@@ -10,7 +10,7 @@ const kakaoLogin = () => {
       
     }
 </script>
-,
+
 <template>
   <div style="height: 10px; width: 100vw;"></div>
         <RouterView/>
