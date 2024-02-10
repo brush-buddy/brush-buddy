@@ -1,19 +1,22 @@
 <template>
-  <div id="cardWrapper">
-    <div id="thumbnailBox">
-      <div id="thumbnail">
-        <!-- <img src="{{ props.draft.draftThumbnail }}" alt="thumbnail" /> -->
-      </div>
+    <div id="cardWrapper">
+        <div id="thumbnailBox">
+            <div id="thumbnail">
+                <!-- <img src="{{ props.draft.draftThumbnail }}" alt="thumbnail" /> -->
+            </div>
+        </div>
+        <div id="timestamp">
+            {{ draft.draftTimestamp }}
+        </div>
     </div>
     <div id="timestamp">
       {{ draft.draftTimestamp }}
     </div>
-  </div>
 </template>
 <script setup lang="ts">
-import { defineProps } from "vue";
+import { defineProps } from 'vue';
 const props = defineProps(["draft"]);
-console.log("incard", props);
+console.log("incard",props);
 </script>
 <style scoped>
 #cardWrapper {

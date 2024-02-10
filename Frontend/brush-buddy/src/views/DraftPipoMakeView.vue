@@ -1,63 +1,56 @@
 <script setup lang="ts">
-import SinglePaletteComponent from "../components/SinglePaletteComponent.vue";
-import { localAxios } from "../api/axios";
+import SinglePaletteComponent from '../components/common/SinglePaletteComponent.vue'
+import { localAxios } from '../api/axios'
 const props = defineProps({
   pipoUrl: String,
   pipoPalette: {},
   isAI: Boolean,
-  prompt: String,
-});
-import { ref } from "vue";
+  prompt: String
+})
+import { ref } from 'vue'
 
 const items = ref([
-  { text: "음식", icon: "mdi-food-fork-drink" },
-  { text: "애니메이션 캐릭터", icon: "mdi-qqchat" },
-  { text: "로봇", icon: "mdi-robot-love-outline" },
-  { text: "나무", icon: "mdi-tree" },
-  { text: "바다", icon: "mdi-waves" },
-  { text: "눈", icon: "mdi-snowflake" },
-  { text: "과일", icon: "mdi-food-apple" },
-  { text: "패션", icon: "mdi-sunglasses" },
-  { text: "봄", icon: "mdi-flower" },
-  { text: "강변", icon: "mdi-sail-boat" },
-  { text: "별자리", icon: "mdi-creation-outline" },
-  { text: "애완동물", icon: "mdi-cat" },
-  { text: "자연", icon: "mdi-nature" },
-  { text: "자연", icon: "mdi-city" },
-  { text: "여행", icon: "mdi-wallet-travel" },
-]);
-const shared = ref(true);
-const categories = ref([]);
+  { text: '음식', icon: 'mdi-food-fork-drink' },
+  { text: '애니메이션 캐릭터', icon: 'mdi-qqchat' },
+  { text: '로봇', icon: 'mdi-robot-love-outline' },
+  { text: '나무', icon: 'mdi-tree' },
+  { text: '바다', icon: 'mdi-waves' },
+  { text: '눈', icon: 'mdi-snowflake' },
+  { text: '과일', icon: 'mdi-food-apple' },
+  { text: '패션', icon: 'mdi-sunglasses' },
+  { text: '봄', icon: 'mdi-flower' },
+  { text: '강변', icon: 'mdi-sail-boat' },
+  { text: '별자리', icon: 'mdi-creation-outline' },
+  { text: '애완동물', icon: 'mdi-cat' },
+  { text: '자연', icon: 'mdi-nature' },
+  { text: '자연', icon: 'mdi-city' },
+  { text: '여행', icon: 'mdi-wallet-travel' }
+])
+const shared = ref(true)
+const categories = ref([])
 
 const save = () => {
   localAxios()
-    .post("http://localhost:8080/api/v1/draft", {
+    .post('http://localhost:8080/api/v1/draft', {
       pipoUrl: props.pipoUrl,
       pipoPalette: props.pipoPalette,
       isAI: props.isAI,
       prompt: props.prompt,
       shared: shared.value,
-      categories: categories.value,
+      categories: categories.value
     })
     .then((response: any) => {
-      console.log(response);
-    });
-};
+      console.log(response)
+    })
+}
 
 const discard = () => {
-  console.log("취소");
-};
+  console.log('취소')
+}
 </script>
 
 <template>
-  <div
-    style="
-      display: flex;
-      justify-content: center;
-      flex-direction: column;
-      align-items: center;
-    "
-  >
+  <div style="display: flex; justify-content: center; flex-direction: column; align-items: center">
     <img
       :src="pipoUrl"
       alt="도안 이미지"
@@ -112,12 +105,7 @@ const discard = () => {
       <input
         type="text"
         placeholder="도안 이름"
-        style="
-          width: 20rem;
-          height: 2rem;
-          background-color: #2300270a;
-          padding: 1rem;
-        "
+        style="width: 20rem; height: 2rem; background-color: #2300270a; padding: 1rem"
       />
     </div>
     <!-- https://vuetifyjs.com/en/components/chips/#custom-list-->
@@ -136,11 +124,7 @@ const discard = () => {
       bg-color="white"
     >
       <template v-slot:chip="{ props, item }">
-        <v-chip
-          v-bind="props"
-          :prepend-icon="item.raw.icon"
-          :text="item.raw.text"
-        ></v-chip>
+        <v-chip v-bind="props" :prepend-icon="item.raw.icon" :text="item.raw.text"></v-chip>
       </template>
 
       <template v-slot:item="{ props, item }">
@@ -161,13 +145,7 @@ const discard = () => {
         style="margin-right: 10px"
         >취소</v-btn
       >
-      <v-btn
-        color="purple-lighten-1"
-        size="small"
-        variant="tonal"
-        @click="save()"
-        >만들기</v-btn
-      >
+      <v-btn color="purple-lighten-1" size="small" variant="tonal" @click="save()">만들기</v-btn>
     </div>
 
     <div style="height: 100px"></div>

@@ -21,6 +21,11 @@
       </footer>
     </div>
   </div>
+  <router-link to="/community/write">
+    <div id="goWriteButton">
+      <WriteButtonComponent/>
+    </div>
+  </router-link>
   <div style="height: 5rem; width: 100vw"></div>
 </template>
 
@@ -30,6 +35,7 @@ import { localAxios } from "../api/axios";
 import { useRouter } from "vue-router";
 import CommunityComponent from "../components/Community/CommunityComponent.vue";
 import type { BoardThumbnail } from "../api/type";
+import WriteButtonComponent from "../components/Community/WriteButtonComponent.vue";
 
 const axios = inject("axios");
 
@@ -150,7 +156,11 @@ footer #scroll-trigger {
   border-top: 5px solid #fff;
   animation: animate 1.5s infinite linear;
 }
-
+#goWriteButton{
+  position: fixed;
+  bottom: 10vh;
+  right: 3vw;
+}
 @keyframes animate {
   0% {
     transform: translate(-50%, -50%) rotate(0deg);
