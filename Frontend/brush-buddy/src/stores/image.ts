@@ -4,18 +4,19 @@ import type { DraftPipoInfo } from "../api/draft";
 
 const useImageStore = defineStore("image", () => {
     const isAI = ref(false)
-    const pipoPalette = ref<Record<string, String>>()
+    const pipoPalette = ref<Object>({})
     const pipoUrl = ref<String>("")
     const prompt = ref<String>("")
+    
+    
     function setImage(imageIsAI: boolean,
-        imagePipoPalette: Record<string, String>,
+        imagePipoPalette: string,
         imagePipoUrl: String,
         imagePrompt: String) {
         isAI.value = imageIsAI
-        pipoPalette.value = imagePipoPalette
+        pipoPalette.value = JSON.parse(imagePipoPalette)
         pipoUrl.value = imagePipoUrl
         prompt.value = imagePrompt
-
     }
     
     return {

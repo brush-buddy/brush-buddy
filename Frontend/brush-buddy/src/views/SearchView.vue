@@ -5,7 +5,7 @@
         <form action="">
           <v-icon color="purple" icon="mdi-magnify"></v-icon>
           <input type="text" placeholder="search" id="searchInput" v-model="searchValue" />
-          <v-icon @click="console.log('search')">
+          <v-icon @click="makeSearch()">
             <v-icon color="purple" icon="mdi-arrow-left-bottom"></v-icon>
           </v-icon>
         </form>
@@ -31,11 +31,17 @@
 import SCommunityListComponent from '../components/Search/SCommunityListComponent.vue'
 import SDraftListComponent from '../components/Search/SDraftListComponent.vue'
 import { ref } from 'vue'
+const draftList = ref()
+const communityList = ref()
 
-const communityColor = ref('purple')
-const draftColor = ref('purple')
 const searchValue = ref('')
 const tab = ref(1)
+
+const makeSearch = () => {
+  console.log('search')
+  draftList.value?.searchList(searchValue.value)
+  communityList.value?.searchList(searchValue.value)
+}
 </script>
 
 <style scoped>
