@@ -1,6 +1,6 @@
 <template>
   <div>
-    <SearchComponent />
+    <SearchComponent style="margin-bottom: 1rem" />
     <router-view />
   </div>
 </template>

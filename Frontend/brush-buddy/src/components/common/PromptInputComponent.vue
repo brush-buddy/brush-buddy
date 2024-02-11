@@ -1,23 +1,21 @@
 <script setup lang="ts">
-import { ref } from "vue";
-import { localAxios } from "../../api/axios";
-const prompt = ref<string>("");
-const dialog = ref(false);
-const loadingState = ref(true);
-const imageSrc = ref("../../assets/icon/loading.gif");
+import { ref } from 'vue'
+import { localAxios } from '../../api/axios'
+import axios from 'axios'
+const prompt = ref<string>('')
+const dialog = ref(false)
+const loadingState = ref(true)
+const imageSrc = ref('../../assets/icon/loading.gif')
 const makeImage = () => {
-  console.log(prompt.value);
-  // localAxios()
-  //   .post("http://localhost:8000/api/v1/prompt/", { propmt: prompt.value })
-  //   .then((res) => {
-  //     console.log(res);
-  //   });
-
-  setTimeout(function () {
-    loadingState.value = false;
-    imageSrc.value = "https://picsum.photos/200/300?random=1";
-  }, 10000);
-};
+  console.log(prompt.value)
+  localAxios()
+    .post('/draft/ai-generation', prompt.value)
+    .then((response) => {
+      console.log(response.data)
+      imageSrc.value = response.data['image_url']
+      loadingState.value = false
+    })
+}
 
 //-그려줘라고 입력하면 그림을 만들어드려요
 </script>
@@ -33,54 +31,56 @@ const makeImage = () => {
       style="width: 18rem"
       v-on:keyup.enter="makeImage()"
     />
-
-    <v-row justify="center">
-      <v-dialog v-model="dialog" persistent width="auto">
-        <template v-slot:activator="{ props }">
-          <v-btn
-            @click="makeImage()"
-            icon="mdi-arrow-up"
-            size="small"
-            color="success"
-            v-bind="props"
-          ></v-btn>
-        </template>
-        <v-card>
-          <div style="display: flex; justify-content: center">
-            <img
-              src="../../assets/icon/loading.gif"
-              alt=""
-              style="margin: 2rem; width: 10rem"
-              v-show="loadingState"
-            />
-            <img
-              :src="imageSrc"
-              alt=""
-              v-show="!loadingState"
-              style="margin: 2rem"
-            />
-          </div>
-          <v-card-actions>
-            <v-spacer></v-spacer>
+    <div>
+      <v-row justify="center">
+        <v-dialog v-model="dialog" persistent width="auto">
+          <template v-slot:activator="{ props }">
             <v-btn
-              color="green-darken-1"
-              variant="text"
-              @click="dialog = false"
-            >
-              Disagree
-            </v-btn>
-            <v-btn
-              color="green-darken-1"
-              variant="text"
-              @click="dialog = false"
-            >
-              Agree
-            </v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
-    </v-row>
-
+              @click="makeImage()"
+              icon="mdi-arrow-up"
+              size="small"
+              color="success"
+              v-bind="props"
+            ></v-btn>
+          </template>
+          <v-card>
+            <div style="display: flex; justify-content: center">
+              <img
+                src="../../assets/icon/loading.gif"
+                alt=""
+                style="margin: 2rem; width: 10rem"
+                v-show="loadingState"
+              />
+              <img
+                :src="imageSrc"
+                alt=""
+                v-show="!loadingState"
+                style="margin: 2rem; width: 15rem"
+              />
+            </div>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn
+                color="green-darken-1"
+                variant="text"
+                @click="dialog = false"
+                prepend-icon="mdi-delete-empty"
+              >
+                취소
+              </v-btn>
+              <v-btn
+                color="green-darken-1"
+                variant="text"
+                @click="dialog = false"
+                prepend-icon="mdi-brush-variant"
+              >
+                도안 만들기
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+      </v-row>
+    </div>
     <!-- </div> -->
   </div>
 </template>
@@ -99,7 +99,7 @@ const makeImage = () => {
 .input-box-sub-container {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+
   align-self: stretch;
 }
 
@@ -118,7 +118,7 @@ const makeImage = () => {
   font-style: normal;
   font-weight: 400;
 }
-input[type="text"]::placeholder {
+input[type='text']::placeholder {
   font-size: 0.8rem;
 }
 </style>
