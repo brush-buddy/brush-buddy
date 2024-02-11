@@ -23,6 +23,7 @@ class Drafts(BaseModel):
         t_stamp = time.strftime("%Y%m%d%H", time.localtime())
 
         aws = AwsS3()
+
         aiImg = AiImage()
 
         # aws s3 연결

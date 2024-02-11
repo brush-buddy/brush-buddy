@@ -12,7 +12,7 @@ import redis
 import requests
 from fastapi import APIRouter, File, HTTPException, UploadFile
 from models import drafts, images
-from models.DTO import requestPrompt, responseImage, responsePipo
+from models.DTO import requestPrompt, requestUrl, responseImage, responsePipo
 from PIL import Image
 from starlette import status
 from starlette.responses import JSONResponse
@@ -30,6 +30,7 @@ async def ai_generate(prompt: requestPrompt.Prompt, user_id: int = 1):
     user = user_id
     # prompt -> 이미지 url
     aigenerateimageurl = images.AiImage().createImage(prompt.prompt)
+    print(aigenerateimageurl)
 
     r = redis.StrictRedis(host="localhost", port=6379, db=0)
 
@@ -47,11 +48,9 @@ async def ai_generate(prompt: requestPrompt.Prompt, user_id: int = 1):
     else:
         return responseImage.Img_url(image_url=aigenerateimageurl)
 
-    # return responseImage.Img_url(image_url=aigenerateimageurl)
-
 
 # base64 이미지 받아서, 팔레트 json 데이터 return 하는 api
-@draft_router.post("/pipo-local", status_code=200)
+@draft_router.post("/pipo-local", status_code=200, response_model=responsePipo.Pipo)
 async def to_pipo_savelocal(image: UploadFile = File(...)):
     # try:
     UPLOAD_DIR = "./assets"  # 이미지를 저장할 서버 경로
@@ -61,46 +60,18 @@ async def to_pipo_savelocal(image: UploadFile = File(...)):
     with open(os.path.join(UPLOAD_DIR, filename), "wb") as fp:
         fp.write(content)  # 서버 로컬 스토리지에 이미지 저장 (쓰기)
 
-    # # 이미지 파일 열기
-    # timage = Image.open("./assets/image.jpg")
-    # print("-===========================")
-    # print(timage.size)
-    # 이미지를 NumPy 배열로 변환
-    # numpy_array = np.array(timage)
+    content = cv2.imread("./assets/image.jpg")
 
-    # with open(os.path.join(UPLOAD_DIR, filename), "rb") as fp:
-    #     content = fp.read()
+    json_string_palette, draft_url = drafts.Drafts().pipo_convert(content)
 
-    # src_img = cv2.imread("./assets/image.jpg")
-
-    # Image.open(BytesIO(await image.read())).save("test.png")
-
-    # img = cv2.imdecode(
-    #     (np.fromstring(BytesIO(await image.read()), dtype=np.uint8)),
-    #     cv2.IMREAD_COLOR,
-    # )
-    # print(img.shape)
-
-    # a = io.BytesIO(await image.read())
-    # Image.open(a).save("test1.png")
-    # b = np.fromstring(a, dtype=np.uint8)
-    # c = cv2.imdecode(b)
-    # print(c.shape)
-
-    # img_file = np.fromstring(image.read(),np.uint8)
-    # img = cv2.imdecode(img_file,cv2.IMREAD_COLOR)
-
-    # base64 이미지 받아서, numpy array로 변환
-    # numpy_array = np.array(Image.open(BytesIO(await image.read()))).reshape(-1, 349, 3)
-    # cv2.imwrite("test.png", numpy_array)
-
-    return {"local save": "success"}
+    return responsePipo.Pipo(image=draft_url, palette=json_string_palette)
 
 
 @draft_router.get("/pipo-s3", status_code=200, response_model=responsePipo.Pipo)
-async def to_pipo_saves3():
-
-    content = cv2.imread("./assets/image.jpg")
+async def to_pipo_saves3(url: requestUrl.Url):
+    response = requests.get(url.url)
+    img = Image.open(BytesIO(response.content))
+    content = np.array(img)
 
     json_string_palette, draft_url = drafts.Drafts().pipo_convert(content)
 
