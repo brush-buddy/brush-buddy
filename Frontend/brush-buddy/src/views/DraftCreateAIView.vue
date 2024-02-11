@@ -1,17 +1,17 @@
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
-import PromptInputComponent from "../components/common/PromptInputComponent.vue";
-const fadein = ref(false);
+import { onMounted, ref } from 'vue'
+import PromptInputComponent from '../components/common/PromptInputComponent.vue'
+const fadein = ref(false)
 
 onMounted(() => {
-  fadein.value = true;
-});
+  fadein.value = true
+})
 
-const buttonFadein = ref(true);
+const buttonFadein = ref(true)
 
 const nextFadein = () => {
-  buttonFadein.value = true;
-};
+  buttonFadein.value = true
+}
 </script>
 
 <template>
