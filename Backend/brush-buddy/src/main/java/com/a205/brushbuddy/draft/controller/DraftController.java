@@ -165,4 +165,6 @@ public class DraftController {
 		draftService.buyDraft(userId, draftId);
 		return new ResponseEntity<>("success", HttpStatus.OK);
 	}
+
+
 }
