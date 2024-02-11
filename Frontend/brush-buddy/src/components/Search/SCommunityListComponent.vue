@@ -25,114 +25,97 @@
 </template>
 
 <script setup lang="ts">
-import { ref, inject, onMounted } from "vue";
-import { localAxios } from "../../api/axios";
-import CommunityComponent from "../../components/Community/CommunityComponent.vue";
-import type { BoardThumbnail } from "../../api/type";
+import { ref, inject, onMounted } from 'vue'
+import { localAxios } from '../../api/axios'
+import CommunityComponent from '../../components/Community/CommunityComponent.vue'
+import type { BoardThumbnail } from '../../api/type'
 
-const props = defineProps({});
+const searchValue = ref('')
+const boardThumbnailDataFirst = ref<BoardThumbnail[]>([])
+const boardThumbnailDataSecond = ref<BoardThumbnail[]>([])
 
-const searchValue = ref("");
-const boardThumbnailDataFirst = ref<BoardThumbnail[]>([]);
-const boardThumbnailDataSecond = ref<BoardThumbnail[]>([]);
+const pageCount = ref(1)
+const currentPage = ref(1) // page는 1번부터 시작
+const showloader = ref(false)
 
-const pageCount = ref(1);
-const currentPage = ref(0); // page는 1번부터 시작
-const showloader = ref(false);
+const scrollTriggerElement = ref(null)
+const scrollTriggerElement2 = ref(null)
 
-const scrollTriggerElement = ref(null);
-const scrollTriggerElement2 = ref(null);
-
+// 스크롤 시에 추가적인 데이터를 불러오는 함수
 const scrollTrigger = () => {
   const observer = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
       if (entry.intersectionRatio > 0 && currentPage.value < pageCount.value) {
-        console.log("load...");
+        console.log('load...')
 
-        console.log(currentPage.value + " " + pageCount.value);
-        showloader.value = true;
+        console.log(currentPage.value + ' ' + pageCount.value)
+        showloader.value = true
         setTimeout(() => {
           localAxios()
-            .get(
-              searchValue.value == ""
-                ? "http://localhost:8080/api/v1/board/list?direction=DESC&listNum=10&pageNum=" +
-                    currentPage.value
-                : "http://localhost:8080/api/v1/board/list?direction=DESC&listNum=10&pageNum=" +
-                    currentPage.value +
-                    "&search=" +
-                    searchValue.value
-            )
+            .get('/board/list?listNum=20&pageNum=1&search=' + searchValue.value)
             .then((response: any) => {
-              console.log(response.data.boards);
-              pageCount.value = response.data.totalPage;
+              console.log(response.data.boards)
+              pageCount.value = response.data.totalPage
 
               for (let i = 0; i < response.data.boards.length; i++) {
-                if (i % 2 === 1)
-                  boardThumbnailDataSecond.value.push(response.data.boards[i]);
-                else
-                  boardThumbnailDataFirst.value.push(response.data.boards[i]);
+                if (i % 2 === 1) boardThumbnailDataSecond.value.push(response.data.boards[i])
+                else boardThumbnailDataFirst.value.push(response.data.boards[i])
               }
-              currentPage.value += 1;
-              showloader.value = false;
-            });
-          currentPage.value += 1;
-          showloader.value = false;
-        }, 3000);
+              currentPage.value += 1
+              showloader.value = false
+            })
+          currentPage.value += 1
+          showloader.value = false
+        }, 3000)
       }
-    });
-  });
+    })
+  })
   if (
     // 내릴 필요가 없을 경우
-    !(
-      scrollTriggerElement.value === null ||
-      scrollTriggerElement2.value === null
-    )
+    !(scrollTriggerElement.value === null || scrollTriggerElement2.value === null)
   ) {
-    observer.observe(scrollTriggerElement.value);
-    observer.observe(scrollTriggerElement2.value);
+    observer.observe(scrollTriggerElement.value)
+    observer.observe(scrollTriggerElement2.value)
   }
-};
+}
 
+// 첫 페이지 로딩 시에 데이터를 불러오는 함수
 onMounted(() => {
   localAxios()
-    .get(
-      "http://localhost:8080/api/v1/board/list?direction=DESC&listNum=10&pageNum=1"
-    )
+    .get('/board/list?listNum=20&pageNum=1')
     .then((response: any) => {
-      console.log("onload!");
       // 총 페이지 수 설정
-      pageCount.value = response.data.totalPage;
+      pageCount.value = response.data.totalPage
       for (let i = 0; i < response.data.boards.length; i++) {
-        if (i % 2 === 1)
-          boardThumbnailDataSecond.value.push(response.data.boards[i]);
-        else boardThumbnailDataFirst.value.push(response.data.boards[i]);
+        if (i % 2 === 1) boardThumbnailDataSecond.value.push(response.data.boards[i])
+        else boardThumbnailDataFirst.value.push(response.data.boards[i])
       } // 아이디 순서대로 정렬해서 적재
 
-      currentPage.value += 1;
-    });
-  scrollTrigger();
-});
+      currentPage.value += 1
+    })
+  scrollTrigger()
+})
 
 const searchList = (searchString: string) => {
-  searchValue.value = searchString;
-  boardThumbnailDataFirst.value = [];
-  boardThumbnailDataSecond.value = [];
-  currentPage.value = 1;
+  searchValue.value = searchString
+  boardThumbnailDataFirst.value = []
+  boardThumbnailDataSecond.value = []
+  currentPage.value = 1
   localAxios()
-    .get(
-      "http://localhost:8080/api/v1/board/list?direction=DESC&listNum=10&pageNum=1&search=" +
-        searchString
-    )
+    .get('/board/list?listNum=20&pageNum=1&search=' + searchString)
     .then((response: any) => {
-      pageCount.value = response.data.totalPage;
+      pageCount.value = response.data.totalPage
       for (let i = 0; i < response.data.boards.length; i++) {
-        if (i % 2 === 1)
-          boardThumbnailDataSecond.value.push(response.data.boards[i]);
-        else boardThumbnailDataFirst.value.push(response.data.boards[i]);
+        if (i % 2 === 1) boardThumbnailDataSecond.value.push(response.data.boards[i])
+        else boardThumbnailDataFirst.value.push(response.data.boards[i])
       }
-      currentPage.value += 1;
-    });
-};
+      currentPage.value += 1
+    })
+}
+
+defineExpose({
+  searchList
+})
 </script>
 
 <style scoped>

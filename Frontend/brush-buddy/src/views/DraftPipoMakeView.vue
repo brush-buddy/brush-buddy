@@ -5,8 +5,8 @@ import { ref } from 'vue'
 import { useImageStore } from '../stores/image'
 import { localAxios } from '../api/axios'
 import { onMounted } from 'vue'
-import router from '@/router'
-
+import { useRouter } from 'vue-router'
+const router = useRouter()
 const { isAI, pipoPalette, pipoUrl, prompt } = storeToRefs(useImageStore())
 
 const items = ref([
@@ -27,20 +27,21 @@ const items = ref([
   { text: '여행', icon: 'mdi-wallet-travel' },
   { text: '연인', icon: 'mdi-heart' }
 ])
+
 const shared = ref(true)
 const categories = ref([])
 const title = ref('')
 const save = () => {
   localAxios()
-    .post('http://localhost:8080/api/v1/draft', {
+    .post('/draft', {
       draftFileLink: pipoUrl.value,
       pipoUrl: pipoUrl.value,
-      palette: parseJSON(pipoPalette.value),
+      palette: pipoPalette.value,
       draftIsAI: isAI.value,
       paletteTitle: title.value,
       draftPrompt: prompt.value,
       draftShare: shared.value,
-      categoryList: categories.value.map((category) => category.text),
+      categoryList: categories.value,
       imageFile: pipoUrl.value
     })
     .then((response: any) => {
@@ -48,24 +49,21 @@ const save = () => {
     })
 }
 const dialog = ref(false)
-const parseJSON = (json: string) => {
-  return JSON.parse(json)
-}
 
 const discard = () => {
   console.log('취소')
 }
 
 onMounted(() => {
-  console.log(pipoUrl.value)
   pipoUrl.value = 'https://picsum.photos/200/300?random=1' || console.log(pipoPalette.value)
 })
 </script>
 
 <template>
   <div style="display: flex; justify-content: center; flex-direction: column; align-items: center">
+    {{ pipoPalette }}
     <img
-      :src="pipoUrl"
+      :src="pipoUrl.toString"
       alt="도안 이미지"
       style="
         width: 18rem;
@@ -79,7 +77,7 @@ onMounted(() => {
       <p>색 추출 결과</p>
     </div>
     <div class="paletteColors">
-      <template v-for="(value, key) in JSON.parse(pipoPalette)" :key="key">
+      <template v-for="([key, value], index) in Object.entries(pipoPalette)" :key="index">
         <SinglePaletteComponent :color="value" />
       </template>
     </div>
@@ -171,7 +169,7 @@ onMounted(() => {
           >
             <div style="display: flex; justify-content: center; flex-direction: column">
               <div style="display: flex; justify-content: center; margin-bottom: 0.5rem">
-                <img :src="pipoUrl" alt="" style="max-height: 15rem; min-width: 15rem" />
+                <img :src="pipoUrl.toString" alt="" style="max-height: 15rem; min-width: 15rem" />
               </div>
               <v-spacer style="height: 1rem"></v-spacer>
               <card-title>
@@ -179,7 +177,7 @@ onMounted(() => {
               </card-title>
               <v-spacer style="height: 1rem"></v-spacer>
               <div class="paletteColors" style="padding: 0.5rem">
-                <template v-for="(value, key) in JSON.parse(pipoPalette)" :key="key">
+                <template v-for="([key, value], index) in Object.entries(pipoPalette)" :key="index">
                   <SinglePaletteComponent :color="value" />
                 </template>
               </div>
