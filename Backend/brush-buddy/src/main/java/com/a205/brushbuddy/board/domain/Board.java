@@ -11,6 +11,7 @@ import org.hibernate.annotations.ColumnDefault;
 
 import java.sql.Timestamp;
 
+@SuppressWarnings("checkstyle:RegexpSinglelineJava")
 @Data
 @Entity
 @Table(name = "board")
@@ -32,14 +33,14 @@ public class Board {
 	@ManyToOne(fetch = FetchType.LAZY) // Board(Many) : Draft(One)
 	private Draft draft;
 
-    @Column(name = "board_title", nullable = false, length = 200)
-    private String boardTitle;
+	@Column(name = "board_title", nullable = false, length = 200)
+	private String boardTitle;
 
-    @Column(name = "board_content", nullable = false, length = 1000)
-    private String boardContent;
+	@Column(name = "board_content", nullable = false, length = 1000)
+	private String boardContent;
 
-    @Column(name = "board_thumbnail", nullable = false, length = 255)
-    private String boardThumbnail;
+	@Column(name = "board_thumbnail", nullable = false, length = 255)
+	private String boardThumbnail;
 
 	@Column(name = "board_like_number", nullable = false)
 	private Integer boardLikeNumber;
@@ -54,3 +55,4 @@ public class Board {
 	@Column(name = "board_timestamp", nullable = false, insertable = false, updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
 	private Timestamp boardTimestamp;
 }
+
