@@ -49,11 +49,12 @@ async def print_palette(
     websocket:WebSocket,
     client_id: str
     ):
-    global message_from_client
+
     # 스프링 서버와의 연결을 승인
     await websocket.accept()
 
-    response = await websocket.receive_text() 
+    print("스프링 서버로 부터 요청을 기다리고 있습니다...")
+    response = await asyncio.wait_for(websocket.receive_text(),timeout=10)
     print(f"스프링 서버로 부터 요청 : {response}")
 
     # 연결된 클라이언트가 있는지 확인한다.
