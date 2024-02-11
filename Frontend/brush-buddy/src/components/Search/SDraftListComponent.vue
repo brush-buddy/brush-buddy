@@ -60,7 +60,10 @@ const scrollTrigger = () => {
                     searchValue.value
             )
             .then((response: any) => {
-              console.log(response.data.content)
+              if (response.data.content == undefined) {
+                return
+              }
+
               pageCount.value = response.data.totalPages
 
               for (let i = 0; i < response.data.content.length; i++) {
@@ -90,6 +93,9 @@ onMounted(() => {
     .get('/draft/list?direction=DESC&listNum=10&pageNum=1')
     .then((response: any) => {
       console.log('onload!')
+      if (response.data.content == undefined) {
+        return
+      }
       // 총 페이지 수 설정
       console.log(response.data)
       console.log(response.data.content)
@@ -115,6 +121,9 @@ const searchList = (searchString: string) => {
         searchString
     )
     .then((response: any) => {
+      if (response.data.content == undefined) {
+        return
+      }
       pageCount.value = response.data.totalPages
       for (let i = 0; i < response.data.content.length; i++) {
         if (i % 2 === 1) communityThumbnailDataSecond.value.push(response.data.content[i])
