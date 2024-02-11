@@ -1,8 +1,8 @@
 <template>
   <div style="display: flex; justify-content: space-around">
     <div style="display: flex; flex-direction: column; align-items: center">
-      <div v-for="(card, i) in boardThumbnailDataFirst" :key="i">
-        <CommunityComponent :boardThumbnail="card" />
+      <div v-for="(card, i) in communityThumbnailDataFirst" :key="i">
+        <DraftThumbnailComponent :draftThumbnail="card" />
       </div>
 
       <footer>
@@ -11,8 +11,8 @@
       </footer>
     </div>
     <div style="display: flex; flex-direction: column; align-items: center">
-      <div v-for="(card, i) in boardThumbnailDataSecond" :key="i">
-        <CommunityComponent :boardThumbnail="card" />
+      <div v-for="(card, i) in communityThumbnailDataSecond" :key="i">
+        <DraftThumbnailComponent :draftThumbnail="card" />
       </div>
 
       <footer>
@@ -25,114 +25,108 @@
 </template>
 
 <script setup lang="ts">
-import { ref, inject, onMounted } from "vue";
-import { localAxios } from "../../api/axios";
-import CommunityComponent from "../../components/Community/CommunityComponent.vue";
-import type { BoardThumbnail } from "../../api/type";
+import { ref, inject, onMounted } from 'vue'
+import { localAxios } from '../../api/axios'
+import DraftThumbnailComponent from '../Draft/DraftThumbnailComponent.vue'
+import type { DraftThumbnail } from '../../api/draft'
 
-const props = defineProps({});
+const searchValue = ref('')
+const communityThumbnailDataFirst = ref<DraftThumbnail[]>([])
+const communityThumbnailDataSecond = ref<DraftThumbnail[]>([])
 
-const searchValue = ref("");
-const boardThumbnailDataFirst = ref<BoardThumbnail[]>([]);
-const boardThumbnailDataSecond = ref<BoardThumbnail[]>([]);
+const pageCount = ref(1)
+const currentPage = ref(0) // page는 1번부터 시작
+const showloader = ref(false)
 
-const pageCount = ref(1);
-const currentPage = ref(0); // page는 1번부터 시작
-const showloader = ref(false);
-
-const scrollTriggerElement = ref(null);
-const scrollTriggerElement2 = ref(null);
+const scrollTriggerElement = ref(null)
+const scrollTriggerElement2 = ref(null)
 
 const scrollTrigger = () => {
   const observer = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
       if (entry.intersectionRatio > 0 && currentPage.value < pageCount.value) {
-        console.log("load...");
+        console.log('load...')
 
-        console.log(currentPage.value + " " + pageCount.value);
-        showloader.value = true;
+        console.log(currentPage.value + ' ' + pageCount.value)
+        showloader.value = true
         setTimeout(() => {
           localAxios()
             .get(
-              searchValue.value == ""
-                ? "http://localhost:8080/api/v1/board/list?direction=DESC&listNum=10&pageNum=" +
-                    currentPage.value
-                : "http://localhost:8080/api/v1/board/list?direction=DESC&listNum=10&pageNum=" +
+              searchValue.value == ''
+                ? '/draft/list?direction=DESC&listNum=10&pageNum=' + currentPage.value
+                : '/draft/list?direction=DESC&listNum=10&pageNum=' +
                     currentPage.value +
-                    "&search=" +
+                    '&search=' +
                     searchValue.value
             )
             .then((response: any) => {
-              console.log(response.data.boards);
-              pageCount.value = response.data.totalPage;
+              console.log(response.data.content)
+              pageCount.value = response.data.totalPages
 
-              for (let i = 0; i < response.data.boards.length; i++) {
-                if (i % 2 === 1)
-                  boardThumbnailDataSecond.value.push(response.data.boards[i]);
-                else
-                  boardThumbnailDataFirst.value.push(response.data.boards[i]);
+              for (let i = 0; i < response.data.content.length; i++) {
+                if (i % 2 === 1) communityThumbnailDataSecond.value.push(response.data.content[i])
+                else communityThumbnailDataFirst.value.push(response.data.content[i])
               }
-              currentPage.value += 1;
-              showloader.value = false;
-            });
-          currentPage.value += 1;
-          showloader.value = false;
-        }, 3000);
+              currentPage.value += 1
+              showloader.value = false
+            })
+          currentPage.value += 1
+          showloader.value = false
+        }, 3000)
       }
-    });
-  });
+    })
+  })
   if (
     // 내릴 필요가 없을 경우
-    !(
-      scrollTriggerElement.value === null ||
-      scrollTriggerElement2.value === null
-    )
+    !(scrollTriggerElement.value === null || scrollTriggerElement2.value === null)
   ) {
-    observer.observe(scrollTriggerElement.value);
-    observer.observe(scrollTriggerElement2.value);
+    observer.observe(scrollTriggerElement.value)
+    observer.observe(scrollTriggerElement2.value)
   }
-};
+}
 
 onMounted(() => {
   localAxios()
-    .get(
-      "http://localhost:8080/api/v1/board/list?direction=DESC&listNum=10&pageNum=1"
-    )
+    .get('/draft/list?direction=DESC&listNum=10&pageNum=1')
     .then((response: any) => {
-      console.log("onload!");
+      console.log('onload!')
       // 총 페이지 수 설정
-      pageCount.value = response.data.totalPage;
-      for (let i = 0; i < response.data.boards.length; i++) {
-        if (i % 2 === 1)
-          boardThumbnailDataSecond.value.push(response.data.boards[i]);
-        else boardThumbnailDataFirst.value.push(response.data.boards[i]);
+      console.log(response.data)
+      console.log(response.data.content)
+      pageCount.value = response.data.totalPages
+      for (let i = 0; i < response.data.content.length; i++) {
+        if (i % 2 === 1) communityThumbnailDataSecond.value.push(response.data.content[i])
+        else communityThumbnailDataFirst.value.push(response.data.content[i])
       } // 아이디 순서대로 정렬해서 적재
 
-      currentPage.value += 1;
-    });
-  scrollTrigger();
-});
+      currentPage.value += 1
+    })
+  scrollTrigger()
+})
 
 const searchList = (searchString: string) => {
-  searchValue.value = searchString;
-  boardThumbnailDataFirst.value = [];
-  boardThumbnailDataSecond.value = [];
-  currentPage.value = 1;
+  searchValue.value = searchString
+  communityThumbnailDataFirst.value = []
+  communityThumbnailDataSecond.value = []
+  currentPage.value = 1
   localAxios()
     .get(
-      "http://localhost:8080/api/v1/board/list?direction=DESC&listNum=10&pageNum=1&search=" +
+      'http://localhost:8080/api/v1/draft/list?direction=DESC&listNum=10&pageNum=1&search=' +
         searchString
     )
     .then((response: any) => {
-      pageCount.value = response.data.totalPage;
-      for (let i = 0; i < response.data.boards.length; i++) {
-        if (i % 2 === 1)
-          boardThumbnailDataSecond.value.push(response.data.boards[i]);
-        else boardThumbnailDataFirst.value.push(response.data.boards[i]);
+      pageCount.value = response.data.totalPages
+      for (let i = 0; i < response.data.content.length; i++) {
+        if (i % 2 === 1) communityThumbnailDataSecond.value.push(response.data.content[i])
+        else communityThumbnailDataFirst.value.push(response.data.content[i])
       }
-      currentPage.value += 1;
-    });
-};
+      currentPage.value += 1
+    })
+}
+
+defineExpose({
+  searchList
+})
 </script>
 
 <style scoped>
