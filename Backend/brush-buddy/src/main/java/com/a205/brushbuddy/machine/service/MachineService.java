@@ -5,4 +5,5 @@ import com.a205.brushbuddy.machine.dto.MachineRegisterResponseDto;
 
 public interface MachineService {
     MachineRegisterResponseDto registerMachine(MachineRegisterRequestDto requestDto);
+
 }
