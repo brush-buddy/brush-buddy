@@ -37,7 +37,7 @@ class Drafts(BaseModel):
 
         # painting_img : clustering된 이미지(default = 16)
         # color_index_map : 1-16 까지
-        painting_img, color_index_map = painting.run(**kwargs)
+        painting_img, color_index_map = painting.run(number=10, **kwargs)
         color_indexs, color_rbg_values = painting.get_clustered_color_info(painting_img)
 
         # s3에 색칠된 도안 업로드 ========================================
@@ -51,7 +51,7 @@ class Drafts(BaseModel):
 
         # aws s3에 색칠된 도안 "colored_draft_YYYYMMDDHH.png"로 저장
         try:
-            s3.upload_file(colored_file_path, bucket_name, key)
+            s3.upload_file(file_name, bucket_name, key)
         except Exception as e:
             print(e)
 
@@ -114,7 +114,7 @@ class Drafts(BaseModel):
         # return palette, numbered_draft_url
 
         numbered_draft_url = (
-            f"https://brushbuddy0.s3.ap-northeast-2.amazonaws.com/{numbered_key}"
+            f"https://brushbuddy0.s3.ap-northeast-2.amazonaws.com/{numbering_file_name}"
         )
 
         return hexcode_json_string, numbered_draft_url
