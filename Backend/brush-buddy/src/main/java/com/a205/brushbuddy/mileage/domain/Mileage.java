@@ -2,13 +2,10 @@ package com.a205.brushbuddy.mileage.domain;
 
 import java.sql.Timestamp;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
+import com.a205.brushbuddy.user.domain.User;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -16,6 +13,8 @@ import lombok.NoArgsConstructor;
 @Data
 @Table(name = "mileage")
 @NoArgsConstructor
+@Builder
+@AllArgsConstructor
 public class Mileage {
     @Id
     @GeneratedValue
@@ -23,7 +22,8 @@ public class Mileage {
     private Long mileageId;
 
     @Column(name = "user_id", nullable = false)
-    private Long userId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private User user;
 
     @Column(name = "workplace_id", nullable = true)
     private Integer workplaceId;

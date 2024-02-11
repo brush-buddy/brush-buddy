@@ -8,7 +8,7 @@ spring:
   jpa:
     #open-in-view: true
     hibernate:
-      ddl-auto: validate
+      ddl-auto: create
     show-sql: true
     properties:
       hibernate:
@@ -18,36 +18,38 @@ spring:
   kakao:
     admin-key: ${KAKAO_ADMIN_KEY}
     pay:
-      workplaceid: 0 ## 브러쉬버디 마일리지 내역 기록용 사업장 ID 0으로 설정
-      datetimeformatter.ofpattern: DateTimeFormatter.ofPattern("yy-MM-dd HH:mm:ss")
-      mapping: /api/v1/pay
+      ## 브러쉬버디 마일리지 내역 기록용 사업장 ID 0으로 설정
+      workplaceid: 0
       header:
-        size: 2
-        key: Authorization,Content-type
-        value: KakaoAK ,application/x-www-form-urlencoded;charset=utf-8
+      #  size: 2
+      #  key: Authorization,Content-type
+      #  value: KakaoAK ,application/x-www-form-urlencoded;charset=utf-8
       cid: TC0ONETIME
       ready:
         request:
           url: https://kapi.kakao.com/v1/payment/ready
-          approval: /api/v1/pay/approval ## 후에 수정 필요 가능
-          cancel: /api/v1/pay/cancel ## 후에 수정 필요 가능
-          fail: /api/v1/pay/fail ## 후에 수정 필요 가능
-          size: 10
-          name: cid,partner_order_id,partner_user_id,item_name,quantity,total_amount,tax_free_amount,approval_url,cancel_url,fail_url
+          approval: /api/v1/pay/approval
+          ## 후에 수정 필요 가능
+          cancel: /api/v1/pay/cancel
+          ## 후에 수정 필요 가능
+          fail: /api/v1/pay/fail
+          ## 후에 수정 필요 가능
+          #  size: 10
+          #  name: cid,partner_order_id,partner_user_id,item_name,quantity,total_amount,tax_free_amount,approval_url,cancel_url,fail_url
         response:
           url: https://kapi.kakao.com/v1/payment/approve
-          size: 7
-          name: tid,next_redirect_app_url,next_redirect_mobile_url,next_redirect_pc_url,android_app_scheme,ios_app_scheme,created_at
+          #  size: 7
+          #  name: tid,next_redirect_app_url,next_redirect_mobile_url,next_redirect_pc_url,android_app_scheme,ios_app_scheme,created_at
       approve:
         request:
-          size: 5
-          name: cid,tid,partner_order_id,artner_user_id,pg_token
+        #  size: 5
+        #  name: cid,tid,partner_order_id,artner_user_id,pg_token
         ## resonse 현재로는 필요 이상
         response:
-          size: 15
-          name: aid,tid,cid,sid,partner_order_id,partner_user_id,payment_method_type,amount,card_info,item_name,item_code,quantity,created_at,approved_at,payloa
-          amount: total,tax_free,vat,point,discount,green_deposit
-          cardinfo: kakaopay_purchase_corp,kakaopay_purchase_corp_code,kakaopay_issuer_corp,kakaopay_issuer_corp_code,bin,card_type,install_month,approved_id,card_mid,interest_free_install,installment_type,card_item_code
+        #  size: 15
+        #  name: aid,tid,cid,sid,partner_order_id,partner_user_id,payment_method_type,amount,card_info,item_name,item_code,quantity,created_at,approved_at,payloa
+        #  amount: total,tax_free,vat,point,discount,green_deposit
+        #  cardinfo: kakaopay_purchase_corp,kakaopay_purchase_corp_code,kakaopay_issuer_corp,kakaopay_issuer_corp_code,bin,card_type,install_month,approved_id,card_mid,interest_free_install,installment_type,card_item_code
 
 jwt:
   secret: ${JWT_SECRET_KEY}

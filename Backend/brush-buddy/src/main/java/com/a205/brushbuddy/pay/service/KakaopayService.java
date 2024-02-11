@@ -1,7 +1,5 @@
 package com.a205.brushbuddy.pay.service;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -25,85 +23,75 @@ import lombok.extern.slf4j.Slf4j;
 @NoArgsConstructor
 @Service
 public class KakaopayService {
+    private static final String[] headerKey = {"Authorization", "Content-type"};
+    private static final String[] headerValue = {"KakaoAK ", "application/x-www-form-urlencoded;charset=utf-8"};
+    private HttpHeaders headers;
+    @Value("${spring.kakao.admin-key}")
+    private String kakaoAdminKey;
+    @Value("${spring.kakao.pay.ready.request.url}")
+    private String readyRequestUrl;
+    @Value("${spring.kakao.pay.ready.request.approval}")
+    private String approveRequestUrl;
+    @Getter
+    @Setter
+    private KakaopayReadyRequestDto kakaopayReadyRequestDto;
+    @Getter
+    @Setter
+    private KakaopayReadyResponseDto kakaopayReadyResponseDto;
+    @Getter
+    @Setter
+    private KakaopayApproveRequestDto kakaopayApproveRequestDto;
+    @Getter
+    @Setter
+    private KakaopayApproveResponseDto kakaopayApproveResponseDto;
 
-	private HttpHeaders headers;
-	@Value("${spring.kakao.admin-key}")
-	private String kakaoAdminKey;
-	@Value("${spring.kakao.pay.header.key}")
-	private List<String> headerKey;
-	@Value("${spring.kakao.pay.header.value}")
-	private List<String> headerValue;
-	@Value("${spring.kakao.pay.ready.request.url}")
-	private String readyRequestUrl;
-	@Value("${spring.kakao.pay.ready.request.size}")
-	private int readyRequestSize;
-	@Value("${spring.kakao.pay.ready.request.name}")
-	private List<String> readyRequestName;
-	@Value("${spring.kakao.pay.ready.request.approval}")
-	private String approveRequestUrl;
-	@Value("${spring.kakao.pay.approve.request.size}")
-	private int approveRequestSize;
-	@Value("${spring.kakao.pay.approve.request.name}")
-	private List<String> approveRequestName;
+    @PostConstruct
+    public void setHeader() {
+        MultiValueMap<String, String> headers = new LinkedMultiValueMap<String, String>();
+        headers.set(headerKey[0], headerValue[0] + kakaoAdminKey);
+        headers.set(headerKey[1], headerValue[1]);
+        this.headers = new HttpHeaders(headers);
+    }
 
-	@Getter
-	@Setter
-	private KakaopayReadyRequestDto kakaopayReadyRequestDto;
-	@Getter
-	@Setter
-	private KakaopayReadyResponseDto kakaopayReadyResponseDto;
-	@Getter
-	@Setter
-	private KakaopayApproveRequestDto kakaopayApproveRequestDto;
-	@Getter
-	@Setter
-	private KakaopayApproveResponseDto kakaopayApproveResponseDto;
+    public KakaopayReadyResponseDto sendReadyRequest(KakaopayReadyRequestDto kakaopayReadyRequestDto) {
+        MultiValueMap<String, String> body = new LinkedMultiValueMap<String, String>();
 
-	@PostConstruct
-	public void setHeader() {
-		MultiValueMap<String, String> headers = new LinkedMultiValueMap<String, String>();
-		headers.set(headerKey.get(0), headerValue.get(0) + kakaoAdminKey);
-		headers.set(headerKey.get(1), headerValue.get(1));
-		this.headers = new HttpHeaders(headers);
-	}
+        log.info("sendReadyRequest HTTP Entitiy body :");
+        String[] value = kakaopayReadyRequestDto.getValue();
+        for (int i = 0; i < KakaopayReadyRequestDto.size; ++i) {
+            body.add(KakaopayReadyRequestDto.name[i], value[i]);
+            log.info(KakaopayReadyRequestDto.name[i] + ":" + value[i]);
+        }
 
-	public KakaopayReadyResponseDto sendReadyRequest(KakaopayReadyRequestDto kakaopayReadyRequestDto) {
-		MultiValueMap<String, String> body = new LinkedMultiValueMap<String, String>();
+        HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity<MultiValueMap<String, String>>(body,
+            headers);
 
-		log.info("sendReadyRequest HTTP Entitiy body :");
-		String[] value = kakaopayReadyRequestDto.getAll();
-		for (int i = 0; i < readyRequestSize; ++i) {
-			body.add(readyRequestName.get(i), value[i]);
-			log.info(readyRequestName.get(i) + ":" + value[i]);
-		}
+        RestTemplate restTemplate = new RestTemplate();
 
-		HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity<MultiValueMap<String, String>>(body,
-			headers);
+        kakaopayReadyResponseDto = restTemplate.postForObject(readyRequestUrl, httpEntity,
+            KakaopayReadyResponseDto.class);
 
-		RestTemplate restTemplate = new RestTemplate();
+        return kakaopayReadyResponseDto;
+    }
 
-		kakaopayReadyResponseDto = restTemplate.postForObject(readyRequestUrl, httpEntity, KakaopayReadyResponseDto.class);
+    public KakaopayApproveResponseDto sendApproveRequest(KakaopayApproveRequestDto kakaopayApproveRequestDto) {
+        MultiValueMap<String, String> body = new LinkedMultiValueMap<String, String>();
 
-		return kakaopayReadyResponseDto;
-	}
+        String[] value = kakaopayApproveRequestDto.getValue();
+        for (int i = 0; i < KakaopayApproveRequestDto.size; ++i) {
+            body.add(KakaopayApproveRequestDto.name[i], value[i]);
+            log.info(KakaopayApproveRequestDto.name[i] + ":" + value[i]);
+        }
 
-	public KakaopayApproveResponseDto sendApproveRequest(KakaopayApproveRequestDto kakaopayApproveRequest) {
-		MultiValueMap<String, String> body = new LinkedMultiValueMap<String, String>();
+        HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity<MultiValueMap<String, String>>(body,
+            headers);
 
-		String[] value = kakaopayApproveRequest.getString();
-		for (int i = 0; i < approveRequestSize; ++i) {
-			body.add(approveRequestName.get(i), value[i]);
-			log.info(approveRequestName.get(i) + ":" + value[i]);
-		}
+        RestTemplate restTemplate = new RestTemplate();
 
-		HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity<MultiValueMap<String, String>>(body,
-			headers);
+        kakaopayApproveResponseDto = restTemplate.postForObject(approveRequestUrl, httpEntity,
+            KakaopayApproveResponseDto.class);
 
-		RestTemplate restTemplate = new RestTemplate();
-
-		kakaopayApproveResponseDto = restTemplate.postForObject(approveRequestUrl, httpEntity, KakaopayApproveResponseDto.class);
-
-		return kakaopayApproveResponseDto;
-	}
+        return kakaopayApproveResponseDto;
+    }
 
 }
