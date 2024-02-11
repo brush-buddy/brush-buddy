@@ -23,7 +23,7 @@
   </div>
   <router-link to="/community/write">
     <div id="goWriteButton">
-      <WriteButtonComponent/>
+      <CWriteButton/>
     </div>
   </router-link>
   <div style="height: 5rem; width: 100vw"></div>
@@ -35,7 +35,7 @@ import { localAxios } from "../api/axios";
 import { useRouter } from "vue-router";
 import CommunityComponent from "../components/Community/CommunityComponent.vue";
 import type { BoardThumbnail } from "../api/type";
-import WriteButtonComponent from "../components/Community/WriteButtonComponent.vue";
+import CWriteButton from "../components/Community/CWriteButton.vue";
 
 const axios = inject("axios");
 

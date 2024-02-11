@@ -2,21 +2,17 @@
     <div id="cardWrapper">
         <div id="thumbnailBox">
             <div id="thumbnail">
-                <!-- <img src="{{ props.draft.draftThumbnail }}" alt="thumbnail" /> -->
+                <!-- <img src="{{ draft.draftThumbnail }}" alt="thumbnail" /> -->
             </div>
         </div>
         <div id="timestamp">
-            {{ draft.draftTimestamp }}
+            {{ draft.draftTimestamp.substring(0, 10)}} {{ draft.draftTimestamp.substring(11, 19) }}
         </div>
-    </div>
-    <div id="timestamp">
-      {{ draft.draftTimestamp }}
     </div>
 </template>
 <script setup lang="ts">
 import { defineProps } from 'vue';
-const props = defineProps(["draft"]);
-console.log("incard",props);
+defineProps(["draft"]);
 </script>
 <style scoped>
 #cardWrapper {

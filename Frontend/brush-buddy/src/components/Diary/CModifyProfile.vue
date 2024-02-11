@@ -18,27 +18,19 @@
     </template>
   </v-snackbar>
 
-  <!-- 회원 탈퇴 스낵바 -->
-  <v-snackbar v-model="snackbar2" :timeout="timeout">
-    {{ text2 }}
-    <template v-slot:actions>
-      <v-btn color="blue" variant="text" @click="snackbar2 = false">
-        Close
-      </v-btn>
-    </template>
-  </v-snackbar>
 </template>
 <script setup lang="ts">
 import { ref } from "vue";
+import {withDraw} from "../../api/user"
 const curNick = ref("현재 닉네임");
 const withdrawal = () => {
-  snackbar2.value = true;
-  console.log(curNick.value, "탈퇴");
+  withDraw().then(() => {
+    alert("회원탈퇴 완료");
+  });
+
 };
 const snackbar = ref(false);
-const snackbar2 = ref(false);
 const text = "닉네임 수정 완료";
-const text2 = "회원 탈퇴 완료";
 const timeout = 2000;
 </script>
 <style scoped>

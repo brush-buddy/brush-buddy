@@ -30,4 +30,10 @@ async function withDraw(){
     userStore.setAccessToken(''); // accessToken 날리기
     window.location.href = '/';// 처음 위치로 돌아가기
 }
-  export {login, getRefresh, signOut, withDraw}
+
+// 회원정보 조회 
+const getUserInfo = async () : Promise<AxiosResponse> => {
+ return await localAxios().get('/user');
+}
+
+  export {login, getRefresh, signOut, withDraw, getUserInfo}
