@@ -112,7 +112,7 @@ public class DraftServiceImpl implements DraftService{
         Draft draft = Draft.builder()
             .draftColorCode(json)
             .draftThumbnail(draftCreateDto.getImageFile())
-            .draftFileLink(draftCreateDto.getDraftFIleLink())
+            .draftFileLink(draftCreateDto.getDraftFileLink())
             .draftIsAI(draftCreateDto.isDraftIsAI())
             .draftIsPublic(draftCreateDto.isDraftShare())
             .draftPrompt(draftCreateDto.getDraftPrompt())
