@@ -5,6 +5,7 @@ import json
 
 client_id = 2
 uri = f"ws://i10a205.p.ssafy.io:3004/ws/{client_id}" 
+# uri = f"ws://localhost:3004/ws/{client_id}" 
 connected_websocket = ''
 timeout = 10
 ping_pong_time = 10
