@@ -1,12 +1,15 @@
 import App from './App.vue';
 import router from './router';
 import { createApp } from 'vue';
-import 'vuetify/styles'
+const app = createApp(App);
+
+// Vuetify
 import { createVuetify } from 'vuetify'
 import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
 import { aliases, mdi } from 'vuetify/iconsets/mdi'
 import "@mdi/font/css/materialdesignicons.min.css";
+import 'vuetify/styles'
 import { createPinia } from 'pinia';
 
 const vuetify = createVuetify({

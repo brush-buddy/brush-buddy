@@ -1,4 +1,3 @@
-
 <script setup lang="ts">
 import { RouterLink, RouterView } from "vue-router";
 import NavigationComponent from "./components/NavigationComponent.vue";
@@ -11,7 +10,7 @@ const kakaoLogin = () => {
       
     }
 </script>
-,
+
 <template>
   <div style="height: 10px; width: 100vw;"></div>
         <RouterView/>
@@ -19,12 +18,6 @@ const kakaoLogin = () => {
 </template>
 
 <style scoped>
-NavigationComponent {
-  /* width: 375px;
-  height: 50px;
-  flex-shrink: 0;
-  z-index: 999; */
-}
 .Wrapper {
   display: flex;
   flex-direction: column;
@@ -33,5 +26,4 @@ NavigationComponent {
 .contentWrapper {
   flex : 1;
 }
-
 </style>

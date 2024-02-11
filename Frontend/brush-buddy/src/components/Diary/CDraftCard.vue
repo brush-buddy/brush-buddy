@@ -6,28 +6,31 @@
             </div>
         </div>
         <div id="timestamp">
-            {{ props.draft.draftTimestamp }}
+            {{ draft.draftTimestamp }}
         </div>
+    </div>
+    <div id="timestamp">
+      {{ draft.draftTimestamp }}
     </div>
 </template>
 <script setup lang="ts">
 import { defineProps } from 'vue';
-const props = defineProps({draft:Object});
+const props = defineProps(["draft"]);
 console.log("incard",props);
 </script>
 <style scoped>
-#cardWrapper{
-    border-style: solid;
-    border-width: 0 0 1px;
-    border-color: gray;
-    padding: 0.5rem 0 1rem;
+#cardWrapper {
+  border-style: solid;
+  border-width: 0 0 1px;
+  border-color: gray;
+  padding: 0.5rem 0 1rem;
 }
-#thumbnailBox{
-    display: flex;
-    justify-content: center;
-    align-items: center;
+#thumbnailBox {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
-#thumbnail{
+#thumbnail {
   background-color: #ffffff;
   width: 90vw;
   padding: 1rem;
@@ -36,11 +39,11 @@ console.log("incard",props);
     width: 100%;
     height: 100%;
     object-fit: cover;
-    }
+  }
 }
-#timestamp{
-    font-size: small;
-    color: gray;
-    margin-left: 1vh;
+#timestamp {
+  font-size: small;
+  color: gray;
+  margin-left: 1vh;
 }
 </style>

@@ -1,21 +1,21 @@
+import base64
 import io
 import os
-from typing import Dict
+import time
+from io import BytesIO
+from typing import Dict, List
 
+import cv2
+import db
 import numpy as np
-from fastapi import APIRouter, HTTPException, dependencies, status
-from fastapi.responses import JSONResponse
-from models import drafts, image_ai
-from models.DTO import requestPrompt, responseImage, responsePipo
+import redis
+import requests
+from fastapi import APIRouter, File, HTTPException, UploadFile
+from models import drafts, images
+from models.DTO import requestPrompt, requestUrl, responseImage, responsePipo
 from PIL import Image
-from pydantic import BaseModel
-from sqlalchemy.orm import Session
-
-# from db.connection import get_db
-# from db.models.drafts import Draft
-
-# from apis import image
-
+from starlette import status
+from starlette.responses import JSONResponse
 
 draft_router = APIRouter(
     tags=["Draft"],
@@ -23,22 +23,56 @@ draft_router = APIRouter(
 
 
 # 프롬프트 받아서, ai호출해서 이미지 url return 하는 api
-@draft_router.post("/ai-generation", status_code=200)
-def ai_generate(prompt: requestPrompt.Prompt):
+@draft_router.post(
+    "/ai-generation", status_code=200, response_model=responseImage.Img_url
+)
+async def ai_generate(prompt: requestPrompt.Prompt, user_id: int = 1):
+    user = user_id
     # prompt -> 이미지 url
-    print(prompt)
-    aigenerateimageurl = image_ai.AiImage().createImage(prompt.prompt)
-    img_url_response = responseImage.Img(image_url=aigenerateimageurl)
-    return img_url_response
+    aigenerateimageurl = images.AiImage().createImage(prompt.prompt)
+    print(aigenerateimageurl)
+
+    r = redis.StrictRedis(host="localhost", port=6379, db=0)
+
+    r.incr(user, 1)
+    print(r.get(user), "callnum")  # callnum 확인용
+    call_num = r.get(user)
+
+    # cnt = db.redis.save_callnum(user)
+
+    if int(call_num) > 20:
+        return JSONResponse(
+            status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+            content={"error": "Too Many Requests"},
+        )
+    else:
+        return responseImage.Img_url(image_url=aigenerateimageurl)
 
 
 # base64 이미지 받아서, 팔레트 json 데이터 return 하는 api
-@draft_router.post("/pipo-painting", status_code=200, response_model=responsePipo.Pipo)
-def to_pipo(inputbase64: str):
-    # base64 이미지 downsize
-    input_np_Img = image_ai.AiImage().downSize(inputbase64)
+@draft_router.post("/pipo-local", status_code=200, response_model=responsePipo.Pipo)
+async def to_pipo_savelocal(image: UploadFile = File(...)):
+    # try:
+    UPLOAD_DIR = "./assets"  # 이미지를 저장할 서버 경로
 
-    # downsize된 np이미지를 pipo_convert 함수에 넣어서, 팔레트 json 데이터 생성
-    json_palette, draft_url = drafts.Draft().pipo_convert(input_np_Img)
+    content = await image.read()
+    filename = "image.jpg"
+    with open(os.path.join(UPLOAD_DIR, filename), "wb") as fp:
+        fp.write(content)  # 서버 로컬 스토리지에 이미지 저장 (쓰기)
 
-    return responsePipo.Pipo(image=draft_url, palette=json_palette)
+    content = cv2.imread("./assets/image.jpg")
+
+    json_string_palette, draft_url = drafts.Drafts().pipo_convert(content)
+
+    return responsePipo.Pipo(image=draft_url, palette=json_string_palette)
+
+
+@draft_router.get("/pipo-s3", status_code=200, response_model=responsePipo.Pipo)
+async def to_pipo_saves3(url: requestUrl.Url):
+    response = requests.get(url.url)
+    img = Image.open(BytesIO(response.content))
+    content = np.array(img)
+
+    json_string_palette, draft_url = drafts.Drafts().pipo_convert(content)
+
+    return responsePipo.Pipo(image=draft_url, palette=json_string_palette)

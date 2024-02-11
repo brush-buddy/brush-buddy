@@ -1,18 +1,18 @@
 <template>
-<div>
-        <v-infinite-scroll :items="items" :onLoad="load">
-        <div v-for="(item, index) in items" :key="item">
-            <CDraftCard :draft="item"/>
-            <!-- {{ item }} -->
-        </div>
-        </v-infinite-scroll>
-    </div>
-    <div id="navarea"></div>
+  <div>
+    <v-infinite-scroll :items="items" :onLoad="load">
+      <div v-for="(item, index) in items" :key="index">
+        <CDraftCard :draft="item" />
+        <!-- {{ item }} -->
+      </div>
+    </v-infinite-scroll>
+  </div>
+  <div id="navarea"></div>
 </template>
 <script setup lang="ts">
 import CDraftCard from "./CDraftCard.vue";
 import { ref } from "vue";
-import axios from "axios";
+import {localAxios} from "../../api/axios";
 
 // madeDraft 불러오기
 interface HeartListRes {
@@ -20,83 +20,114 @@ interface HeartListRes {
     draftId: number;
     draftThumbnail: string;
     draftTimestamp: string;
-    // likeNumber: number;
-    // thumbnail: string;
-    // views: number;
-  };
+  }[];
   pageNum: number;
   length: number;
   totalPage: number;
 }
+interface HeartList {
+  draftId: number;
+  draftThumbnail: string;
+  draftTimestamp: string;
+}
 
 const listNum = ref(3);
 const pageNum = ref(1);
-const firstCall = ref([ 
-      axios({
-    baseURL: '',
-    method: 'get',
-    url: 'http://localhost:8080/api/v1/mypage/generate/list?listNum=3&pageNum=1', 
-    headers: {
-      'Content-Type': 'application/json; charset=utf-8'
-    }
-  }).then(function (response : any) {
-    console.log("first call",response)
-    items.value = response.data.drafts;
-    // boardThumbnailData.value = response.data;
-  })
+const firstCall = ref([
+    localAxios().get('/mypage/generate/list?listNum=3&pageNum=1')
+    .then(function (response: any) {
+      items.value = response.data.boards;
+    })
+    .catch(function (error: any) {
+      console.log(error.message);
+    }),
 ]);
 const totalPage = ref(0);
 const getHeartList = async (page: number): Promise<HeartListRes> => {
   console.log("getHeartList called");
   try {
-      const heartListGet = await axios({
-        method: "get",
-        url: `http://localhost:8080/api/v1/mypage/generate/list?listNum=${listNum.value}&pageNum=${page}`,
-        headers: {
-          "Content-Type": "application/json; charset=utf-8",
-          // Authorization: localStorage.getItem("token")
-        },
-      });
-      console.log(heartListGet.data.drafts)
-      totalPage.value = heartListGet.data.totalPage;
-      return heartListGet.data.drafts;
-    
-  } catch (err) {
+    const heartListGet = await localAxios().get(`/mypage/generate/list?listNum=${listNum.value}&pageNum=${page}`);
+    return heartListGet.data.boards;
+  } catch (err: any) {
     console.log("api 호출 중 오류 발생", err);
     return Promise.reject(err);
   }
 };
+// const listNum = ref(3);
+// const pageNum = ref(1);
+// const firstCall = ref([
+//   axios({
+//     baseURL: "",
+//     method: "get",
+//     url: "http://localhost:8080/api/v1/mypage/generate/list?listNum=3&pageNum=1",
+//     headers: {
+//       "Content-Type": "application/json; charset=utf-8",
+//     },
+//   }).then(function (response: any) {
+//     console.log("first call", response);
+//     items.value = response.data.drafts;
+//     // boardThumbnailData.value = response.data;
+//   }),
+// ]);
+// const totalPage = ref(0);
+// const getHeartList = async (page: number): Promise<HeartListRes> => {
+//   console.log("getHeartList called");
+//   try {
+//     const heartListGet = await axios({
+//       method: "get",
+//       url: `http://localhost:8080/api/v1/mypage/generate/list?listNum=${listNum.value}&pageNum=${page}`,
+//       headers: {
+//         "Content-Type": "application/json; charset=utf-8",
+//         // Authorization: localStorage.getItem("token")
+//       },
+//     });
+//     console.log(heartListGet.data.drafts);
+//     totalPage.value = heartListGet.data.totalPage;
+//     return heartListGet.data.drafts;
+//   } catch (err) {
+//     console.log("api 호출 중 오류 발생", err);
+//     return Promise.reject(err);
+//   }
+// };
 
-// 무한 스크롤 구현 
-const items = ref<number[]>([])
+// 무한 스크롤 구현
+const items = ref<HeartList[]>([]);
 
 const api = async () => {
-    pageNum.value = pageNum.value + 1;
-  return new Promise<number>(resolve => {
+  pageNum.value = pageNum.value + 1;
+  return new Promise<number>((resolve) => {
     setTimeout(() => {
       resolve(pageNum.value);
-    }, 1000)
-  })
-}
+    }, 1000);
+  });
+};
 
-const load = async ({ done }: { done: (status: string) => void }) => {
-    try{
-        // Perform API call => pageNum update
-        const res = await api()
-        const resList = await getHeartList(res)
-        console.log(resList)
-        items.value.push(...resList)
-
-        if(totalPage.value > pageNum.value){
-            done('ok')
-        }else{
-            done('empty')
-        }
-    } catch(error){
-        console.error("Error during load:", error);
-        done('error')
+type InfiniteScrollSide = any;
+type InfiniteScrollStatus = any;
+const load = async (options: {
+  side: InfiniteScrollSide;
+  done: (status: InfiniteScrollStatus) => void;
+}): Promise<void> => {
+  try {
+    // Perform API call
+    const res = await api();
+    const resList = await getHeartList(res);
+    console.log("resList", resList);
+    if (resList && Array.isArray(resList) && resList.length > 0) {
+      resList.forEach((res: HeartList) => items.value.push(res));
     }
-}
+
+    console.log("items.value", items.value);
+    if (totalPage.value > pageNum.value) {
+      options.done("ok");
+    } else {
+      options.done("empty");
+    }
+  } catch (error) {
+    console.error("Error during load:", error);
+    options.done("error");
+  }
+};
 </script>
 
 <style scoped></style>
