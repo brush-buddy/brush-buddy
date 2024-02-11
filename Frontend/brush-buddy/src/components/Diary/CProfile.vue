@@ -6,7 +6,7 @@
       </div>
       <div>
         <div id="name-box">
-          <span id="name">김싸피</span>
+          <span id="name" @click="logout">{{nickName}}</span>
           <span>님</span>
         </div>
         <div>다채로운 하루 되세요!</div>
@@ -29,7 +29,7 @@
     <div id="milage">
       <div>보유한 마일리지</div>
       <div id="amount">
-        <div id="num">9500</div>
+        <div id="num">{{milage}}</div>
         <div id="M">M</div>
       </div>
     </div>
@@ -37,6 +37,22 @@
 </template>
 <script setup lang="ts">
 import CModifyProfile from "./CModifyProfile.vue";
+import {getUserInfo, signOut} from "../../api/user"
+import {onMounted, ref} from "vue";
+const nickName = ref('');
+const milage = ref(0);
+onMounted(() => {
+  getUserInfo().then((res) => {
+    console.log(res.data);
+    nickName.value = res.data.userNickName;
+    milage.value = res.data.mileage;
+  })
+});
+const logout = () => {
+  signOut().then((res) => {
+    alert('로그아웃 됐습니다.');
+  });
+}
 </script>
 <style scoped>
 #wrapper {
