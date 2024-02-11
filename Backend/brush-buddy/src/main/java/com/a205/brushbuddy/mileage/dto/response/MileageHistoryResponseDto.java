@@ -1,13 +1,17 @@
 package com.a205.brushbuddy.mileage.dto.response;
 
-import java.util.List;
+import org.springframework.data.domain.Page;
 
-import com.a205.brushbuddy.mileage.dto.MileageDto;
+import com.a205.brushbuddy.mileage.domain.Mileage;
 
+import lombok.Builder;
 import lombok.Data;
 
 @Data
+@Builder
 public class MileageHistoryResponseDto {
-    List<MileageDto> history;
-    int size;
+    private Page<Mileage> history;
+    private Integer length;
+    private Integer pageNum;
+    private Integer totalPage;
 }

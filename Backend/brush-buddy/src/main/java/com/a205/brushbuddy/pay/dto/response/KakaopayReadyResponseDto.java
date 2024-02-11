@@ -2,8 +2,6 @@ package com.a205.brushbuddy.pay.dto.response;
 
 import java.sql.Timestamp;
 
-import org.springframework.beans.factory.annotation.Value;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,24 +18,23 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 public class KakaopayReadyResponseDto {
-	private String tid;
-	// URL 변수 중 필수
-	private String nextRedirectPcUrl;
-	// 아래 변수는 필요 이상
-	private Timestamp createdAt;
-	private String nextRediretAppUrl;
-	private String nextRedirectMobileUrl;
-	private String androidAppScheme;
-	private String iosAppScheme;
+    public static final int size = 7;
+    public static final String[] name = {"tid", "next_redirect_app_url", "next_redirect_mobile_url",
+        "next_redirect_pc_url",
+        "android_app_scheme", "ios_app_scheme", "created_at"};
 
-	@Value("${kakaopay.ready.response.size}")
-	public static int size;
+    private String tid;
+    // URL 변수 중 필수
+    private String nextRedirectPcUrl;
+    // 아래 변수는 필요 이상
+    private Timestamp createdAt;
+    private String nextRediretAppUrl;
+    private String nextRedirectMobileUrl;
+    private String androidAppScheme;
+    private String iosAppScheme;
 
-	@Value("${kakaopay.ready.response.name}")
-	public static String[] name;
-
-	public String[] getAll() {
-		return new String[] { tid, nextRediretAppUrl, nextRedirectMobileUrl, nextRedirectPcUrl, androidAppScheme,
-				iosAppScheme, createdAt.toString() };
-	}
+    public String[] getValue() {
+        return new String[] {tid, nextRediretAppUrl, nextRedirectMobileUrl, nextRedirectPcUrl, androidAppScheme,
+            iosAppScheme, createdAt.toString()};
+    }
 }

@@ -16,6 +16,8 @@ import lombok.ToString;
 @ToString
 @NoArgsConstructor
 public class KakaopayApproveRequestDto {
+    public static final int size = 5;
+    public static final String[] name = {"cid", "tid", "partner_order_id", "artner_user_id", "pg_token"};
     @Value("${spring.kakao.pay.cid-key}")
     private String cid;
     private String tid;
@@ -23,13 +25,7 @@ public class KakaopayApproveRequestDto {
     private String partnerUserId;
     private String pgToken;
 
-    @Value("${spring.kakao.approve.request.size}")
-    public static int size;
-
-    @Value("${spring.kakao.approve.request.name}")
-    public static String[] name;
-
-    public String[] getString() {
+    public String[] getValue() {
         return new String[] {cid, tid, partnerOrderId, partnerUserId, pgToken};
     }
 }
