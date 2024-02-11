@@ -65,6 +65,7 @@ public class BoardServiceImpl implements BoardService{
                     .boardWatch(0)
                     .boardLikeNumber(0)
                     .boardIsDeleted(false)
+                    .draft(requestDto.getDraftId() == null ? null : Draft.builder().draftId(requestDto.getDraftId()).build())
                     .build();
 
             //게시판 저장

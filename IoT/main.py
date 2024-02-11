@@ -1,63 +1,86 @@
 from fastapi import FastAPI, WebSocket
 import asyncio
-import asyncssh
 from device import devices  
-import json
+import uvicorn
+from typing import Dict
 
 app = FastAPI()
 
-async def runSshCommand(ipAddress, username, keyFilename, command):
-    async with asyncssh.connect(ipAddress, username=username, client_keys=[keyFilename]) as conn:
-        result = await conn.run(command, check=True)
-        return result.stdout, result.stderr
+connected_clients: Dict[str, WebSocket] = {}
+# message_from_client: Dict[str, str]  = {}
+semaphore = asyncio.Semaphore(value=1)
 
-# 파일을 저장한다.
-def write_json(new_data, file_name="data.json"):
-    with open('devices.json', 'w+') as file:
-        devices_file_data = json.loads(file) # 파일에서 정보를 불러온다.
-        devices_file_data[new_data['id']] = new_data # 데이터를 추가하거나 갱신한다.
-        json.dump(devices_file_data,file,indent=4) # 다시 파일로 저장한다.
-
-        
-
-@app.websocket("/ws/register")
-async def websocketRegister(websocket : WebSocket):
+# 클라이언트가 WebSocket으로 연결될 때 호출되는 핸들러
+@app.websocket("/ws/{client_id}")
+async def websocket_endpoint(websocket: WebSocket, client_id : str):
     await websocket.accept()
+
+    # 연결된 클라이언트가 있는지 확인한다.
+    if connected_clients.get(client_id): # 이미 저장된 값이 있다면
+        await websocket.send_text("이미 연결 중인 클라이언트 ID 입니다")
+        await websocket.close()
+        return # 연결 취소
+    
+    # 없으면 클라이언트 정보 저장
+    connected_clients[client_id] = websocket
+
     try:
-        data = await websocket.receive_json() # 라즈베리 파이 데이터를 가지고 온다.
-       
-            
-    except Exception as e:
-        print(e)
+        # 클라이언트와 연결 유지를 진행한다.
+
+        while True:
+            async with semaphore:
+                data = await websocket.receive_text()
+                # message_from_client['message'] = data
+                # print(message_from_client.get('message'))
+
+            print(f"client {client_id} said : {data}")
+            await websocket.send_text(f"Message text was: {data}")
+
+    # except WebSocketDisconnect:
+    #     await websocket.close()
+    finally:
+        del connected_clients[client_id]
+        await websocket.close()
+
+    
+#스프링 서버가 클라이언트에게 명령을 하달하는 메소드
+@app.websocket("/ws/print/{client_id}")
+async def print_palette(
+    websocket:WebSocket,
+    client_id: str
+    ):
+
+    # 스프링 서버와의 연결을 승인
+    await websocket.accept()
+
+    print("스프링 서버로 부터 요청을 기다리고 있습니다...")
+    response = await asyncio.wait_for(websocket.receive_text(),timeout=10)
+    print(f"스프링 서버로 부터 요청 : {response}")
+
+    # 연결된 클라이언트가 있는지 확인한다.
+    if connected_clients.get(client_id): #연결이 되어있다면
+        client_socket = connected_clients[client_id]
+
+        # 명령을 클라이언트에 전달한다.
+        await client_socket.send_text(f"{response}")
+
+        # 클라이언트로부터 받은 데이터를
+        result = ''
+        async with semaphore:
+            print(f"I'm wating response from client {client_id}...")
+            result = await client_socket.receive_text()
+
+        if result:
+            print("전달 이후에 명령까지 성공")
+            await websocket.send_text(f"명령 성공 결과 : {result}")
+        else:
+            print("명령 실행 실패")
+            await websocket.send_text(f"명령 실패 결과 : {result}")
+
+    else:
+        await websocket.send_text("해당 클라이언트 ID는 연결되어 있지 않습니다.")
+        websocket.close()
 
 
-
-# @app.websocket("/ws/command/{deviceName}")
-# async def websocketCommand(websocket: WebSocket, deviceName: str):
-#     await websocket.accept()
-#     device = devices.get(deviceName)
-#     if device:
-#         try:
-#             stdout, stderr = await runSshCommand(device['ip_address'], 'ssafy', r'C:\Users\LG\.ssh\id_rsa', 'python3 /home/ssafy/blink.py')
-#             if stderr:
-#                 await websocket.send_text(f"Error executing blink.py: {stderr}")
-#             else:
-#                 await websocket.send_text(f"Blinking LED on {device['description']} successfully started.")
-#         except Exception as e:
-#             await websocket.send_text(f"Failed to execute blink.py on {device['description']}. Error: {str(e)}")
-#     else:
-#         await websocket.send_text("Device not found")
-#     await websocket.close()
-
-# @app.websocket("/ws/status/{deviceName}")
-# async def websocketStatus(websocket: WebSocket, deviceName: str):
-#     await websocket.accept()
-#     try:
-#         while True:
-#             status = await websocket.receive_text()
-#             print(f"Received status from {deviceName}: {status}")
-            
-#     except Exception as e:
-#         print(f"Error: {str(e)}")
-#     finally:
-#         await websocket.close()
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=3004,  ws_ping_interval=300, ws_ping_timeout=300)
