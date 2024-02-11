@@ -51,8 +51,8 @@ async def ai_generate(prompt: requestPrompt.Prompt, user_id: int = 1):
 
 
 # base64 이미지 받아서, 팔레트 json 데이터 return 하는 api
-@draft_router.post("/pipo-painting", status_code=200, response_model=responsePipo.Pipo)
-async def to_pipo(image: UploadFile = File(...)):
+@draft_router.post("/pipo-local", status_code=200)
+async def to_pipo_savelocal(image: UploadFile = File(...)):
     # try:
     UPLOAD_DIR = "./assets"  # 이미지를 저장할 서버 경로
 
@@ -68,10 +68,10 @@ async def to_pipo(image: UploadFile = File(...)):
     # 이미지를 NumPy 배열로 변환
     # numpy_array = np.array(timage)
 
-    with open(os.path.join(UPLOAD_DIR, filename), "rb") as fp:
-        content = fp.read()
+    # with open(os.path.join(UPLOAD_DIR, filename), "rb") as fp:
+    #     content = fp.read()
 
-    src_img = cv2.imread("./assets/image.jpg")
+    # src_img = cv2.imread("./assets/image.jpg")
 
     # Image.open(BytesIO(await image.read())).save("test.png")
 
@@ -94,10 +94,14 @@ async def to_pipo(image: UploadFile = File(...)):
     # numpy_array = np.array(Image.open(BytesIO(await image.read()))).reshape(-1, 349, 3)
     # cv2.imwrite("test.png", numpy_array)
 
-    json_string_palette, draft_url = drafts.Drafts().pipo_convert(src_img)
+    return {"local save": "success"}
+
+
+@draft_router.get("/pipo-s3", status_code=200, response_model=responsePipo.Pipo)
+async def to_pipo_saves3():
+
+    content = cv2.imread("./assets/image.jpg")
+
+    json_string_palette, draft_url = drafts.Drafts().pipo_convert(content)
 
     return responsePipo.Pipo(image=draft_url, palette=json_string_palette)
-    # return "ok"
-
-    # except Exception as e:
-    #     raise HTTPException(status_code=400, detail=f"Error decoding image: {str(e)}")
