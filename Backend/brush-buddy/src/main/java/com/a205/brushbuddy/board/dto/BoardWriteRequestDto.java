@@ -12,7 +12,7 @@ public class BoardWriteRequestDto {
     private String title;
     private String contents;
     private List<PhotoDTO> photo;
-    private Integer draftId;
+    private Long draftId;
     private  List<String> hashtags;
 
     @Getter
