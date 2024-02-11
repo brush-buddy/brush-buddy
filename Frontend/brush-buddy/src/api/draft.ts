@@ -7,4 +7,11 @@ interface DraftPipoInfo {
     isAI?: Boolean,
     prompt?: String
 }
-export type {DraftPipoInfo}
+
+interface DraftThumbnail { 
+    draftBookmark?: number,
+    draftDownload?: number,
+    draftId?: number,
+    draftThumbnail?: string
+}
+export type {DraftPipoInfo, DraftThumbnail}
