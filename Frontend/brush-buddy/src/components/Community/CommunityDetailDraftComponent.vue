@@ -8,18 +8,12 @@
         <CButton :title="title2" :color="color2" />
       </div>
     </div>
-    <div id="draft">
-      <DraftBookmarked />
-    </div>
-    <div id="palette">
-      <EclipsePaletteComponent />
-    </div>
+    <div id="draft"></div>
+    <div id="palette"></div>
   </div>
 </template>
 
 <script setup lang="ts">
-import DraftBookmarked from '../Draft/DraftBookmarked.vue'
-import EclipsePaletteComponent from '../DraftDetail/EclipsePaletteComponent.vue'
 import CButton from '../Community/CButton.vue'
 import { ref } from 'vue'
 
