@@ -2,6 +2,12 @@
 import { ref } from 'vue'
 import { localAxios } from '../../api/axios'
 import axios from 'axios'
+import { useRouter } from 'vue-router'
+import { useImageStore } from '../../stores/image'
+
+const router = useRouter()
+const { setImage } = useImageStore()
+
 const prompt = ref<string>('')
 const dialog = ref(false)
 const loadingState = ref(true)
@@ -9,14 +15,24 @@ const imageSrc = ref('../../assets/icon/loading.gif')
 const makeImage = () => {
   console.log(prompt.value)
   localAxios()
-    .post('/draft/ai-generation', prompt.value)
+    .post('/draft/ai-generation', { prompt: prompt.value })
     .then((response) => {
       console.log(response.data)
       imageSrc.value = response.data['image_url']
       loadingState.value = false
     })
 }
-
+const makePipo = () => {
+  console.log(prompt.value)
+  axios()
+    .post('/draft/pipo-s3', { url: imageSrc.value })
+    .then((response) => {
+      setImage(true, response.data.palette, response.data.image, prompt.value)
+      dialog.value = false
+      loadingState.value = false
+      router.push('/draft/write')
+    })
+}
 //-그려줘라고 입력하면 그림을 만들어드려요
 </script>
 
@@ -71,7 +87,7 @@ const makeImage = () => {
               <v-btn
                 color="green-darken-1"
                 variant="text"
-                @click="dialog = false"
+                @click="(loadingState = true), makePipo()"
                 prepend-icon="mdi-brush-variant"
               >
                 도안 만들기
