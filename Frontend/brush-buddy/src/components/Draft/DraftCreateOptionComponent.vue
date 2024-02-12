@@ -26,7 +26,7 @@ const makeImage = () => {
   console.log(fileData)
   if (file.value) {
     axios
-      .post('http://localhost:8000/api/v1/draft/pipo-painting', fileData, {
+      .post('http://localhost:8000/api/v1/draft/pipo-local', fileData, {
         headers: {
           'content-type': 'multipart/form-data'
         }

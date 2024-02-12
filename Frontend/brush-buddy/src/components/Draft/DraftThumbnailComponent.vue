@@ -39,6 +39,7 @@ const router = useRouter()
 const props = defineProps<{
   draftThumbnail: DraftThumbnail
 }>()
+
 async function goToDetail() {
   router.push({
     name: 'draftDetail',

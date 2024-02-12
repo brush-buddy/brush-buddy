@@ -8,13 +8,16 @@
         <CButton :title="title2" :color="color2" />
       </div>
     </div>
-    <div id="draft"></div>
+    <div id="draft">
+      <DraftDetailComponent />
+    </div>
     <div id="palette"></div>
   </div>
 </template>
 
 <script setup lang="ts">
 import CButton from '../Community/CButton.vue'
+import DraftDetailComponent from '../Draft/DraftDetailComponent.vue'
 import { ref } from 'vue'
 
 const title1 = ref('물고기')
