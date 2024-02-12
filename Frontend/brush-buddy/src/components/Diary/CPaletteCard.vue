@@ -9,6 +9,7 @@
   </RouterLink>
 </template>
 <script setup lang="ts">
+import { defineProps } from 'vue';
 import { RouterLink } from 'vue-router';
 import SinglePaletteComponent from '../common/SinglePaletteComponent.vue';
 const prop = defineProps(["palette"]);

@@ -43,6 +43,7 @@ const firstCall = ref([
 ]);
 const totalPage = ref(0);
 const getHeartList = async (page: number): Promise<HeartListRes> => {
+  console.log("getHeartList called");
   try {
     const heartListGet = await localAxios().get(`/mypage/generate/list?listNum=${listNum.value}&pageNum=${page}`);
     return heartListGet.data.drafts;
@@ -74,6 +75,7 @@ const load = async (options: {
     // Perform API call
     const res = await api();
     const resList = await getHeartList(res);
+    console.log("resList", resList);
     if (resList && Array.isArray(resList) && resList.length > 0) {
       resList.forEach((res: HeartList) => items.value.push(res));
     }
