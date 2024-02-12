@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import axios from "axios";
-import NavigationComponent from "../components/NavigationComponent.vue";
-import router from "../router";
+import { useUserStore } from "../stores/user";
+import { useRouter } from "vue-router";
 
 const login = () => {
   console.log("login");
@@ -15,6 +14,12 @@ const login = () => {
   }
   
   window.Kakao.Auth.authorize(params);
+}
+
+const router = useRouter();
+const userStore = useUserStore();
+if (userStore.accessToken != '') {
+  router.push('/home');
 }
 </script>
 
