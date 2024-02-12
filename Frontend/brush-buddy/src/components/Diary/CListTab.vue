@@ -13,6 +13,9 @@
       <router-link to="/diary/heartList" @click="setActiveTab('heart')">
         <div :class="{ activeTab: activeTab === 'heart' }">찜한 글</div>
       </router-link>
+      <router-link to="/diary/palette" @click="setActiveTab('palette')">
+        <div :class="{ activeTab: activeTab === 'palette' }">내 팔레트</div>
+      </router-link>
     </div>
   </div>
 </template>
