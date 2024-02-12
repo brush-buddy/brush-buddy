@@ -2,18 +2,22 @@
   <RouterLink :to="{ name: 'draftDetail', params: { id: palette.paletteId } }">
     <div id="cardWrapper">
     {{ palette }}
-    <!-- <div v-for=""> -->
-      <!-- <SinglePaletteComponent :color="value" /> -->
-    <!-- </div> -->
+        <div id="thumbnailBox">
+            <div id="thumbnail">
+                <!-- <img src="{{ draft.draftThumbnail }}" alt="thumbnail" /> -->
+            </div>
+        </div>
+        <div id="timestamp">
+            <!-- {{ palette.draftTimestamp.substring(0, 10)}} {{ palette.draftTimestamp.substring(11, 19) }} -->
+        </div>
     </div>
   </RouterLink>
 </template>
 <script setup lang="ts">
 import { defineProps } from 'vue';
 import { RouterLink } from 'vue-router';
-import SinglePaletteComponent from '../common/SinglePaletteComponent.vue';
 const prop = defineProps(["palette"]);
-console.log("prop ",prop.palette.paletteColorCode);
+console.log("prop ",prop.palette.paletteId);
 </script>
 <style scoped>
 #cardWrapper {
