@@ -73,6 +73,17 @@ const removeItem = () => {
   localAxios().delete(`/palette/${paletteId}`)
   router.push('/diary')
 }
+
+import { printPaint  } from '@/api/machine'
+
+const printColor = (color:String) => {
+  const data = {
+    id : 1,
+    color : color
+  }
+  
+  printPaint(data)
+}
 </script>
 
 <template>
