@@ -62,17 +62,29 @@ async def to_pipo_savelocal(image: UploadFile = File(...)):
 
     content = cv2.imread("./assets/image.jpg")
 
-    json_string_palette, draft_url = drafts.Drafts().pipo_convert(content)
+    json_string_palette, colored_draft_url, numbered_draft_url = (
+        drafts.Drafts().pipo_convert(content)
+    )
 
-    return responsePipo.Pipo(image=draft_url, palette=json_string_palette)
+    return responsePipo.Pipo(
+        number_image=numbered_draft_url,
+        color_image=colored_draft_url,
+        palette=json_string_palette,
+    )
 
 
-@draft_router.get("/pipo-s3", status_code=200, response_model=responsePipo.Pipo)
+@draft_router.post("/pipo-s3", status_code=200, response_model=responsePipo.Pipo)
 async def to_pipo_saves3(url: requestUrl.Url):
     response = requests.get(url.url)
     img = Image.open(BytesIO(response.content))
     content = np.array(img)
 
-    json_string_palette, draft_url = drafts.Drafts().pipo_convert(content)
+    json_string_palette, colored_draft_url, numbered_draft_url = (
+        drafts.Drafts().pipo_convert(content)
+    )
 
-    return responsePipo.Pipo(image=draft_url, palette=json_string_palette)
+    return responsePipo.Pipo(
+        number_image=numbered_draft_url,
+        color_image=colored_draft_url,
+        palette=json_string_palette,
+    )
