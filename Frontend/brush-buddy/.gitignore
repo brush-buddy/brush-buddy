@@ -30,3 +30,5 @@ coverage
 *.tsbuildinfo
 
 .DS_Store
+
+.env

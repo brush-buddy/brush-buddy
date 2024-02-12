@@ -1,21 +1,19 @@
 import os
 
 import boto3
-import numpy as np
-import requests
 from dotenv import load_dotenv
-from PIL import Image
+from pydantic import BaseModel
 
 
-class AwsS3:
+class AwsS3(BaseModel):
     # S3 연결 함수
-    def s3_connection():
-        # os 환경변수 불러오기
+    def s3_connection(self):
+        # os 환경변수 로그
         load_dotenv(verbose=True)
 
         # 환경변수 불러오기
-        AWS_ACCESS_KEY_ID = os.gete("AWS_ACCESS_KEY_ID")
-        AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY")
+        AWS_ACCESS_KEY_ID = os.getenv("S3_ACCESS_KEY")
+        AWS_SECRET_ACCESS_KEY = os.getenv("S3_SECRET_KEY")
 
         try:
             s3 = boto3.client(

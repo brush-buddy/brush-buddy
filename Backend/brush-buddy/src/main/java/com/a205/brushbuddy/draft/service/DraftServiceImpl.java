@@ -1,15 +1,7 @@
 package com.a205.brushbuddy.draft.service;
 
+import com.a205.brushbuddy.draft.domain.Category;
 import com.a205.brushbuddy.draft.domain.Draft;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-
-import java.sql.Timestamp;
-import java.util.List;
-
-import com.a205.brushbuddy.draft.domain.Purchase;
-import com.a205.brushbuddy.draft.domain.PurchaseId;
 import com.a205.brushbuddy.draft.dto.request.DraftCategoryModifyRequestDto;
 import com.a205.brushbuddy.draft.dto.request.DraftCreateRequestDto;
 import com.a205.brushbuddy.draft.dto.response.DraftCreateResponseDto;
@@ -18,18 +10,24 @@ import com.a205.brushbuddy.draft.dto.response.DraftListResponseDto;
 import com.a205.brushbuddy.draft.repository.BookmarkRepository;
 import com.a205.brushbuddy.draft.repository.CategoryRepository;
 import com.a205.brushbuddy.draft.repository.Draft.DraftRepository;
-import com.a205.brushbuddy.draft.domain.Category;
 import com.a205.brushbuddy.draft.repository.DraftCategory.DraftCategoryRepository;
 import com.a205.brushbuddy.draft.repository.PurchaseRepository;
+import com.a205.brushbuddy.exception.BaseException;
+import com.a205.brushbuddy.exception.ErrorCode;
 import com.a205.brushbuddy.palette.domain.Palette;
 import com.a205.brushbuddy.palette.repository.PaletteRepository;
 import com.a205.brushbuddy.user.domain.User;
 import com.a205.brushbuddy.user.repository.UserRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+
+import java.sql.Timestamp;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -62,7 +60,11 @@ public class DraftServiceImpl implements DraftService{
     @Override
     public Page<DraftListResponseDto> getDraftListByCategory(Pageable pageable, String categoryContent) {
         Category category = categoryRepository.findByCategoryContent(categoryContent);
+        if(category == null){
+            return null;
+        }
         List<Long> categoryIds = draftCategoryRepository.findDraftIdByCategoryId(category.getCategoryId());
+
         try {
             return draftRepository.findAllByDraftIdIn(categoryIds,pageable).map(p->DraftListResponseDto.builder()
                     .draftId(p.getDraftId())
@@ -107,14 +109,14 @@ public class DraftServiceImpl implements DraftService{
     public DraftCreateResponseDto createDraft(int userId, DraftCreateRequestDto draftCreateDto) throws
         JsonProcessingException {
         List<Category> categoryList = categoryRepository.findByCategoryContentIn(draftCreateDto.getCategoryList());
-        User user = userRepository.findByUserId(userId);
+        User user = userRepository.findById(userId).orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND_DATA));
         ObjectMapper objectMapper = new ObjectMapper();
         String json = objectMapper.writeValueAsString(draftCreateDto.getPalette());
 
         Draft draft = Draft.builder()
             .draftColorCode(json)
             .draftThumbnail(draftCreateDto.getImageFile())
-            .draftFileLink(draftCreateDto.getDraftFIleLink())
+            .draftFileLink(draftCreateDto.getDraftFileLink())
             .draftIsAI(draftCreateDto.isDraftIsAI())
             .draftIsPublic(draftCreateDto.isDraftShare())
             .draftPrompt(draftCreateDto.getDraftPrompt())
@@ -198,7 +200,7 @@ public class DraftServiceImpl implements DraftService{
 
     @Override
     public void buyDraft(int userId, Long draftId) throws Exception {
-        User user = userRepository.findByUserId(userId);
+        User user = userRepository.findById(userId).orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND_DATA));
         Draft draft = draftRepository.findByDraftId(draftId);
 
         if(draft.getDraftIsDeleted()){
