@@ -43,8 +43,9 @@ class Drafts(BaseModel):
 
         # s3에 색칠된 도안 업로드 ========================================
         file_name = f"colored_draft_{t_stamp}.png"  # 업로드할 파일 이름
-        bucket_name = "brushbuddy0"  # 버켓 주소
-        key = f"colored_draft_{t_stamp}.png"  # s3  내부 이미지 파일 이름
+        bucket_name = "brush-buddy"
+        # brushbuddy0  # 버켓 주소
+        key = f"draft/colored/colored_draft_{t_stamp}.png"  # s3  내부 이미지 파일 이름
 
         colored_file_path = f"./colored_img/{file_name}"  # 업로드할 파일 이름
 
@@ -96,15 +97,15 @@ class Drafts(BaseModel):
             f"./numbering_img/numbering_draft_{t_stamp}.PNG"  # 업로드할 파일 이름
         )
 
-        numbering_file_name = (
-            f"./numbering_img/numbering_draft_{t_stamp}.PNG"  # 업로드할 파일 이름
-        )
+        numbering_file_name = f"numbering_draft_{t_stamp}.PNG"  # 업로드할 파일 이름
 
         cv2.imwrite(numbering_file_path, numbering_img)
 
         # s3에 numbering 된 도안 업로드 ========================================
 
-        numbered_key = f"numbering_draft_{t_stamp}.PNG"  # s3  내부 이미지 파일 이름
+        numbered_key = (
+            f"draft/numbered/numbering_draft_{t_stamp}.PNG"  # s3  내부 이미지 파일 이름
+        )
 
         # aws s3에 색칠된 도안 "colored_draft_YYYYMMDDHH.png"로 저장
         try:
@@ -114,8 +115,8 @@ class Drafts(BaseModel):
 
         # return palette, numbered_draft_url
 
-        numbered_draft_url = (
-            f"https://brushbuddy0.s3.ap-northeast-2.amazonaws.com/{numbering_file_name}"
-        )
+        colored_draft_url = f"https://brush-buddy.s3.ap-northeast-2.amazonaws.com/draft/colored/{file_name}"
 
-        return hexcode_json_string, numbered_draft_url
+        numbered_draft_url = f"https://brush-buddy.s3.ap-northeast-2.amazonaws.com/draft/numbered/{numbering_file_name}"
+
+        return hexcode_json_string, colored_draft_url, numbered_draft_url

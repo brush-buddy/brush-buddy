@@ -1,7 +1,12 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import DraftDetailComponent from "../components/Draft/DraftDetailComponent.vue";
+
+</script>
 
 <template>
-  <div>드래프트디테일뷰입니다</div>
+  <div>
+    <DraftDetailComponent/>
+  </div>
 </template>
 
 <style scoped></style>

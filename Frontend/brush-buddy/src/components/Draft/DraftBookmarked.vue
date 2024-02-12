@@ -20,12 +20,37 @@
           </svg>
         </div>
         <div class="draft">
-            <img src="../src/assets/images/draft_img.png" alt="draft" />
+            <div v-if="imageUrl" class="image-container">
+                <img :src="imageUrl" alt="이미지">
+            </div>
+            <div v-else>
+                <p>이미지가 없습니다.</p>
+            </div>
+            <!-- <img src="../src/assets/images/draft_img.png" alt="draft" /> -->  
         </div> 
     </div>
 </template>
 
 <script setup lang="ts">
+import { ref } from "vue";
+import {localAxios} from "../../api/axios";
+
+interface Image {
+  draft_file_link: string;
+}
+
+const imageUrl = ref<string | null>(null);
+
+const imageUrlFromAPI = async (page: number): Promise<Image> => {
+  console.log("imageUrlFromAPI called");
+  try {
+    const image = await localAxios().get(`/draft/draftId=${draftId.value}`);
+    return image.data.draftfilelink;
+  } catch (err: any) {
+    console.log("api 호출 중 오류 발생", err);
+    return Promise.reject(err);
+  }
+};
    
 </script>
 
