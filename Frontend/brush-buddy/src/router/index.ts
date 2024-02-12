@@ -16,6 +16,7 @@ import SDraftListComponentVue from '../components/Search/SDraftListComponent.vue
 import SCommunityListComponentVue from '../components/Search/SCommunityListComponent.vue'
 import DraftPipoMakeViewVue from '../views/DraftPipoMakeView.vue'
 import DraftDetailView from '../views/DraftDetailView.vue'
+import VPaletteList from '../components/Diary/VPaletteList.vue'
 
 const router = createRouter({
   history: createWebHistory(""),
@@ -56,6 +57,10 @@ const router = createRouter({
           {
             path: '/diary/heartList',
             component: VHeartList
+          },
+          {
+            path: '/diary/palette',
+            component: VPaletteList
           },
         ]
       },
