@@ -50,14 +50,13 @@ const scrollTrigger = () => {
         console.log(currentPage.value + ' ' + pageCount.value)
         showloader.value = true
         setTimeout(() => {
+          console.log('currentPage')
+          console.log(currentPage.value)
           localAxios()
             .get(
               searchValue.value == ''
-                ? '/draft/list?direction=DESC&listNum=10&pageNum=' + currentPage.value
-                : '/draft/list?direction=DESC&listNum=10&pageNum=' +
-                    currentPage.value +
-                    '&search=' +
-                    searchValue.value
+                ? '/draft/list?size=10&page=' + currentPage.value
+                : '/draft/list?size=10&page=' + currentPage.value + '&search=' + searchValue.value
             )
             .then((response: any) => {
               if (response.data.content == undefined) {
@@ -70,7 +69,7 @@ const scrollTrigger = () => {
                 if (i % 2 === 1) communityThumbnailDataSecond.value.push(response.data.content[i])
                 else communityThumbnailDataFirst.value.push(response.data.content[i])
               }
-              currentPage.value += 1
+
               showloader.value = false
             })
           currentPage.value += 1
@@ -90,9 +89,10 @@ const scrollTrigger = () => {
 
 onMounted(() => {
   localAxios()
-    .get('/draft/list?direction=DESC&listNum=10&pageNum=1')
+    .get('/draft/list?size=10&page=0')
     .then((response: any) => {
       console.log('onload!')
+
       if (response.data.content == undefined) {
         return
       }
@@ -105,7 +105,7 @@ onMounted(() => {
         else communityThumbnailDataFirst.value.push(response.data.content[i])
       } // 아이디 순서대로 정렬해서 적재
 
-      currentPage.value += 1
+      currentPage.value = 1
     })
   scrollTrigger()
 })
@@ -114,12 +114,9 @@ const searchList = (searchString: string) => {
   searchValue.value = searchString
   communityThumbnailDataFirst.value = []
   communityThumbnailDataSecond.value = []
-  currentPage.value = 1
+
   localAxios()
-    .get(
-      'http://localhost:8080/api/v1/draft/list?direction=DESC&listNum=10&pageNum=1&search=' +
-        searchString
-    )
+    .get('/draft/list?size=10&page=0&search=' + searchString)
     .then((response: any) => {
       if (response.data.content == undefined) {
         return
@@ -129,7 +126,7 @@ const searchList = (searchString: string) => {
         if (i % 2 === 1) communityThumbnailDataSecond.value.push(response.data.content[i])
         else communityThumbnailDataFirst.value.push(response.data.content[i])
       }
-      currentPage.value += 1
+      currentPage.value = 2
     })
 }
 

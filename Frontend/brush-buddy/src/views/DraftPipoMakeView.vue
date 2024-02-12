@@ -7,7 +7,7 @@ import { localAxios } from '../api/axios'
 import { onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 const router = useRouter()
-const { isAI, pipoPalette, pipoUrl, prompt } = storeToRefs(useImageStore())
+const { isAI, pipoPalette, pipoUrl, colorUrl, prompt } = storeToRefs(useImageStore())
 
 const items = ref([
   { text: '음식', icon: 'mdi-food-fork-drink' },
@@ -27,6 +27,10 @@ const items = ref([
   { text: '여행', icon: 'mdi-wallet-travel' },
   { text: '연인', icon: 'mdi-heart' }
 ])
+console.log(isAI)
+console.log(pipoPalette)
+console.log(pipoUrl)
+console.log(prompt)
 
 const shared = ref(true)
 const categories = ref([])
@@ -35,14 +39,13 @@ const save = () => {
   localAxios()
     .post('/draft', {
       draftFileLink: pipoUrl.value,
-      pipoUrl: pipoUrl.value,
       palette: pipoPalette.value,
       draftIsAI: isAI.value,
       paletteTitle: title.value,
       draftPrompt: prompt.value,
       draftShare: shared.value,
       categoryList: categories.value,
-      imageFile: pipoUrl.value
+      imageFile: colorUrl.value
     })
     .then((response: any) => {
       router.push('/diary')
@@ -55,15 +58,14 @@ const discard = () => {
 }
 
 onMounted(() => {
-  pipoUrl.value = 'https://picsum.photos/200/300?random=1' || console.log(pipoPalette.value)
+  console.log(pipoUrl)
 })
 </script>
 
 <template>
   <div style="display: flex; justify-content: center; flex-direction: column; align-items: center">
-    {{ pipoPalette }}
     <img
-      :src="pipoUrl.toString"
+      :src="pipoUrl"
       alt="도안 이미지"
       style="
         width: 18rem;
@@ -115,7 +117,7 @@ onMounted(() => {
     >
       <input
         type="text"
-        placeholder="도안 이름"
+        placeholder="팔레트 이름"
         v-model="title"
         style="width: 20rem; height: 2rem; background-color: #2300270a; padding: 1rem"
       />
@@ -169,7 +171,7 @@ onMounted(() => {
           >
             <div style="display: flex; justify-content: center; flex-direction: column">
               <div style="display: flex; justify-content: center; margin-bottom: 0.5rem">
-                <img :src="pipoUrl.toString" alt="" style="max-height: 15rem; min-width: 15rem" />
+                <img :src="pipoUrl" alt="" style="max-height: 15rem; min-width: 15rem" />
               </div>
               <v-spacer style="height: 1rem"></v-spacer>
               <card-title>

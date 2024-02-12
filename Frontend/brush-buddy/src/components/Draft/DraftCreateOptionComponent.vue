@@ -4,7 +4,8 @@ import axios from 'axios'
 const fadein = ref(false)
 const buttonFadein = ref(false)
 import { useImageStore } from '../../stores/image'
-import router from '@/router'
+import { useRouter } from 'vue-router'
+const router = useRouter()
 const { setImage } = useImageStore()
 const nextFadein = () => {
   buttonFadein.value = true
@@ -31,8 +32,8 @@ const makeImage = () => {
           'content-type': 'multipart/form-data'
         }
       })
-      .then((res) => {
-        setImage(false, res.data.palette, res.data.image, 'draft')
+      .then((res: any) => {
+        setImage(false, res.data.palette, res.data.number_image, res.data.color_image, 'draft')
         dialog.value = false
         loadingState.value = false
         router.push('/draft/write')

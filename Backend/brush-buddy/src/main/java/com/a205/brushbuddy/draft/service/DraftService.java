@@ -34,4 +34,6 @@ public interface DraftService{
 
 	// 도안 구매
 	void buyDraft(int userId, Long draftId) throws Exception;
+
+	boolean bookmarkCheck(Integer userId, Long draftId);
 }
