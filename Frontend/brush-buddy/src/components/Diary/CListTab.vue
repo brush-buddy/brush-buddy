@@ -10,8 +10,11 @@
       <router-link to="/diary/bookmarkDraft" @click="setActiveTab('bookmark')">
         <div :class="{ activeTab: activeTab === 'bookmark' }">북마크 도안</div>
       </router-link>
-      <router-link to="/diary/heartList" @click="setActiveTab('heart')">
-        <div :class="{ activeTab: activeTab === 'heart' }">찜한 글</div>
+      <!-- <router-link to="/diary/heartList" @click="setActiveTab('heart')">
+        <div :class="{ activeTab: activeTab === 'heart' }">좋아요글</div>
+      </router-link> -->
+      <router-link to="/diary/myboard" @click="setActiveTab('board')">
+        <div :class="{ activeTab: activeTab === 'board' }">작성글</div>
       </router-link>
       <router-link to="/diary/palette" @click="setActiveTab('palette')">
         <div :class="{ activeTab: activeTab === 'palette' }">내 팔레트</div>
@@ -38,6 +41,12 @@ const setActiveTab = (path: string) => {
   display: flex;
   justify-content: space-around;
   align-items: center;
+  overflow-x: auto;
+  white-space: nowrap;
+  width: 100vw;
+}
+#tab::-webkit-scrollbar {
+  display: none;
 }
 a {
   text-decoration: none;

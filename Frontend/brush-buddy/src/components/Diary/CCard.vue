@@ -1,6 +1,6 @@
 <template>
   <div id="cardWrapper">
-    <div id="container">
+    <router-link :to="{ name: 'boardDetail', params: { id: board.boardId } }">
       <div id="title">{{ board.boardTitle }}</div>
       <div id="thumbnailBox">
         <div id="thumbnail">
@@ -13,7 +13,7 @@
         <img src="../../assets/icon/heart_filled.png" alt="view" width="20rem" height="20rem" />
         <div>&nbsp;{{ board.views }}</div>
       </div>
-    </div>
+    </router-link>
   </div>
 </template>
 <script setup lang="ts">

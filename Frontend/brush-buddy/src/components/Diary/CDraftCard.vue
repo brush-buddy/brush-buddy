@@ -1,5 +1,6 @@
 <template>
     <div id="cardWrapper">
+      <router-link :to="{ name: 'draftDetail', params: { id: draft.draftId } }">
         <div id="thumbnailBox">
             <div id="thumbnail">
                 <img :src="draft.draftThumbnail">
@@ -8,10 +9,12 @@
         <div id="timestamp">
             {{ draft.draftTimestamp.substring(0, 10)}} {{ draft.draftTimestamp.substring(11, 19) }}
         </div>
+      </router-link>
     </div>
 </template>
 <script setup lang="ts">
 import { defineProps } from 'vue';
+import { RouterLink } from 'vue-router';
 const prop = defineProps(["draft"]);
 </script>
 <style scoped>

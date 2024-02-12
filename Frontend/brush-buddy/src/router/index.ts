@@ -18,6 +18,7 @@ import DraftPipoMakeViewVue from '../views/DraftPipoMakeView.vue'
 import DraftDetailView from '../views/DraftDetailView.vue'
 import VPaletteList from '../components/Diary/VPaletteList.vue'
 import PaletteDetailView from '../views/PaletteDetailView.vue'
+import VMyBoard from '../components/Diary/VMyBoard.vue'
 const router = createRouter({
   history: createWebHistory(""),
   routes: [
@@ -57,6 +58,10 @@ const router = createRouter({
           {
             path: '/diary/heartList',
             component: VHeartList
+          },
+          {
+            path: '/diary/myboard',
+            component: VMyBoard
           },
           {
             path: '/diary/palette',
