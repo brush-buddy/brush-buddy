@@ -14,7 +14,7 @@ public enum ErrorCode {
     NOT_PRIVIEGED(403, "접근 권한이 없습니다."),
     NOT_FOUND_DATA(404, "데이터를 찾지 못했습니다."),
     NOT_FOUND(404, "페이지를 찾지 못했습니다."),
-    ;
+    NOT_ENOUGH_MILEAGE(403,"마일리지가 부족합니다." );
 
     private final int errorCode;
     private final String errorMsg;
