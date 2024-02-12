@@ -32,7 +32,7 @@ async def ai_generate(prompt: requestPrompt.Prompt, user_id: int = 1):
     aigenerateimageurl = images.AiImage().createImage(prompt.prompt)
     print(aigenerateimageurl)
 
-    r = redis.StrictRedis(host="localhost", port=6379, db=0)
+    r = redis.StrictRedis(host="i10a205.p.ssafy.io", port=6379, db=0)
 
     r.incr(user, 1)
     print(r.get(user), "callnum")  # callnum 확인용
