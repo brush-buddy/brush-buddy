@@ -59,8 +59,8 @@
           </template>
         </div>
 
-        <v-icon v-if="likeState" icon="mdi-thumb-up" @click=""></v-icon>
-        <v-icon v-if="!likeState" icon="mdi-thumb-up-outline" @click=""></v-icon>
+        <!-- <v-icon v-if="likeState" icon="mdi-thumb-up" @click=""></v-icon> -->
+        <!-- <v-icon v-if="!likeState" icon="mdi-thumb-up-outline" @click=""></v-icon> -->
       </div>
     </div>
 
@@ -80,9 +80,9 @@ import { onMounted, inject, ref } from 'vue'
 import ReplyComponent from '../components/DraftDetail/CReply.vue'
 import { localAxios } from '../api/axios'
 import { storeToRefs } from 'pinia'
-import { useLikeStore } from '../stores/boardlike'
+// import { useLikeStore } from '../stores/boardlike'
 
-const { likeState } = storeToRefs(useLikeStore())
+// const { likeState } = storeToRefs(useLikeStore())
 const route = useRoute()
 const boardId = route.params.id
 const community = ref<any>({
@@ -110,9 +110,9 @@ onMounted(() => {
       console.log(response.data)
       community.value = response.data
     })
-  console.log(parseInt(boardId))
-  useLikeStore().setLikeState(parseInt(boardId))
-  console.log(likeState)
+  // console.log(parseInt(boardId))
+  // useLikeStore().setLikeState(parseInt(boardId))
+  // console.log(likeState)
 })
 </script>
 
