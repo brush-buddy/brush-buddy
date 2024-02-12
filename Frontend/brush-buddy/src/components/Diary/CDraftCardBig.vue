@@ -7,7 +7,7 @@
     </div>
     <div id="info">
       <div id="timestamp">
-        {{ draft.draftTimestamp }}
+        {{ draft.draftTimestamp.substring(0, 10) }} {{ draft.draftTimestamp.substring(11, 19) }}
       </div>
       <div id="inner">
         <v-icon icon="mdi-download-outline" size="small"></v-icon>
