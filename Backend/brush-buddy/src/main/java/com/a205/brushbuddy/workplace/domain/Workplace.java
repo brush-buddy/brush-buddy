@@ -1,4 +1,4 @@
-package com.a205.brushbuddy.workplace;
+package com.a205.brushbuddy.workplace.domain;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -18,7 +18,7 @@ public class Workplace {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "workplace_id")
-    private Integer workplaceId; // 기기ID
+    private Long workplaceId; // 기기ID
 
     @Column(name = "workplace_paint_price", nullable = false)
     private Short workplacePaintPrice; // 정량 당 물감 가격
@@ -31,5 +31,5 @@ public class Workplace {
 
     @Column(name = "workplace_revenue")
     @ColumnDefault("0")
-    private Integer workplaceRevenue; // 사업장 수익
+    private Long workplaceRevenue; // 사업장 수익
 }

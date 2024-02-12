@@ -56,7 +56,6 @@ const getBoardList = async (
 const writeBoard = async (
     data: BoardDetail
     ) : Promise<AxiosResponse> => {
-        console.log((<BoardDetail>data).photo[0].img) 
     return await localAxios().post('/board', data)
 }
 

@@ -14,6 +14,8 @@ import VWrite from '../components/Community/VWrite.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 import SDraftListComponentVue from '../components/Search/SDraftListComponent.vue'
 import SCommunityListComponentVue from '../components/Search/SCommunityListComponent.vue'
+import DraftPipoMakeViewVue from '../views/DraftPipoMakeView.vue'
+import DraftDetailView from '../views/DraftDetailView.vue'
 
 const router = createRouter({
   history: createWebHistory(""),
@@ -89,7 +91,13 @@ const router = createRouter({
         path: '/community/:id',
         component:CommunityDetailView,
 
-      },
+    },
+    {
+      name: 'draftDetail',
+      path: '/draft/:id',
+      component: DraftDetailView,
+
+    },
       {
         name: 'boardAIView',
         path : "/draft/aiprompt",
@@ -99,6 +107,11 @@ const router = createRouter({
       name: 'boardWriteView',
       path : "/community/write",
       component : VWrite,
+    },
+    {
+      name: 'draftWriteView',
+      path: "/draft/write",
+      component: DraftPipoMakeViewVue,
     }
 
   ]
