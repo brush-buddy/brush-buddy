@@ -220,4 +220,14 @@ public class DraftServiceImpl implements DraftService{
 
     }
 
+    @Override
+    public boolean bookmarkCheck(Integer userId, Long draftId) {
+        return bookmarkRepository.findByBookmarkId_User_UserId_AndBookmarkId_Draft_DraftId(userId, draftId).orElseGet(()->null) == null;
+
+
+    }
+
+
+
+
 }
