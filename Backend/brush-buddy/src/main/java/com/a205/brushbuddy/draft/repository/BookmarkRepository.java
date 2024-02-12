@@ -11,6 +11,8 @@ import com.a205.brushbuddy.draft.domain.BookmarkId;
 
 import jakarta.persistence.ManyToOne;
 
+import java.util.Optional;
+
 public interface BookmarkRepository extends JpaRepository<Bookmark, BookmarkId> {
 
 	@Transactional
@@ -22,5 +24,9 @@ public interface BookmarkRepository extends JpaRepository<Bookmark, BookmarkId> 
 	@Modifying
 	@Query(value = "delete from bookmark where user_id = :userId and draft_id = :draftId", nativeQuery = true)
 	void deleteBookmark(@Param("userId")int userId, @Param("draftId")Long draftId);
+
+
+	Optional<Bookmark> findByBookmarkId_User_UserId_AndBookmarkId_Draft_DraftId(Integer userId, Long draftId);
+
 
 }
