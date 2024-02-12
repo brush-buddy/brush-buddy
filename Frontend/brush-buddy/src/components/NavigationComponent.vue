@@ -1,4 +1,3 @@
-<<<<<<< Frontend/brush-buddy/src/components/NavigationComponent.vue
 <script setup lang="ts">
 import { defineComponent } from 'vue'
 import { RouterLink } from 'vue-router'
