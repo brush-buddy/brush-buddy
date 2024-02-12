@@ -2,11 +2,9 @@ package com.a205.brushbuddy.mypage.service;
 
 
 import com.a205.brushbuddy.board.domain.Board;
+import com.a205.brushbuddy.board.repository.BoardRepository;
 import com.a205.brushbuddy.draft.domain.Draft;
-import com.a205.brushbuddy.mypage.dto.response.MypageBookmarkedDraftListResponseDto;
-import com.a205.brushbuddy.mypage.dto.response.MypageGeneratedDraftListResponseDto;
-import com.a205.brushbuddy.mypage.dto.response.MypageHeartBoardListResponseDto;
-import com.a205.brushbuddy.mypage.dto.response.MypagePurchasedDraftListResponseDto;
+import com.a205.brushbuddy.mypage.dto.response.*;
 import com.a205.brushbuddy.mypage.repository.MypageRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -17,6 +15,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class MypageServiceImpl implements MypageService{
     private final MypageRepository mypageRepository;
+    private final BoardRepository boardRepository;
 
     @Override
     public MypageHeartBoardListResponseDto getHeartBoardList(Integer userId, String search, Pageable pageable) { // 좋아요 누른 게시글 리스트 조회
@@ -33,6 +32,33 @@ public class MypageServiceImpl implements MypageService{
                                 .boardTitle(m.getBoardTitle())
                                 .createdAt(m.getBoardTimestamp().toString())
                         .build())
+                        .toList())
+                .build();
+    }
+
+    @Override
+    public MypageMyBoardListResponseDto getMyBoardList(Integer userId, String search, Pageable pageable) { // 내가 쓴 게시글 리스트 조회
+        Page<Board> result;
+
+        //검색어에 따라 검색 메소드 다르게 호출
+        if(search == null || search.isEmpty()){
+            result = boardRepository.findByUser_UserIdAndBoardIsDeletedFalse(userId, pageable);
+        }else{
+            result =  boardRepository.findByUser_UserIdAndBoardTitleContainsAndBoardIsDeletedFalse(userId, search, pageable);
+        }
+
+        return MypageMyBoardListResponseDto.builder()
+                .pageNum(result.getNumber()+1)
+                .length(result.getNumberOfElements())
+                .totalPage(result.getTotalPages())
+                .boards(result.getContent().stream().map( m-> MypageMyBoardListResponseDto.BoardDTO.builder()
+                                .boardId(m.getBoardId())
+                                .views(m.getBoardWatch())
+                                .thumbnail(m.getBoardThumbnail())
+                                .likeNumber(m.getBoardLikeNumber())
+                                .boardTitle(m.getBoardTitle())
+                                .createdAt(m.getBoardTimestamp().toString())
+                                .build())
                         .toList())
                 .build();
     }
