@@ -39,7 +39,6 @@ const save = () => {
   localAxios()
     .post('/draft', {
       draftFileLink: pipoUrl.value,
-      pipoUrl: pipoUrl.value,
       palette: pipoPalette.value,
       draftIsAI: isAI.value,
       paletteTitle: title.value,
