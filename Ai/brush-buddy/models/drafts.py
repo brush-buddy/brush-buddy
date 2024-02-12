@@ -1,5 +1,6 @@
 import json
 import time
+import uuid
 from io import BytesIO
 
 import cv2
@@ -20,7 +21,8 @@ class Drafts(BaseModel):
     def pipo_convert(self, np_image, color_label=False, **kwargs):
 
         # time stamp
-        t_stamp = time.strftime("%Y%m%d%H", time.localtime())
+        a = uuid.uuid1()
+        t_stamp = time.strftime("%Y%m%d%H%M%S", time.localtime())
 
         aws = AwsS3()
 
