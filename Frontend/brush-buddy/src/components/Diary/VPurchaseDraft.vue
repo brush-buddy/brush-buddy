@@ -3,7 +3,6 @@
     <v-infinite-scroll :items="items" :onLoad="load">
       <div v-for="(item, index) in items" :key="index">
         <CDraftCard :draft="item" />
-        <!-- {{ item }} -->
       </div>
     </v-infinite-scroll>
   </div>
@@ -41,7 +40,8 @@ const pageNum = ref(1);
 const firstCall = ref([
     localAxios().get('/mypage/payments/list?listNum=3&pageNum=1')
     .then(function (response: any) {
-      items.value = response.data.boards;
+      console.log("데이터 ",response.data);
+      items.value = response.data.drafts;
     })
     .catch(function (error: any) {
       console.log(error.message);
@@ -52,7 +52,7 @@ const getHeartList = async (page: number): Promise<HeartListRes> => {
   console.log("getHeartList called");
   try {
     const heartListGet = await localAxios().get(`/mypage/payments/list?listNum=${listNum.value}&pageNum=${page}`);
-    return heartListGet.data.boards;
+    return heartListGet.data.drafts;
   } catch (err: any) {
     console.log("api 호출 중 오류 발생", err);
     return Promise.reject(err);
@@ -81,7 +81,6 @@ const load = async (options: {
     // Perform API call
     const res = await api();
     const resList = await getHeartList(res);
-    console.log("resList", resList);
     if (resList && Array.isArray(resList) && resList.length > 0) {
       resList.forEach((res: HeartList) => items.value.push(res));
     }
@@ -99,4 +98,9 @@ const load = async (options: {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+#navarea {
+  height: 10vh;
+  width: 100%;
+}
+</style>
