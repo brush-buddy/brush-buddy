@@ -1,5 +1,5 @@
 <template>
-  <RouterLink :to="{ name: 'draftDetail', params: { id: palette.paletteId } }">
+  <RouterLink :to="{ name: 'paletteDetail', params: { id: palette.paletteId } }">
     <div id="cardWrapper">
     {{ palette }}
         <div id="thumbnailBox">
