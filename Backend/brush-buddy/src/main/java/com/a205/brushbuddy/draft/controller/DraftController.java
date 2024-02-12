@@ -189,4 +189,19 @@ public class DraftController {
 		return str;
 	}
 
+	@Operation(description = "북마크 여부 확인 ")
+	@ApiResponses({
+			@ApiResponse(responseCode = "200", description = "도안 생성 성공")
+	})
+	@ResponseBody
+	@GetMapping("/{draftId}/is-bookmarked")
+	public ResponseEntity<Boolean> makeDraft(@PathVariable Long draftId, HttpServletRequest request) throws Exception{
+		Integer userId = jwtUtil.getUserId(request)
+				.orElseThrow(() -> new BaseException(ErrorCode.INVALID_TOKEN)); // 헤더의 access token으로 userId 추출, null 반환시 유효하지 않은 토큰 오류 전송
+		System.out.println(userId +" "+ draftId);
+		boolean check = draftService.bookmarkCheck(userId, draftId);
+		return new ResponseEntity<>(!check, HttpStatus.OK);
+	}
+
+
 }
