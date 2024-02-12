@@ -40,8 +40,7 @@ onMounted(() => {
 
 <template>
   <div>
-    {{ draft }}
-    <DraftDetailComponent />
+    <DraftDetailComponent :imageThumbnail="draft.draftThumbnail" />
   </div>
 </template>
 
