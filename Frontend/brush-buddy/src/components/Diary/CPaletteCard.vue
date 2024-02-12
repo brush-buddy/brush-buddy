@@ -1,18 +1,23 @@
 <template>
+  <RouterLink :to="{ name: 'draftDetail', params: { id: palette.paletteId } }">
     <div id="cardWrapper">
+    {{ palette }}
         <div id="thumbnailBox">
             <div id="thumbnail">
                 <!-- <img src="{{ draft.draftThumbnail }}" alt="thumbnail" /> -->
             </div>
         </div>
         <div id="timestamp">
-            {{ draft.draftTimestamp.substring(0, 10)}} {{ draft.draftTimestamp.substring(11, 19) }}
+            <!-- {{ palette.draftTimestamp.substring(0, 10)}} {{ palette.draftTimestamp.substring(11, 19) }} -->
         </div>
     </div>
+  </RouterLink>
 </template>
 <script setup lang="ts">
 import { defineProps } from 'vue';
-defineProps(["draft"]);
+import { RouterLink } from 'vue-router';
+const prop = defineProps(["palette"]);
+console.log("prop ",prop.palette.paletteId);
 </script>
 <style scoped>
 #cardWrapper {

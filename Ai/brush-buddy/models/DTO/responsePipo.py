@@ -2,5 +2,6 @@ from pydantic import BaseModel
 
 
 class Pipo(BaseModel):
-    image: str
+    number_image: str
+    color_image: str
     palette: str

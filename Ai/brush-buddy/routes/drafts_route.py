@@ -2,6 +2,7 @@ import base64
 import io
 import os
 import time
+import uuid
 from io import BytesIO
 from typing import Dict, List
 
@@ -32,7 +33,7 @@ async def ai_generate(prompt: requestPrompt.Prompt, user_id: int = 1):
     aigenerateimageurl = images.AiImage().createImage(prompt.prompt)
     print(aigenerateimageurl)
 
-    r = redis.StrictRedis(host="localhost", port=6379, db=0)
+    r = redis.StrictRedis(host="i10a205.p.ssafy.io", port=6379, db=0)
 
     r.incr(user, 1)
     print(r.get(user), "callnum")  # callnum 확인용
@@ -62,17 +63,29 @@ async def to_pipo_savelocal(image: UploadFile = File(...)):
 
     content = cv2.imread("./assets/image.jpg")
 
-    json_string_palette, draft_url = drafts.Drafts().pipo_convert(content)
+    json_string_palette, colored_draft_url, numbered_draft_url = (
+        drafts.Drafts().pipo_convert(content)
+    )
 
-    return responsePipo.Pipo(image=draft_url, palette=json_string_palette)
+    return responsePipo.Pipo(
+        number_image=numbered_draft_url,
+        color_image=colored_draft_url,
+        palette=json_string_palette,
+    )
 
 
-@draft_router.get("/pipo-s3", status_code=200, response_model=responsePipo.Pipo)
+@draft_router.post("/pipo-s3", status_code=200, response_model=responsePipo.Pipo)
 async def to_pipo_saves3(url: requestUrl.Url):
     response = requests.get(url.url)
     img = Image.open(BytesIO(response.content))
     content = np.array(img)
 
-    json_string_palette, draft_url = drafts.Drafts().pipo_convert(content)
+    json_string_palette, colored_draft_url, numbered_draft_url = (
+        drafts.Drafts().pipo_convert(content)
+    )
 
-    return responsePipo.Pipo(image=draft_url, palette=json_string_palette)
+    return responsePipo.Pipo(
+        number_image=numbered_draft_url,
+        color_image=colored_draft_url,
+        palette=json_string_palette,
+    )

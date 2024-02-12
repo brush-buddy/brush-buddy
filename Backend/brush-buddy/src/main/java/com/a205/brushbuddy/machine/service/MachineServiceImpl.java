@@ -2,6 +2,8 @@ package com.a205.brushbuddy.machine.service;
 
 import com.a205.brushbuddy.machine.domain.Machine;
 import com.a205.brushbuddy.machine.domain.OwnerType;
+import com.a205.brushbuddy.machine.dto.MachinePrintRequestDto;
+import com.a205.brushbuddy.machine.dto.MachinePrintResponseDto;
 import com.a205.brushbuddy.machine.dto.MachineRegisterRequestDto;
 import com.a205.brushbuddy.machine.dto.MachineRegisterResponseDto;
 import com.a205.brushbuddy.machine.repository.MachineRepository;
@@ -9,6 +11,8 @@ import com.a205.brushbuddy.user.domain.User;
 import com.a205.brushbuddy.workplace.domain.Workplace;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.Arrays;
 
 @Service
 @RequiredArgsConstructor
@@ -26,6 +30,205 @@ public class MachineServiceImpl implements MachineService{
                 .build();
         machineRepository.save(machine);
         return null;
+    }
+
+    @Override
+    public MachinePrintResponseDto convertRGB2CMYKW(MachinePrintRequestDto requestDto) {
+        String color = requestDto.getRGBCode()
+                .substring(1);
+
+        int[] cmykw = rgbToCmyk(color);
+
+        return MachinePrintResponseDto.builder()
+                .id(requestDto.getId())
+                .color(MachinePrintResponseDto.ColorDTO.builder()
+                        .c(cmykw[0])
+                        .m(cmykw[1])
+                        .y(cmykw[2])
+                        .k(cmykw[3])
+                        .w(cmykw[4])
+                        .build())
+                .build();
+    }
+
+    private int[] rgbToCmyk(String color) {
+        // data : 함수 사용을 위한 배열
+        int r, g, b, w, k, c, m, y, temp, data[];
+        // per를 위한 double
+        double doubleR, doubleG, doubleB, doubleW, doubleK, doubleC, doubleM, doubleY;
+
+        // 입력 문자 10진수 수치화
+        r = Integer.parseInt(color.substring(0, 2), 16);
+        g = Integer.parseInt(color.substring(2, 4), 16);
+        b = Integer.parseInt(color.substring(4), 16);
+        // RGB 출력
+        System.out.println("-----input RGB data-----");
+        data = new int[] {r, g, b};
+        hexPrint(data);
+        decPrint(data);
+
+        // 0 - 255
+        k = 255 - max(r, g, b);// 빛의 삼원색 최댓값을 제외한 값 = K 최대 경우
+        w = min(r, g, b); // 전체에서 RGB의 수치의 최소값 = W 최대 경우
+
+        // 무채색 (R = G = B) (C = M = Y = 0)
+        if (r == g && g == b && b == r) {
+            System.out.println("-----WK data-----");
+            data = new int[] {w, k};
+            decPrint(data);
+            PerPrint(data);
+            //// 따라서 CMY 계산 생략하고 리턴
+            //// return new int[] {0, 0, 0, toPercent(w), toPercent(k)};
+
+            //// K 변환 내용
+            temp = oneThird(k);
+            if (w != 255) {
+                System.out.println("-----K를 CMY에 3분할당 CMYW-----");
+                data = new int[] {temp, temp, temp, w};
+                decPrint(data);
+                PerPrint(data);
+            }
+            //// 추가적인 CMY 연산 불필요, 리턴
+            return new int[] {toPercent(temp), toPercent(temp), toPercent(temp), 0, toPercent(w)};
+        }
+
+        // 색상 + 검은색, W = 0일 경우만 유효
+        else if (w == 0) {
+            System.out.println("-----RGBK data-----");
+            data = new int[] {r, g, b, k};
+            hexPrint(data);
+            decPrint(data);
+            PerPrint(data);
+        }
+        // 색상 + 흰색, 조건문 필요 없이 else로도 가능
+        else if (w != 0) {
+            System.out.println("-----RGBW data-----");
+            data = new int[] {r - w, g - w, b - w, w};
+            hexPrint(data);
+            decPrint(data);
+            PerPrint(data);
+        }
+
+        // CMYKW 변환을 위한 할당율로 변환 0.0 - 1.0
+        doubleR = r / 255.0;
+        doubleG = g / 255.0;
+        doubleB = b / 255.0;
+        doubleW = w / 255.0;
+        doubleK = k / 255.0;
+
+        if (k != 255) {
+            // K = 흰색(255) - 빛의 3원색의 최댓값(= K 최소 경우)
+            // C = B + G
+            // M = R + B
+            // Y = R + G
+            doubleC = (1.0 - doubleR - doubleK) / (1 - doubleK);
+            doubleM = (1.0 - doubleG - doubleK) / (1 - doubleK);
+            doubleY = (1.0 - doubleB - doubleK) / (1 - doubleK);
+            c = (int)(doubleC * 100 + 0.5);
+            m = (int)(doubleM * 100 + 0.5);
+            y = (int)(doubleY * 100 + 0.5);
+
+            // 이전에 선언한 변수를 범위 수정 (0 - 255) -> (0 - 100)
+            w = (int)(doubleW * 100 + 0.5);
+            k = (int)(doubleK * 100 + 0.5);
+            temp = oneThird(k);
+
+            if (w == 0) {
+                // W = 0 이면 CMY(+K)인 상태
+                System.out.println("-----CMYK data-----");
+                data = new int[] {c, m, y, k};
+                decPrint(data);
+                PerPrint(data);
+
+                //// K값 CMY로 3분할당
+                if (k != 0) {
+                    System.out.println("-----K를 CMY에 3분할당-----");
+                    data = new int[] {c + temp, m + temp, y + temp};
+                    decPrint(data);
+                    PerPrint(data);
+                }
+            } else if (k == 0) {
+                // K = 0 이면 CMY(+W)인 상태
+                System.out.println("-----CMYW data-----");
+                data = new int[] {c, m, y, w};
+                decPrint(data);
+                PerPrint(data);
+            }
+            //// CMYKW 이용
+            //// return new int[] {c, m, y, k, w};
+
+            //// CMYKW에서 K 제외
+            return new int[] {c + temp, m + temp, y + temp, 0, w};
+        }
+        //// K 이용
+        //// return new int[] { 0, 0, 0, 255, 0 };
+
+        //// 추가 내용 K 제외
+        return new int[] {oneThird(100), oneThird(100), oneThird(100), 0, 0};
+    }
+
+    // 수치 리턴 메소드
+    private String value(int[] arr, String form) {
+        StringBuilder builder = new StringBuilder();
+        if (form.startsWith("%3H")) {
+            builder.append("Hex :\t");
+        } else {
+            builder.append("Dec :\t");
+        }
+        Arrays.stream(arr).forEach(e -> builder.append(String.format(form, e)));
+        return builder.toString();
+    }
+
+    // 퍼센트 리턴 메소드
+    private String percent(int[] arr) {
+        StringBuilder builder = new StringBuilder();
+        int sum = Arrays.stream(arr).sum();
+        builder.append("Per :\t");
+        if (sum == 0) {
+            for (int i = 0; i < arr.length; ++i) {
+                builder.append("000\t");
+            }
+        } else {
+            Arrays.stream(arr).forEach(e -> builder.append(String.format("%03d\t", (int)100.0 * e / sum)));
+        }
+        return builder.toString();
+    }
+
+    // 수치데이터 Hex 출력 메소드
+    private void hexPrint(int[] arr) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(value(arr, "%3H\t")).append('\n');
+        System.out.print(sb.toString());
+    };
+
+    // 데이터데이터 Dec 출력 메소드
+    private void decPrint(int[] arr) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(value(arr, "%03d\t")).append('\n');
+        System.out.print(sb.toString());
+    };
+
+    // 데이터데이터 Per 출력 메소드
+    private void PerPrint(int[] arr) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(percent(arr)).append('\n');
+        System.out.print(sb.toString());
+    };
+
+    private int min(int i, int j, int k) {
+        return Math.min(Math.min(i, j), k);
+    }
+
+    private int max(int i, int j, int k) {
+        return Math.max(Math.max(i, j), k);
+    }
+
+    private int oneThird(int i) {
+        return (int)(i / 3.0 + 0.5);
+    }
+
+    private int toPercent(int i) {
+        return (int)(i * 100.0 / 255.0 + 0.5);
     }
 
 }

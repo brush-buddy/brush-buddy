@@ -23,96 +23,86 @@
   </div>
   <router-link to="/community/write">
     <div id="goWriteButton">
-      <WriteButtonComponent/>
+      <CWriteButton />
     </div>
   </router-link>
   <div style="height: 5rem; width: 100vw"></div>
 </template>
 
 <script setup lang="ts">
-import { ref, inject, onMounted } from "vue";
-import { localAxios } from "../api/axios";
-import { useRouter } from "vue-router";
-import CommunityComponent from "../components/Community/CommunityComponent.vue";
-import type { BoardThumbnail } from "../api/type";
-import WriteButtonComponent from "../components/Community/WriteButtonComponent.vue";
+import { ref, inject, onMounted } from 'vue'
+import { localAxios } from '../api/axios'
+import { useRouter } from 'vue-router'
+import CommunityComponent from '../components/Community/CommunityComponent.vue'
+import type { BoardThumbnail } from '../api/type'
+import CWriteButton from '../components/Community/CWriteButton.vue'
 
-const axios = inject("axios");
+const axios = inject('axios')
 
-const boardThumbnailDataFirst = ref<BoardThumbnail[]>([]);
-const boardThumbnailDataSecond = ref<BoardThumbnail[]>([]);
+const boardThumbnailDataFirst = ref<BoardThumbnail[]>([])
+const boardThumbnailDataSecond = ref<BoardThumbnail[]>([])
 
-const pageCount = ref(1);
-const currentPage = ref(0); // page는 1번부터 시작
-const showloader = ref(false);
+const pageCount = ref(2)
+const currentPage = ref(0) // page는 1번부터 시작
+const showloader = ref(false)
 
-const scrollTriggerElement = ref(null);
-const scrollTriggerElement2 = ref(null);
+const scrollTriggerElement = ref(null)
+const scrollTriggerElement2 = ref(null)
 
 const scrollTrigger = () => {
   const observer = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
       if (entry.intersectionRatio > 0 && currentPage.value < pageCount.value) {
-        console.log("load...");
+        console.log('load...')
 
-        console.log(currentPage.value + " " + pageCount.value);
-        showloader.value = true;
+        showloader.value = true
         setTimeout(() => {
           localAxios()
             .get(
-              "http://localhost:8080/api/v1/board/list?direction=DESC&listNum=10&pageNum=" +
+              'http://localhost:8080/api/v1/board/list?direction=DESC&listNum=10&pageNum=' +
                 currentPage.value
             )
             .then((response: any) => {
-              console.log(response.data.boards);
-              pageCount.value = response.data.totalPage;
+              pageCount.value = response.data.totalPage
 
               for (let i = 0; i < response.data.boards.length; i++) {
-                if (i % 2 === 1)
-                  boardThumbnailDataSecond.value.push(response.data.boards[i]);
-                else
-                  boardThumbnailDataFirst.value.push(response.data.boards[i]);
+                if (i % 2 === 1) boardThumbnailDataSecond.value.push(response.data.boards[i])
+                else boardThumbnailDataFirst.value.push(response.data.boards[i])
               }
-              currentPage.value += 1;
-              showloader.value = false;
-            });
-          currentPage.value += 1;
-          showloader.value = false;
-        }, 3000);
+
+              showloader.value = false
+            })
+          currentPage.value += 1
+          showloader.value = false
+        }, 3000)
       }
-    });
-  });
+    })
+  })
   if (
     // 내릴 필요가 없을 경우
-    !(
-      scrollTriggerElement.value === null ||
-      scrollTriggerElement2.value === null
-    )
+    !(scrollTriggerElement.value === null || scrollTriggerElement2.value === null)
   ) {
-    observer.observe(scrollTriggerElement.value);
-    observer.observe(scrollTriggerElement2.value);
+    observer.observe(scrollTriggerElement.value)
+    observer.observe(scrollTriggerElement2.value)
   }
-};
+}
 
 onMounted(() => {
   localAxios()
-    .get(
-      "http://localhost:8080/api/v1/board/list?direction=DESC&listNum=10&pageNum=1"
-    )
+    .get('http://localhost:8080/api/v1/board/list?direction=DESC&listNum=10&pageNum=1')
     .then((response: any) => {
-      console.log("onload!");
+      console.log('onload!')
       // 총 페이지 수 설정
-      pageCount.value = response.data.totalPage;
+      pageCount.value = response.data.totalPage
       for (let i = 0; i < response.data.boards.length; i++) {
-        if (i % 2 === 1)
-          boardThumbnailDataSecond.value.push(response.data.boards[i]);
-        else boardThumbnailDataFirst.value.push(response.data.boards[i]);
+        if (i % 2 === 1) boardThumbnailDataSecond.value.push(response.data.boards[i])
+        else boardThumbnailDataFirst.value.push(response.data.boards[i])
       } // 아이디 순서대로 정렬해서 적재
 
-      currentPage.value += 1;
-    });
-  scrollTrigger();
-});
+      currentPage.value = 2
+    })
+  scrollTrigger()
+})
 </script>
 
 <style scoped>
@@ -156,7 +146,7 @@ footer #scroll-trigger {
   border-top: 5px solid #fff;
   animation: animate 1.5s infinite linear;
 }
-#goWriteButton{
+#goWriteButton {
   position: fixed;
   bottom: 10vh;
   right: 3vw;
