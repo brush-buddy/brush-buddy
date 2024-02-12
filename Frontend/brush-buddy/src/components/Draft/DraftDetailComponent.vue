@@ -1,27 +1,45 @@
 <template>
   <div class="rect">
-    <div id="category">
-      <!-- <div id = "category1">
-            <DraftCategoryButton :title=title1 :color=color1 />
-            </div>
-            <div id = "category2">
-            <DraftCategoryButton :title=title2 :color=color2 />
-            </div> -->
-    </div>
-    <div id="draft">
-      <BookmarkedDraftImgComponent />
+    <div>
+      <v-item-group v-model="selection" multiple>
+        <v-item>
+          <DraftThumbnailComponent @click="handleClick" />
+          <v-btn
+            :icon="isBookmarked ? 'mdi-bookmark-multiple' : 'mdi-bookmark-multiple-outline'"
+          ></v-btn>
+        </v-item>
+      </v-item-group>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useBookmarksStore } from '../../stores/bookmark'
+import DraftThumbnailComponent from './DraftThumbnailComponent.vue'
 
-const title1 = ref('물고기')
-const color1 = ref('#FFB6C1')
+const props = defineProps<{
+  draftId: number
+}>()
 
-const title2 = ref('바다')
-const color2 = ref('#FF7575')
+const bookmarksStore = useBookmarksStore()
+
+const bookmarks = bookmarksStore.bookmarks
+const addBookmark = (id) => bookmarksStore.addBookmark(id)
+const removeBookmark = (id) => bookmarksStore.removeBookmark(id)
+
+const isBookmarked = ref(true)
+
+// 북마크 추가 삭제
+const handleClick = () => {
+  const draftId = props.draftId
+  if (isBookmarked.value) {
+    removeBookmark(draftId)
+  } else {
+    addBookmark(draftId)
+  }
+  isBookmarked.value = !isBookmarked.value
+}
 </script>
 
 <style scoped>
@@ -54,3 +72,4 @@ const color2 = ref('#FF7575')
   margin: 0 auto;
 }
 </style>
+../../stores/bookmark
