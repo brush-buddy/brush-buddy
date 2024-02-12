@@ -1,12 +1,12 @@
 <template>
   <div class="rect">
     <div id="category">
-      <div id="category1">
-        <DraftCategoryButton :title="title1" :color="color1" />
-      </div>
-      <div id="category2">
-        <DraftCategoryButton :title="title2" :color="color2" />
-      </div>
+      <!-- <div id = "category1">
+            <DraftCategoryButton :title=title1 :color=color1 />
+            </div>
+            <div id = "category2">
+            <DraftCategoryButton :title=title2 :color=color2 />
+            </div> -->
     </div>
     <div id="draft">
       <BookmarkedDraftImgComponent />
@@ -15,8 +15,6 @@
 </template>
 
 <script setup lang="ts">
-import BookmarkedDraftImgComponent from './DraftBookmarked.vue'
-import DraftCategoryButton from '../DraftDetail/DraftCategoryButton.vue'
 import { ref } from 'vue'
 
 const title1 = ref('물고기')

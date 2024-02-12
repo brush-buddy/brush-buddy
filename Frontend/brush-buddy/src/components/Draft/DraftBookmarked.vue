@@ -1,7 +1,7 @@
 <template>
   <div id="fulldraft">
     <div id="bookmark">
-      <svg
+      <!-- <svg
         xmlns="http://www.w3.org/2000/svg"
         width="23"
         height="30"
@@ -41,7 +41,7 @@
             />
           </filter>
         </defs>
-      </svg>
+      </svg> -->
     </div>
     <div class="draft">
       <div class="option-button">
