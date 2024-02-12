@@ -48,7 +48,7 @@ public class MachineController {
         // WebSocket를 통해 서버에 연결하기 위한 URI
         URI url = UriComponentsBuilder.newInstance()
                 .scheme("ws")
-                .host("bb-iot.duckdns.org")
+                .host("i10a205.p.ssafy.io")
                 .path("/ws/print/"+requestDto.getId())
                 .port(3004)
                 .build().encode(StandardCharsets.UTF_8).toUri();
