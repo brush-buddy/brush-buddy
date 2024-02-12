@@ -1,24 +1,27 @@
 <template>
   <div id="cardWrapper">
-    <div id="thumbnailBox">
-      <div id="thumbnail">
-        <img :src="draft.draftThumbnail" alt="" />
+    <router-link :to="{ name: 'draftDetail', params: { id: draft.draftId } }">
+      <div id="thumbnailBox">
+        <div id="thumbnail">
+          <img :src="draft.draftThumbnail" alt="" />
+        </div>
       </div>
-    </div>
-    <div id="info">
-      <div id="timestamp">
-        {{ draft.draftTimestamp.substring(0, 10) }} {{ draft.draftTimestamp.substring(11, 19) }}
+      <div id="info">
+        <div id="timestamp">
+          {{ draft.draftTimestamp.substring(0, 10) }} {{ draft.draftTimestamp.substring(11, 19) }}
+        </div>
+        <div id="inner">
+          <v-icon icon="mdi-download-outline" size="small"></v-icon>
+          {{ draft.draftDownload }}&nbsp;
+          <v-icon icon="mdi-bookmark-outline" size="small"></v-icon>
+          {{ draft.draftBookmark }}
+        </div>
       </div>
-      <div id="inner">
-        <v-icon icon="mdi-download-outline" size="small"></v-icon>
-        {{ draft.draftDownload }}&nbsp;
-        <v-icon icon="mdi-bookmark-outline" size="small"></v-icon>
-        {{ draft.draftBookmark }}
-      </div>
-    </div>
+    </router-link>
   </div>
 </template>
 <script setup lang="ts">
+import { RouterLink } from 'vue-router';
 const props = defineProps(['draft'])
 console.log('incard', props)
 </script>
