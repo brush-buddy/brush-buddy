@@ -50,7 +50,7 @@ public class MachineController {
                 .scheme("ws")
                 .host("bb-iot.duckdns.org")
                 .path("/ws/print/"+requestDto.getId())
-                .port(3004)
+//                .port(3004)
                 .build().encode(StandardCharsets.UTF_8).toUri();
 
 
