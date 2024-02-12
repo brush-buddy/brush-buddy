@@ -67,8 +67,10 @@ public class BoardController {
 
     // 게시판 상세조회
     @GetMapping("/{boardId}")
-    public  ResponseEntity<?> detailBoard(@PathVariable long boardId){
-        BoardDetailResponseDto result = boardService.getDetail(boardId);
+    public  ResponseEntity<?> detailBoard(@PathVariable long boardId, HttpServletRequest request){
+        Integer userId = jwtUtil.getUserId(request)
+                .orElseThrow(() -> new BaseException(ErrorCode.INVALID_TOKEN));// 헤더의 access token으로 userId 추출, null 반환시 유효하지 않은 토큰 오류 전송
+        BoardDetailResponseDto result = boardService.getDetail(userId, boardId);
         return ResponseEntity.ok().body(result);
     }
 
