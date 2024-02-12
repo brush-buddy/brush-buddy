@@ -111,7 +111,7 @@ const makeLink = async () => {
   console.log(madeList.value)
 }
 // 도안 선택 저장
-const savedDraftId = ref<number | null>(null)
+const savedDraftId = ref<number | undefined>(undefined)
 const selectedIndex = ref<number | null>(null)
 const check = (idx: number, category: string) => {
   if (category == 'purchase') {
@@ -169,9 +169,6 @@ const submitForm = async () => {
           }
         }
       })
-      console.log("사진 ",convertedFiles.value)
-      console.log("해시태그 ",chips.value)
-      console.log("도안번호 ",savedDraftId.value)
       const response = await writeBoard({
         title: savedTitle.value,
         contents: savedContent.value,

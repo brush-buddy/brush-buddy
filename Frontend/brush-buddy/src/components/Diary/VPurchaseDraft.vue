@@ -98,4 +98,9 @@ const load = async (options: {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+#navarea {
+  height: 10vh;
+  width: 100%;
+}
+</style>
