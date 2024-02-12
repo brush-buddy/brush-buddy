@@ -1,8 +1,8 @@
 <template>
-  <div class="wrap">
+  <div class="wrap elevation-2">
     <div class="profile-wrap">
       <div id="profile-avartar">
-        <img src="@/assets/logo.png" alt="프로필사진" />
+        <img src="@/assets/logo.png" style="width: 1.5rem; height: 1.5rem" alt="프로필사진" />
       </div>
     </div>
     <div class="reply">
@@ -14,17 +14,12 @@
             variant="outlined"
             rows="4"
             row-height="10"
+            v-model="content"
           ></v-textarea>
         </v-container>
       </div>
-      <div class="btnout">
-        <!-- <v-btn
-          color="#C5C6EF"
-          variant="tonal"
-          @click="(dialog = false), sendreply()"
-        >
-          send
-        </v-btn> -->
+      <div style="display: flex; justify-content: flex-end">
+        <v-btn :disabled="content === ''" @click="sendreply()" size="small">저장하기</v-btn>
       </div>
     </div>
   </div>
@@ -32,16 +27,25 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import axios from 'axios'
-import CButton from '@/components/Community/CButton.vue'
+import { localAxios } from '@/api/axios'
 
 const text = ref('send')
-
+const props = defineProps({
+  boardId: Number
+})
+const content = ref('')
 const sendreply = () => {
   if (text.value === 'send') {
-    axios.post('http://localhost:8000/api/v1/draft/pipo-painting').then((res) => {
-      console.log(res)
-    })
+    localAxios()
+      .post(`/board/${props.boardId}/replies`, {
+        contents: content.value
+      })
+      .then(function (response: any) {
+        console.log(response)
+      })
+      .catch(function (error: any) {
+        console.log(error)
+      })
   }
 }
 </script>
@@ -72,8 +76,8 @@ const sendreply = () => {
   justify-content: space-evenly;
   flex-direction: row;
   /* align-items: center; */
-  border-radius: 4rem;
-  margin: 1rem 1rem 1rem 1rem;
+  border-radius: 10%;
+  /* margin: 1rem 1rem 1rem 1rem; */
 }
 
 .profile-wrap {
@@ -81,24 +85,29 @@ const sendreply = () => {
   flex-direction: column;
   align-items: center;
   margin-top: 3rem;
+  margin-left: 1rem;
 }
 
 .reply {
   /* background-color: blue; */
-  width: 80%;
+
   display: flex;
   flex-direction: column;
-  margin: 2rem 1rem 2rem 1rem;
+  margin: 1rem;
+  width: 90%;
   /* margin-right: 3rem; */
 }
 
 #profile-avartar {
   border-radius: 50%;
   background-color: #fbf4c1;
-  width: 4rem;
-  height: 4rem;
-  padding: 1rem;
-  margin-left: 1rem;
+  width: 2.5rem;
+  height: 2.5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* padding: 1rem; */
+  /* margin-left: 1rem; */
   overflow: hidden;
   > img {
     width: 100%;
