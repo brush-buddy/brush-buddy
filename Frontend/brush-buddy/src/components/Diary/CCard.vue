@@ -20,7 +20,7 @@
 import { defineProps } from 'vue'
 
 const prop = defineProps(['board'])
-// console.log("incard",prop.board);
+console.log("incard",prop.board);
 </script>
 <style scoped>
 #cardWrapper {
