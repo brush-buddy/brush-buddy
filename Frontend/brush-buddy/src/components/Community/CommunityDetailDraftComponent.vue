@@ -8,12 +8,8 @@
         <CButton :title="title2" :color="color2" />
       </div>
     </div>
-    <div id="draft">
-      <DraftBookmarked />
-    </div>
-    <div id="palette">
-      <EclipsePaletteComponent />
-    </div>
+    <div id="draft"></div>
+    <div id="palette"></div>
   </div>
 </template>
 
