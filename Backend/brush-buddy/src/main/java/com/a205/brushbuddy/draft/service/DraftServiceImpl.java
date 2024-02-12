@@ -60,7 +60,11 @@ public class DraftServiceImpl implements DraftService{
     @Override
     public Page<DraftListResponseDto> getDraftListByCategory(Pageable pageable, String categoryContent) {
         Category category = categoryRepository.findByCategoryContent(categoryContent);
+        if(category == null){
+            return null;
+        }
         List<Long> categoryIds = draftCategoryRepository.findDraftIdByCategoryId(category.getCategoryId());
+
         try {
             return draftRepository.findAllByDraftIdIn(categoryIds,pageable).map(p->DraftListResponseDto.builder()
                     .draftId(p.getDraftId())
@@ -112,7 +116,7 @@ public class DraftServiceImpl implements DraftService{
         Draft draft = Draft.builder()
             .draftColorCode(json)
             .draftThumbnail(draftCreateDto.getImageFile())
-            .draftFileLink(draftCreateDto.getDraftFIleLink())
+            .draftFileLink(draftCreateDto.getDraftFileLink())
             .draftIsAI(draftCreateDto.isDraftIsAI())
             .draftIsPublic(draftCreateDto.isDraftShare())
             .draftPrompt(draftCreateDto.getDraftPrompt())

@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import SinglePaletteComponent from '../components/common/SinglePaletteComponent.vue'
-import { localAxios } from '../api/axios'
-const props = defineProps({
-  pipoUrl: String,
-  pipoPalette: {},
-  isAI: Boolean,
-  prompt: String
-})
+import { storeToRefs } from 'pinia'
 import { ref } from 'vue'
+import { useImageStore } from '../stores/image'
+import { localAxios } from '../api/axios'
+import { onMounted } from 'vue'
+import { useRouter } from 'vue-router'
+const router = useRouter()
+const { isAI, pipoPalette, pipoUrl, prompt } = storeToRefs(useImageStore())
 
 const items = ref([
   { text: '음식', icon: 'mdi-food-fork-drink' },
@@ -23,36 +23,47 @@ const items = ref([
   { text: '별자리', icon: 'mdi-creation-outline' },
   { text: '애완동물', icon: 'mdi-cat' },
   { text: '자연', icon: 'mdi-nature' },
-  { text: '자연', icon: 'mdi-city' },
-  { text: '여행', icon: 'mdi-wallet-travel' }
+  { text: '도시', icon: 'mdi-city' },
+  { text: '여행', icon: 'mdi-wallet-travel' },
+  { text: '연인', icon: 'mdi-heart' }
 ])
+
 const shared = ref(true)
 const categories = ref([])
-
+const title = ref('')
 const save = () => {
   localAxios()
-    .post('http://localhost:8080/api/v1/draft', {
-      pipoUrl: props.pipoUrl,
-      pipoPalette: props.pipoPalette,
-      isAI: props.isAI,
-      prompt: props.prompt,
-      shared: shared.value,
-      categories: categories.value
+    .post('/draft', {
+      draftFileLink: pipoUrl.value,
+      pipoUrl: pipoUrl.value,
+      palette: pipoPalette.value,
+      draftIsAI: isAI.value,
+      paletteTitle: title.value,
+      draftPrompt: prompt.value,
+      draftShare: shared.value,
+      categoryList: categories.value,
+      imageFile: pipoUrl.value
     })
     .then((response: any) => {
-      console.log(response)
+      router.push('/diary')
     })
 }
+const dialog = ref(false)
 
 const discard = () => {
   console.log('취소')
 }
+
+onMounted(() => {
+  pipoUrl.value = 'https://picsum.photos/200/300?random=1' || console.log(pipoPalette.value)
+})
 </script>
 
 <template>
   <div style="display: flex; justify-content: center; flex-direction: column; align-items: center">
+    {{ pipoPalette }}
     <img
-      :src="pipoUrl"
+      :src="pipoUrl.toString"
       alt="도안 이미지"
       style="
         width: 18rem;
@@ -66,7 +77,7 @@ const discard = () => {
       <p>색 추출 결과</p>
     </div>
     <div class="paletteColors">
-      <template v-for="(value, key) in pipoPalette" :key="key">
+      <template v-for="([key, value], index) in Object.entries(pipoPalette)" :key="index">
         <SinglePaletteComponent :color="value" />
       </template>
     </div>
@@ -105,6 +116,7 @@ const discard = () => {
       <input
         type="text"
         placeholder="도안 이름"
+        v-model="title"
         style="width: 20rem; height: 2rem; background-color: #2300270a; padding: 1rem"
       />
     </div>
@@ -116,8 +128,8 @@ const discard = () => {
       chips
       closable-chips
       color="blue-grey-lighten-2"
-      item-title="name"
-      item-value="name"
+      item-title="text"
+      item-value="text"
       label="카테고리"
       multiple
       style="width: 20rem"
@@ -135,7 +147,7 @@ const discard = () => {
         ></v-list-item>
       </template>
     </v-autocomplete>
-    {{ categories }}
+
     <div style="display: flex; justify-content: flex-end; width: 80vw">
       <v-btn
         color="pink-accent-1"
@@ -145,7 +157,77 @@ const discard = () => {
         style="margin-right: 10px"
         >취소</v-btn
       >
-      <v-btn color="purple-lighten-1" size="small" variant="tonal" @click="save()">만들기</v-btn>
+      <div>
+        <v-dialog v-model="dialog" persistent width="auto">
+          <template v-slot:activator="{ props }">
+            <v-btn color="purple-lighten-1" size="small" variant="tonal" v-bind="props" style=""
+              >만들기</v-btn
+            >
+          </template>
+          <v-card
+            style="padding: 1rem; display: flex; justify-content: center; justify-content: c\;"
+          >
+            <div style="display: flex; justify-content: center; flex-direction: column">
+              <div style="display: flex; justify-content: center; margin-bottom: 0.5rem">
+                <img :src="pipoUrl.toString" alt="" style="max-height: 15rem; min-width: 15rem" />
+              </div>
+              <v-spacer style="height: 1rem"></v-spacer>
+              <card-title>
+                <span class="text-h5">{{ title }}</span>
+              </card-title>
+              <v-spacer style="height: 1rem"></v-spacer>
+              <div class="paletteColors" style="padding: 0.5rem">
+                <template v-for="([key, value], index) in Object.entries(pipoPalette)" :key="index">
+                  <SinglePaletteComponent :color="value" />
+                </template>
+              </div>
+
+              <div style="display: flex; justify-content: flex-end; margin-bottom: 0.5rem">
+                <v-chip color="green">
+                  <p>공유</p>
+                  <v-icon v-if="shared" icon="mdi-share"></v-icon>
+                  <v-icon v-if="!shared" icon="mdi-share-off"></v-icon>
+                </v-chip>
+              </div>
+              <div style="display: flex; justify-content: flex-end">
+                <template v-for="(value, key) in categories" :key="key">
+                  <v-chip style="margin-left: 0.5rem">{{ value }}</v-chip>
+                </template>
+              </div>
+            </div>
+            <v-spacer></v-spacer>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn
+                color="red-darken-1"
+                size="small"
+                variant="tonal"
+                prepend-icon="mdi-trash-can"
+                @click="(dialog = false), router.push('/draft')"
+              >
+                취소하기
+              </v-btn>
+              <v-btn
+                color="green-darken-1"
+                size="small"
+                variant="tonal"
+                @click="dialog = false"
+                prepend-icon="mdi-pencil"
+              >
+                재작성하기
+              </v-btn>
+              <v-btn
+                color="purple-lighten-1"
+                size="small"
+                variant="tonal"
+                @click="save(), (dialog = false)"
+                prepend-icon="mdi-content-save"
+                >저장하기</v-btn
+              >
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+      </div>
     </div>
 
     <div style="height: 100px"></div>

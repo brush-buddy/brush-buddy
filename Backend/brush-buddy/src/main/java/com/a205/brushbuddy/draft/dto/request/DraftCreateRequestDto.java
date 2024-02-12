@@ -12,7 +12,7 @@ import lombok.Setter;
 @RequiredArgsConstructor
 public class DraftCreateRequestDto {
 	private String ImageFile;
-	private String draftFIleLink;
+	private String draftFileLink;
 	private String paletteTitle;
 
 

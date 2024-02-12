@@ -3,6 +3,7 @@ package com.a205.brushbuddy.draft.controller;
 import com.a205.brushbuddy.draft.dto.request.DraftCategoryModifyRequestDto;
 import com.a205.brushbuddy.draft.dto.request.DraftCreateRequestDto;
 import com.a205.brushbuddy.draft.dto.request.DraftListRequestDto;
+import com.a205.brushbuddy.draft.dto.request.DraftMakeRequestDto;
 import com.a205.brushbuddy.draft.dto.response.DraftCreateResponseDto;
 import com.a205.brushbuddy.draft.dto.response.DraftDetailResponseDto;
 import com.a205.brushbuddy.draft.dto.response.DraftListResponseDto;
@@ -10,6 +11,7 @@ import com.a205.brushbuddy.draft.service.DraftService;
 import com.a205.brushbuddy.exception.BaseException;
 import com.a205.brushbuddy.exception.ErrorCode;
 import com.a205.brushbuddy.util.JwtUtil;
+import com.amazonaws.Response;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -24,6 +26,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
+
+import java.net.URI;
 
 
 @Slf4j
@@ -32,10 +37,11 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1/draft")
 public class DraftController {
 
-	@Autowired
-	private DraftService draftService;
+
+	private final DraftService draftService;
 
 	private final JwtUtil jwtUtil;
+	private final RestTemplate restTemplate;
 
 	@Operation(description = "도안 리스트 ")
 	@ApiResponses({
@@ -80,7 +86,7 @@ public class DraftController {
 			@ApiResponse(responseCode = "200", description = "도안 리스트 반환 성공")
 	})
 	@ResponseBody
-	@PostMapping("/")
+	@PostMapping("")
 	public ResponseEntity<DraftCreateResponseDto> createDraft(@RequestBody DraftCreateRequestDto draftCreateDto, HttpServletRequest request) throws
 		JsonProcessingException {
 		Integer userId = jwtUtil.getUserId(request)
@@ -166,5 +172,21 @@ public class DraftController {
 		return new ResponseEntity<>("success", HttpStatus.OK);
 	}
 
+	@Operation(description = "도안 만들기 AI ")
+	@ApiResponses({
+			@ApiResponse(responseCode = "200", description = "도안 생성 성공")
+	})
+	@ResponseBody
+	@PostMapping("/ai-generation")
+	public ResponseEntity<String> makeDraft(@RequestBody String prompt, HttpServletRequest request) throws Exception{
+		Integer userId = jwtUtil.getUserId(request)
+				.orElseThrow(() -> new BaseException(ErrorCode.INVALID_TOKEN)); // 헤더의 access token으로 userId 추출, null 반환시 유효하지 않은 토큰 오류 전송
+
+		URI uri = new URI("http://localhost:8000/api/v1/draft/ai-generation");
+
+		ResponseEntity<String> str =  restTemplate.postForEntity(uri, new DraftMakeRequestDto(userId, prompt), String.class);
+		System.out.println(str.toString());
+		return str;
+	}
 
 }

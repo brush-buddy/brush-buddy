@@ -9,7 +9,7 @@ public class WebConfig implements WebMvcConfigurer{
 	@Override
 	public void addCorsMappings(CorsRegistry registry) {
 		registry.addMapping("/**")
-			.allowedOrigins("http://localhost:5173", "https://brush-buddy.duckdns.org") // TODO : 프론트 도메인으로 변경
+			.allowedOrigins("http://localhost:5173", "https://brush-buddy.duckdns.org", "http://localhost:8000") // TODO : 프론트 도메인으로 변경
 			.allowedMethods("GET", "POST", "PUT", "DELETE","OPTION")
 			.allowedHeaders("*")
 			.allowCredentials(true)
