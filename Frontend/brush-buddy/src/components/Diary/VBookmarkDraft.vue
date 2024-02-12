@@ -3,7 +3,6 @@
     <v-infinite-scroll :items="items" :onLoad="load">
       <div v-for="(item, index) in items" :key="index">
         <CDraftCard :draft="item" />
-        <!-- {{ item }} -->
       </div>
     </v-infinite-scroll>
   </div>
@@ -40,7 +39,7 @@ const pageNum = ref(1);
 const firstCall = ref([
     localAxios().get('/mypage/bookmarks/list?listNum=3&pageNum=1')
     .then(function (response: any) {
-      items.value = response.data.boards;
+      items.value = response.data.drafts;
     })
     .catch(function (error: any) {
       console.log(error.message);
@@ -48,10 +47,10 @@ const firstCall = ref([
 ]);
 const totalPage = ref(0);
 const getHeartList = async (page: number): Promise<HeartListRes> => {
-  console.log("getHeartList called");
+  console.log("getBookmarkList called");
   try {
     const heartListGet = await localAxios().get(`/mypage/bookmarks/list?listNum=${listNum.value}&pageNum=${page}`);
-    return heartListGet.data.boards;
+    return heartListGet.data.drafts;
   } catch (err: any) {
     console.log("api 호출 중 오류 발생", err);
     return Promise.reject(err);
@@ -98,4 +97,8 @@ const load = async (options: {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+#navarea {
+  height: 10vh;
+  width: 100%;
+}</style>
