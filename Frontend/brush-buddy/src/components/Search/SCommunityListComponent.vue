@@ -61,7 +61,7 @@ const scrollTrigger = () => {
                 if (i % 2 === 1) boardThumbnailDataSecond.value.push(response.data.boards[i])
                 else boardThumbnailDataFirst.value.push(response.data.boards[i])
               }
-              currentPage.value += 1
+
               showloader.value = false
             })
           currentPage.value += 1
@@ -91,7 +91,7 @@ onMounted(() => {
         else boardThumbnailDataFirst.value.push(response.data.boards[i])
       } // 아이디 순서대로 정렬해서 적재
 
-      currentPage.value += 1
+      currentPage.value = 1
     })
   scrollTrigger()
 })
@@ -109,7 +109,7 @@ const searchList = (searchString: string) => {
         if (i % 2 === 1) boardThumbnailDataSecond.value.push(response.data.boards[i])
         else boardThumbnailDataFirst.value.push(response.data.boards[i])
       }
-      currentPage.value += 1
+      currentPage.value = 1
     })
 }
 
