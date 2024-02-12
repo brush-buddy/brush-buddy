@@ -18,8 +18,6 @@
 </template>
 
 <script setup lang="ts">
-import DraftBookmarked from '../Draft/DraftBookmarked.vue'
-import EclipsePaletteComponent from '../DraftDetail/EclipsePaletteComponent.vue'
 import CButton from '../Community/CButton.vue'
 import { ref } from 'vue'
 
