@@ -12,17 +12,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class MachinePrintRequestDto {
     String id;
-    ColorDTO color;
-
-    @Builder
-    @Data
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class ColorDTO{
-        int c;
-        int m;
-        int y;
-        int k;
-        int w;
-    }
+    String RGBCode; // Hexcode
 }

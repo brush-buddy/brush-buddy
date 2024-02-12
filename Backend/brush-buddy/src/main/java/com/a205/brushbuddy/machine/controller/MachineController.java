@@ -2,6 +2,7 @@ package com.a205.brushbuddy.machine.controller;
 
 
 import com.a205.brushbuddy.machine.dto.MachinePrintRequestDto;
+import com.a205.brushbuddy.machine.dto.MachinePrintResponseDto;
 import com.a205.brushbuddy.machine.dto.MachineRegisterRequestDto;
 import com.a205.brushbuddy.machine.dto.MachineRegisterResponseDto;
 import com.a205.brushbuddy.machine.service.MachineService;
@@ -52,9 +53,11 @@ public class MachineController {
                 .port(3004)
                 .build().encode(StandardCharsets.UTF_8).toUri();
 
-        // 색깔을 String 형태로 변환
+
+//        // 색깔을 String 형태로 변환
+        MachinePrintResponseDto responseDto = machineService.convertRGB2CMYKW(requestDto);
         ObjectMapper objectMapper = new ObjectMapper();
-        String cmd = objectMapper.writeValueAsString(requestDto.getColor());
+        String cmd = objectMapper.writeValueAsString(responseDto);
 
         // WebSocketClient를 통해 서버에 연결
         WebSocketClient client = new ReactorNettyWebSocketClient(HttpClient.from(TcpClient.create(ConnectionProvider.newConnection())));

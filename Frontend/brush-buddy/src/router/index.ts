@@ -10,12 +10,13 @@ import VPurchaseDraft from '../components/Diary/VPurchaseDraft.vue'
 import VBookmarkDraft from '../components/Diary/VBookmarkDraft.vue'
 import VHeartList from '../components/Diary/VHeartList.vue'
 import DraftCreateAIView from '../views/DraftCreateAIView.vue'
-import WriteComponent from '../components/Community/WriteComponent.vue'
+import VWrite from '../components/Community/VWrite.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 import SDraftListComponentVue from '../components/Search/SDraftListComponent.vue'
 import SCommunityListComponentVue from '../components/Search/SCommunityListComponent.vue'
 import DraftPipoMakeViewVue from '../views/DraftPipoMakeView.vue'
 import DraftDetailView from '../views/DraftDetailView.vue'
+import VPaletteList from '../components/Diary/VPaletteList.vue'
 
 const router = createRouter({
   history: createWebHistory(""),
@@ -57,6 +58,10 @@ const router = createRouter({
             path: '/diary/heartList',
             component: VHeartList
           },
+          {
+            path: '/diary/palette',
+            component: VPaletteList
+          },
         ]
       },
       {
@@ -85,7 +90,17 @@ const router = createRouter({
         name: 'draft',
         path: '/draft',
         component: DraftView
-      },
+        // children : [{
+        //   name: 'ai-create',
+        //   path: 'aiCreate',
+        //   component: () => import('../views/DraftCreateAIView.vue')
+        // }]
+      },{
+        name: 'ai-create',
+        path: '/aiCreate',
+        component: () => import('../views/DraftCreateAIView.vue')
+      }
+      ,
       {
         name: 'boardDetail',
         path: '/community/:id',
@@ -106,7 +121,7 @@ const router = createRouter({
     {
       name: 'boardWriteView',
       path : "/community/write",
-      component : WriteComponent,
+      component : VWrite,
     },
     {
       name: 'draftWriteView',

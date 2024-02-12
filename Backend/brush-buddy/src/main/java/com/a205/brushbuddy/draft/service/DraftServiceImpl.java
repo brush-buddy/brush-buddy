@@ -82,7 +82,7 @@ public class DraftServiceImpl implements DraftService{
 
     public DraftDetailResponseDto getDraftDetail(Long draftId) {
           try {
-              Draft draft = draftRepository.findByDraftId(draftId);
+            Draft draft = draftRepository.findByDraftId(draftId);
             return DraftDetailResponseDto.builder().draftId(draft.getDraftId())
                 .draftPrice(draft.getDraftPrice())
                 .draftColorCode(draft.getDraftColorCode())
@@ -132,6 +132,7 @@ public class DraftServiceImpl implements DraftService{
 
         Palette palette = Palette.builder()
             .paletteName(draftCreateDto.getPaletteTitle())
+            .user(user)
             .paletteColorCode(json)
             .paletteCreatedAt(new Timestamp(System.currentTimeMillis()))
             .paletteLastModifiedTime(new Timestamp(System.currentTimeMillis()))
@@ -153,7 +154,7 @@ public class DraftServiceImpl implements DraftService{
             draft.setDraftIsDeleted(true);
         }
         else{
-            // throw new CustomExcpException("삭제 권한이 없습니다.");
+            throw new BaseException(ErrorCode.UNAUTHORIZED);
         }
     }
 
@@ -161,11 +162,11 @@ public class DraftServiceImpl implements DraftService{
     public boolean updateDraft(long draftId, DraftCategoryModifyRequestDto draftCategoryModifyRequestDto) {
         Draft draft = draftRepository.findByDraftId(draftId);
         if(draft == null){
-            // throw new CustomExcpException("존재하지 않는 도안입니다.");
+            throw new BaseException(ErrorCode.NOT_FOUND_DATA);
         }
 
         if(draft.getDraftIsDeleted()){
-            // throw new CustomExcpException("삭제된 도안입니다.");
+            throw new BaseException(ErrorCode.NOT_FOUND_DATA);
         }
 
         List<Category> categoryList = categoryRepository.findByCategoryContentIn(draftCategoryModifyRequestDto.getCategoryList());
@@ -182,10 +183,11 @@ public class DraftServiceImpl implements DraftService{
     public void createBookmarkDraft(int userId, Long draftId) throws Exception{
         Draft draft = draftRepository.findByDraftId(draftId);
         if(draft.getDraftIsDeleted()){
-            // throw new CustomExcpException("삭제된 도안입니다.");
+            throw new BaseException(ErrorCode.NOT_FOUND_DATA);
         }
 
         bookmarkRepository.insertBookmark(userId, draftId);
+        draft.setDraftBookmark(draft.getDraftBookmark() + 1);
     }
 
     @Override
@@ -193,9 +195,10 @@ public class DraftServiceImpl implements DraftService{
         Draft draft = draftRepository.findByDraftId(draftId);
 
         if(draft.getDraftIsDeleted()){
-            // throw new CustomExcpException("삭제된 도안입니다.");
+            throw new BaseException(ErrorCode.NOT_FOUND_DATA);
         }
         bookmarkRepository.deleteBookmark(userId, draftId);
+        draft.setDraftBookmark(draft.getDraftBookmark() - 1);
     }
 
     @Override
@@ -204,11 +207,11 @@ public class DraftServiceImpl implements DraftService{
         Draft draft = draftRepository.findByDraftId(draftId);
 
         if(draft.getDraftIsDeleted()){
-            // throw new CustomExcpException("삭제된 도안입니다.");
+            throw new BaseException(ErrorCode.NOT_FOUND_DATA);
         }
 
         if(user.getUserMileage() < draft.getDraftPrice()){
-            // throw new CustomExcpException("마일리지가 부족합니다.");
+            throw new BaseException(ErrorCode.NOT_ENOUGH_MILEAGE);
         }
 
         user.setUserMileage(user.getUserMileage() - draft.getDraftPrice());

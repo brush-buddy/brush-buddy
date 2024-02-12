@@ -3,14 +3,8 @@ package com.a205.brushbuddy.mypage.controller;
 
 import com.a205.brushbuddy.exception.BaseException;
 import com.a205.brushbuddy.exception.ErrorCode;
-import com.a205.brushbuddy.mypage.dto.request.MypageBookmarkedDraftListRequestDto;
-import com.a205.brushbuddy.mypage.dto.request.MypageGeneratedDraftListRequestDto;
-import com.a205.brushbuddy.mypage.dto.request.MypageHeartBoardListRequestDto;
-import com.a205.brushbuddy.mypage.dto.request.MypagePurchasedDraftListRequestDto;
-import com.a205.brushbuddy.mypage.dto.response.MypageBookmarkedDraftListResponseDto;
-import com.a205.brushbuddy.mypage.dto.response.MypageGeneratedDraftListResponseDto;
-import com.a205.brushbuddy.mypage.dto.response.MypageHeartBoardListResponseDto;
-import com.a205.brushbuddy.mypage.dto.response.MypagePurchasedDraftListResponseDto;
+import com.a205.brushbuddy.mypage.dto.request.*;
+import com.a205.brushbuddy.mypage.dto.response.*;
 import com.a205.brushbuddy.mypage.service.MypageService;
 import com.a205.brushbuddy.util.JwtUtil;
 import jakarta.servlet.http.HttpServletRequest;
@@ -41,6 +35,19 @@ public class MypageController {
                 requestDto.getDirection(),
                 requestDto.getOrder());
         MypageHeartBoardListResponseDto dto = mypageService.getHeartBoardList(userId, requestDto.getSearch(), pageable);
+        return  ResponseEntity.ok(dto);
+    }
+
+    //내가 쓴 게시글 조회
+    @GetMapping("/myboard/list")
+    public ResponseEntity<?> getMyBoardList(MypageMyBoardListRequestDto requestDto, HttpServletRequest request) throws Exception{
+        Integer userId = jwtUtil.getUserId(request)
+                .orElseThrow(() -> new BaseException(ErrorCode.INVALID_TOKEN)); // 헤더의 access token으로 userId 추출, null 반환시 유효하지 않은 토큰 오류 전송
+        Pageable pageable  = PageRequest.of(requestDto.getPageNum() - 1,
+                requestDto.getListNum(),
+                requestDto.getDirection(),
+                requestDto.getOrder());
+        MypageMyBoardListResponseDto dto = mypageService.getMyBoardList(userId, requestDto.getSearch(), pageable);
         return  ResponseEntity.ok(dto);
     }
 
