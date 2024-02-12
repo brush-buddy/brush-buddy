@@ -24,10 +24,16 @@ const makeImage = () => {
 }
 const makePipo = () => {
   console.log(prompt.value)
-  axios()
-    .post('/draft/pipo-s3', { url: imageSrc.value })
+  axios
+    .post('http://localhost:8000/api/v1/draft/pipo-s3', { url: imageSrc.value })
     .then((response) => {
-      setImage(true, response.data.palette, response.data.image, prompt.value)
+      setImage(
+        true,
+        response.data.palette,
+        response.data.number_image,
+        response.data.color_image,
+        prompt.value
+      )
       dialog.value = false
       loadingState.value = false
       router.push('/draft/write')

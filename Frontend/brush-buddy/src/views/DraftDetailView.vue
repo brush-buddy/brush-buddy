@@ -30,7 +30,7 @@ console.log(im.value)
 console.log(route.params)
 onMounted(() => {
   localAxios()
-    .get('draft' + draftId)
+    .get('draft/' + draftId)
     .then((res) => {
       draft.value = res.data
       console.log(draft.value)
