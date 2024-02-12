@@ -2,14 +2,14 @@
   <div>
     <v-infinite-scroll :items="items" :onLoad="load">
       <div v-for="(item, index) in items" :key="index">
-        <CDraftCard :draft="item" />
+        <CDraftCardBig :draft="item" />
       </div>
     </v-infinite-scroll>
   </div>
   <div id="navarea"></div>
 </template>
 <script setup lang="ts">
-import CDraftCard from "./CDraftCard.vue";
+import CDraftCardBig from "./CDraftCardBig.vue";
 import { ref } from "vue";
 import {localAxios} from "../../api/axios";
 
@@ -47,7 +47,6 @@ const firstCall = ref([
 ]);
 const totalPage = ref(0);
 const getHeartList = async (page: number): Promise<HeartListRes> => {
-  console.log("getBookmarkList called");
   try {
     const heartListGet = await localAxios().get(`/mypage/bookmarks/list?listNum=${listNum.value}&pageNum=${page}`);
     return heartListGet.data.drafts;
@@ -79,7 +78,6 @@ const load = async (options: {
     // Perform API call
     const res = await api();
     const resList = await getHeartList(res);
-    console.log("resList", resList);
     if (resList && Array.isArray(resList) && resList.length > 0) {
       resList.forEach((res: HeartList) => items.value.push(res));
     }
