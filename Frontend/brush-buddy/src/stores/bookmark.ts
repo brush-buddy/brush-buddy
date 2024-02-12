@@ -1,9 +1,9 @@
 import { defineStore } from 'pinia';
 import { ref } from "vue";
-
+import { localAxios } from '../api/axios';
 export const useBookmarksStore = defineStore("bookmarks", () => {
     const bookmarks = ref(<number[]>[]) // 북마크된 draftId를 저장하는 배열
-    
+    const isBookmarked = ref(false); // 북마크 상태를 저장하는 변수
     async function addBookmark(draftId: number) {
         try {
             await addBookmark(draftId); // 북마크 추가 API 호출
@@ -13,6 +13,13 @@ export const useBookmarksStore = defineStore("bookmarks", () => {
         }
     }
     
+    async function getBookmarkState(draftId: number) { 
+        localAxios().get(`/draft/${draftId}/is-bookmarked`)
+        .then((response: any) => {
+            isBookmarked.value = response.data; // 북마크 상태를 저장
+          })
+    }
+
     async function removeBookmark(draftId: number) {
         try {
             await removeBookmark(draftId); // 북마크 삭제 API 호출
@@ -32,6 +39,8 @@ export const useBookmarksStore = defineStore("bookmarks", () => {
     
     return {
         bookmarks,
+        isBookmarked,
+        getBookmarkState,
         addBookmark,
         removeBookmark
     };
