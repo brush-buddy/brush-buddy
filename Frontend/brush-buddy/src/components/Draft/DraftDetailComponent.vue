@@ -3,10 +3,9 @@
     <div>
       <v-item-group v-model="selection" multiple>
         <v-item>
-          <img :src="imageThumbnail" style="width: 20rem" alt="" />
+          <DraftThumbnailComponent @click="handleClick" />
           <v-btn
             :icon="isBookmarked ? 'mdi-bookmark-multiple' : 'mdi-bookmark-multiple-outline'"
-            @click="handleClick"
           ></v-btn>
         </v-item>
       </v-item-group>
@@ -17,18 +16,15 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useBookmarksStore } from '../../stores/bookmark'
-import DraftThumbnailComponent from './DraftThumbnailComponent.vue'
+import { addBookmark, removeBookmark } from '../../api/draft'
+import DraftThumbnailComponent from '../Draft/DraftThumbnailComponent.vue'
 
 const props = defineProps<{
-  imageThumbnail: string
+  draftId: number
 }>()
 
 const bookmarksStore = useBookmarksStore()
-const bookmarks = bookmarksStore.bookmarks
-const addBookmark = (id) => bookmarksStore.addBookmark(id)
-const removeBookmark = (id) => bookmarksStore.removeBookmark(id)
-
-const isBookmarked = ref(true)
+const isBookmarked = ref(bookmarksStore.getBookmarkState(props.draftId))
 
 // 북마크 추가 삭제
 const handleClick = () => {
@@ -38,7 +34,6 @@ const handleClick = () => {
   } else {
     addBookmark(draftId)
   }
-  isBookmarked.value = !isBookmarked.value
 }
 </script>
 
