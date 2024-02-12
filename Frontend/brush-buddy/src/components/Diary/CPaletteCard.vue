@@ -14,7 +14,6 @@
   </RouterLink>
 </template>
 <script setup lang="ts">
-import { defineProps } from 'vue';
 import { RouterLink } from 'vue-router';
 const prop = defineProps(["palette"]);
 console.log("prop ",prop.palette.paletteId);

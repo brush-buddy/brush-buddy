@@ -7,7 +7,7 @@
       <div>
         <div id="name-box">
           <span id="name" @click="logout">{{nickName}}</span>
-          <span>님</span>
+          <span style="margin-left: 1vw;">님</span>
         </div>
         <div>다채로운 하루 되세요!</div>
       </div>
@@ -70,8 +70,8 @@ const logout = () => {
 #profile-avartar {
   border-radius: 50%;
   background-color: #ffffff;
-  width: 4rem;
-  height: 4rem;
+  width: 5rem;
+  height: 5rem;
   margin-right: 1rem;
   padding: 1rem;
   overflow: hidden;
