@@ -2,22 +2,19 @@
   <div class="sticky">
     <div id="tab">
       <router-link to="/diary" @click="setActiveTab('made')">
-        <div :class="{ activeTab: activeTab === 'made' }" class="tabarea">만든 도안</div>
+        <div :class="{ activeTab: activeTab === 'made' }">만든 도안</div>
       </router-link>
       <router-link to="/diary/purchaseDraft" @click="setActiveTab('purchase')">
-        <div :class="{ activeTab: activeTab === 'purchase' }" class="tabarea">구매 도안</div>
+        <div :class="{ activeTab: activeTab === 'purchase' }">구매 도안</div>
       </router-link>
       <router-link to="/diary/bookmarkDraft" @click="setActiveTab('bookmark')">
-        <div :class="{ activeTab: activeTab === 'bookmark' }" class="tabarea">북마크 도안</div>
+        <div :class="{ activeTab: activeTab === 'bookmark' }">북마크 도안</div>
+      </router-link>
+      <router-link to="/diary/heartList" @click="setActiveTab('heart')">
+        <div :class="{ activeTab: activeTab === 'heart' }">찜한 글</div>
       </router-link>
       <router-link to="/diary/palette" @click="setActiveTab('palette')">
-        <div :class="{ activeTab: activeTab === 'palette' }" class="tabarea">내 팔레트</div>
-      </router-link>
-      <router-link to="/diary/heartList" @click="setActiveTab('heart')">
-        <div :class="{ activeTab: activeTab === 'heart' }" class="tabarea">작성한 글</div>
-      </router-link>
-      <router-link to="/diary/heartList" @click="setActiveTab('heart')">
-        <div :class="{ activeTab: activeTab === 'heart' }" class="tabarea">찜한 글</div>
+        <div :class="{ activeTab: activeTab === 'palette' }">내 팔레트</div>
       </router-link>
     </div>
   </div>
@@ -41,19 +38,9 @@ const setActiveTab = (path: string) => {
   display: flex;
   justify-content: space-around;
   align-items: center;
-  /* width:1000px; */
-  white-space:nowrap; 
-	overflow-x:auto; 
-}
-#tab::-webkit-scrollbar {
-  display: none;
-}
-.tabarea{
-  margin-right: 6vw;
 }
 a {
   text-decoration: none;
-  color: black;
 }
 .activeTab {
   font-size: large;

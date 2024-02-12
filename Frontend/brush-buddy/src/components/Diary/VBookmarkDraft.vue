@@ -2,14 +2,14 @@
   <div>
     <v-infinite-scroll :items="items" :onLoad="load">
       <div v-for="(item, index) in items" :key="index">
-        <CDraftCardBig :draft="item" />
+        <CDraftCard :draft="item" />
       </div>
     </v-infinite-scroll>
   </div>
   <div id="navarea"></div>
 </template>
 <script setup lang="ts">
-import CDraftCardBig from "./CDraftCardBig.vue";
+import CDraftCard from "./CDraftCard.vue";
 import { ref } from "vue";
 import {localAxios} from "../../api/axios";
 
