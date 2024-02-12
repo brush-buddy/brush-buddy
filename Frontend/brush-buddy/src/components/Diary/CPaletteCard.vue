@@ -1,5 +1,5 @@
 <template>
-  <RouterLink :to="{ name: 'draftDetail', params: { id: palette.paletteId } }">
+  <RouterLink :to="{ name: 'paletteDetail', params: { id: palette.paletteId } }">
     <div id="paletteCard">
       <div id="head">
         <span id="title">{{ palette.paletteName }}</span>
@@ -39,7 +39,7 @@ import { RouterLink } from 'vue-router'
 import SinglePaletteComponent from '../common/SinglePaletteComponent.vue'
 const props = defineProps(['palette'])
 const colors = JSON.parse(props.palette.paletteColorCode)
-console.log(JSON.parse(props.palette.paletteColorCode))
+// console.log(JSON.parse(props.palette.paletteColorCode))
 </script>
 <style scoped>
 

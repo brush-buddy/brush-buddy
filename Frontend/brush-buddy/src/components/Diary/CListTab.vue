@@ -41,6 +41,7 @@ const setActiveTab = (path: string) => {
 }
 a {
   text-decoration: none;
+  color: black;
 }
 .activeTab {
   font-size: large;
