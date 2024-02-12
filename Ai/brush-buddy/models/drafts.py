@@ -97,9 +97,7 @@ class Drafts(BaseModel):
             f"./numbering_img/numbering_draft_{t_stamp}.PNG"  # 업로드할 파일 이름
         )
 
-        numbering_file_name = (
-            f"./numbering_img/numbering_draft_{t_stamp}.PNG"  # 업로드할 파일 이름
-        )
+        numbering_file_name = f"numbering_draft_{t_stamp}.PNG"  # 업로드할 파일 이름
 
         cv2.imwrite(numbering_file_path, numbering_img)
 
