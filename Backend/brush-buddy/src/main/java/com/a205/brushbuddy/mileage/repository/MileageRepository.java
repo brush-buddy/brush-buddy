@@ -12,9 +12,6 @@ import jakarta.transaction.Transactional;
 
 @Repository
 public interface MileageRepository extends JpaRepository<Mileage, Long> {
-    @Transactional
-    @Query
-    Mileage updateMileageByUser(Integer userId, int mileageAmount);
 
     @Transactional
     @Query

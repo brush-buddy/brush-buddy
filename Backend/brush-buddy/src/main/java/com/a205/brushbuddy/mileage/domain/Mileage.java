@@ -21,7 +21,7 @@ public class Mileage {
     @Column(name = "mileage_id", nullable = false)
     private Long mileageId;
 
-    @Column(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 

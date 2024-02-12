@@ -71,7 +71,6 @@ public class KakaopayController {
         kakaopayService.setKakaopayApproveResponseDto(kakaopayApproveResponseDto);
 
         Integer userId = jwtUtil.getUserId(request).orElseThrow(() -> new BaseException(ErrorCode.UNAUTHORIZED));
-        mileageRepository.updateMileageByUser(userId, mileageAmount);
 
         return "redirect:" + redirectUrl;
     }
