@@ -27,7 +27,6 @@ const prop = defineProps(['board'])
   border-style: solid;
   border-width: 0 0 1px;
   border-color: gray;
-  padding: 0.5rem 0 1rem;
 }
 #thumbnailBox {
   display: flex;
@@ -37,7 +36,6 @@ const prop = defineProps(['board'])
 #thumbnail {
   background-color: #ffffff;
   width: 90vw;
-  padding: 1rem;
   overflow: hidden;
   > img {
     width: 100%;
@@ -47,12 +45,20 @@ const prop = defineProps(['board'])
 }
 #title {
   margin-left: 5vw;
+  margin-top: 1vh;
+  margin-bottom: 1vh;
   font-size: 1.5rem;
   font-weight: 600;
 }
 #rel {
+  margin-right: 5vw;
+  margin-top: 1vh;
+  margin-bottom: 1vh;
   display: flex;
   justify-content: flex-end;
-  margin-right: 5vw;
+}
+a {
+  text-decoration: none;
+  color: black;
 }
 </style>
