@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useRoute } from 'vue-router'
 import { onMounted, inject, ref } from 'vue'
-// import axios from 'axios'
+import DraftDetailComponent from '../components/Draft/DraftDetailComponent.vue'
 import { localAxios } from '../api/axios'
 const route = useRoute()
 const draftId = route.params.id
@@ -29,7 +29,7 @@ console.log(im.value)
 console.log(route.params)
 onMounted(() => {
   localAxios()
-    .get('draft' + draftId)
+    .get('draft/' + draftId)
     .then((res) => {
       draft.value = res.data
       console.log(draft.value)
@@ -39,6 +39,7 @@ onMounted(() => {
 
 <template>
   <div>
+    {{ draft }}
     <DraftDetailComponent />
   </div>
 </template>
