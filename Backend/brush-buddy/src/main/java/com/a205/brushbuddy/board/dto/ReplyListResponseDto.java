@@ -25,6 +25,6 @@ public class ReplyListResponseDto {
         private String nickname;
         private String contents;
         private String createdAt;
-
+        private Boolean isMine; // 나의 댓글 인가
     }
 }

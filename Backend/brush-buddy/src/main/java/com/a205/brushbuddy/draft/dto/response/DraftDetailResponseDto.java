@@ -1,6 +1,7 @@
 package com.a205.brushbuddy.draft.dto.response;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -15,6 +16,7 @@ public class DraftDetailResponseDto {
 	private Integer userId;
 	private Integer draftPrice;
 
+	private Boolean isAuthor;
 	private String draftColorCode;
 
 	private String draftThumbnail;
@@ -36,4 +38,6 @@ public class DraftDetailResponseDto {
 	private String draftPrompt;
 
 	private Timestamp draftTimestamp;
+
+	private List<String> categoryContents;
 }
