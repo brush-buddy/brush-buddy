@@ -19,7 +19,7 @@ public interface DraftService{
 
 	Page<DraftListResponseDto> getDraftListByCategory(Pageable pageable, String categoryContent);
 
-	DraftDetailResponseDto getDraftDetail(Long draftId);
+	DraftDetailResponseDto getDraftDetail(int userId, Long draftId) throws Exception;
 
 	DraftCreateResponseDto createDraft(int userId, DraftCreateRequestDto draftCreateDto) throws JsonProcessingException;
 
