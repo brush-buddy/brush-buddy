@@ -1,4 +1,5 @@
-FROM python:3.10
+#!/bin/bash
+FROM --platform=linux/amd64 python:3.10
 
 COPY ./ ./IoT
 WORKDIR ./IoT

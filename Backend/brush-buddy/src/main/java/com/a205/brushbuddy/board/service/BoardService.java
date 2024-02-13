@@ -13,7 +13,7 @@ public interface BoardService {
     Page<Board> getBoardList(String search, Pageable pageable) ; // 게시판 리스트 조회 및 검색 조회
     boolean writeBoard(Integer userId, BoardWriteRequestDto requestDto) ; // 게시판 작성 메소드
 
-    BoardDetailResponseDto getDetail(Long boardId) ; // 게시판 상세 조회 메소드
+    BoardDetailResponseDto getDetail(Integer userId, Long boardId) ; // 게시판 상세 조회 메소드
 
     boolean modifyBoard(Long boardId, Integer userId, BoardModifyRequestDto requestDto) ; // 게시판 수정
 

@@ -3,8 +3,23 @@ import asyncio
 from device import devices  
 import uvicorn
 from typing import Dict
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
+origins = [
+    "http://localhost",
+    "http://localhost:8080",
+    "https://bb-back.duckdns.org",
+    "https://brush-buddy.duckdns.org"
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 connected_clients: Dict[str, WebSocket] = {}
 # message_from_client: Dict[str, str]  = {}

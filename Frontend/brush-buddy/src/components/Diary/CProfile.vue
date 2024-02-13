@@ -70,8 +70,8 @@ const logout = () => {
 #profile-avartar {
   border-radius: 50%;
   background-color: #ffffff;
-  width: 4rem;
-  height: 4rem;
+  width: 5rem;
+  height: 5rem;
   margin-right: 1rem;
   padding: 1rem;
   overflow: hidden;
