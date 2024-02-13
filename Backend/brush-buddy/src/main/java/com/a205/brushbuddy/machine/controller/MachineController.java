@@ -1,20 +1,21 @@
 package com.a205.brushbuddy.machine.controller;
 
 
+import com.a205.brushbuddy.exception.BaseException;
+import com.a205.brushbuddy.exception.ErrorCode;
 import com.a205.brushbuddy.machine.dto.MachinePrintRequestDto;
 import com.a205.brushbuddy.machine.dto.MachinePrintResponseDto;
 import com.a205.brushbuddy.machine.dto.MachineRegisterRequestDto;
 import com.a205.brushbuddy.machine.dto.MachineRegisterResponseDto;
 import com.a205.brushbuddy.machine.service.MachineService;
+import com.a205.brushbuddy.util.JwtUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.reactive.socket.WebSocketMessage;
 import org.springframework.web.reactive.socket.client.ReactorNettyWebSocketClient;
 import org.springframework.web.reactive.socket.client.WebSocketClient;
@@ -33,6 +34,8 @@ import java.nio.charset.StandardCharsets;
 @RequiredArgsConstructor
 public class MachineController {
     private final MachineService machineService;
+    private final JwtUtil jwtUtil;
+
     // DB에 기기 정보를 저장한다.
     @PostMapping("/register")
     public ResponseEntity<?> registerMachine(@RequestBody MachineRegisterRequestDto requestDto){
@@ -80,4 +83,11 @@ public class MachineController {
         return ResponseEntity.ok().build();
     }
 
+    @PostMapping("/{machineId}")
+    public ResponseEntity<?> qrcode(@PathVariable Long machineId, HttpServletRequest request) {
+        Integer userId = jwtUtil.getUserId(request)
+                .orElseThrow(() -> new BaseException(ErrorCode.INVALID_TOKEN));// 헤더의 access token으로 userId 추출, null 반환시 유효하지 않은 토큰 오류 전송
+        String result = machineService.connectMachine(userId, machineId);
+        return ResponseEntity.ok("기기가 연결되었습니다.");
+    }
 }

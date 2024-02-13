@@ -1,5 +1,7 @@
 package com.a205.brushbuddy.machine.service;
 
+import com.a205.brushbuddy.exception.BaseException;
+import com.a205.brushbuddy.exception.ErrorCode;
 import com.a205.brushbuddy.machine.domain.Machine;
 import com.a205.brushbuddy.machine.domain.OwnerType;
 import com.a205.brushbuddy.machine.dto.MachinePrintRequestDto;
@@ -9,6 +11,7 @@ import com.a205.brushbuddy.machine.dto.MachineRegisterResponseDto;
 import com.a205.brushbuddy.machine.repository.MachineRepository;
 import com.a205.brushbuddy.user.domain.User;
 import com.a205.brushbuddy.workplace.domain.Workplace;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -29,6 +32,25 @@ public class MachineServiceImpl implements MachineService{
                 .user(User.builder().userId(requestDto.getUserId()).build())
                 .build();
         machineRepository.save(machine);
+        return null;
+    }
+
+    @Transactional
+    @Override
+    public String connectMachine(Integer userId, Long machineId) {
+        String result = "";
+        Machine machine= machineRepository.findById(machineId)
+                .orElseThrow(()-> new BaseException(ErrorCode.NOT_FOUND_DATA));
+        machine.setUser(User.builder().userId(userId).build());
+
+        return result;
+    }
+
+    @Override
+    public String disconnectMachine(Integer userId) {
+        Machine machine= machineRepository.findByUser_UserId(userId)
+                .orElseThrow(()-> new BaseException(ErrorCode.NOT_FOUND_DATA));
+
         return null;
     }
 
