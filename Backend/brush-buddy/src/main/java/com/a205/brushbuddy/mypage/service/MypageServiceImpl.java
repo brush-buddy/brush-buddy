@@ -6,6 +6,9 @@ import com.a205.brushbuddy.board.repository.BoardRepository;
 import com.a205.brushbuddy.draft.domain.Draft;
 import com.a205.brushbuddy.mypage.dto.response.*;
 import com.a205.brushbuddy.mypage.repository.MypageRepository;
+import com.a205.brushbuddy.user.domain.User;
+import com.a205.brushbuddy.user.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,6 +19,7 @@ import org.springframework.stereotype.Service;
 public class MypageServiceImpl implements MypageService{
     private final MypageRepository mypageRepository;
     private final BoardRepository boardRepository;
+    private final UserRepository userRepository;
 
     @Override
     public MypageHeartBoardListResponseDto getHeartBoardList(Integer userId, String search, Pageable pageable) { // 좋아요 누른 게시글 리스트 조회
@@ -113,5 +117,13 @@ public class MypageServiceImpl implements MypageService{
                                 .build())
                         .toList())
                 .build();
+    }
+
+    @Override
+    @Transactional
+    public boolean modifyNickname(Integer userId, String newNickname) {
+        User result = userRepository.findUserByUserId(userId);
+        result.setUserNickname(newNickname);
+        return true;
     }
 }
