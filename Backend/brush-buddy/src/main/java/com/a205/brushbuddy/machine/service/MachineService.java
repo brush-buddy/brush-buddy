@@ -6,7 +6,11 @@ import com.a205.brushbuddy.machine.dto.MachineRegisterRequestDto;
 import com.a205.brushbuddy.machine.dto.MachineRegisterResponseDto;
 
 public interface MachineService {
-    MachineRegisterResponseDto registerMachine(MachineRegisterRequestDto requestDto);
+    MachineRegisterResponseDto registerMachine(MachineRegisterRequestDto requestDto); // 기기 DB에 등록하기
 
-    MachinePrintResponseDto convertRGB2CMYKW(MachinePrintRequestDto requestDto);
+    String connectMachine(Integer userId, Long machineId); // 기기 연결
+
+    String disconnectMachine(Integer userId); // 기기 해제
+
+    MachinePrintResponseDto convertRGB2CMYKW(MachinePrintRequestDto requestDto); // 색깔 변경 로직
 }
