@@ -27,5 +27,6 @@ public interface DraftCategoryRepository extends DraftCategoryCustom, JpaReposit
 	@Query(value = "select draft_id from draft_category where category_id = :categoryId", nativeQuery = true)
 	List<Long> findDraftIdByCategoryId(@Param("categoryId") Long categoryId);
 
-
+	@Query(value = "select category_id from draft_category where draft_id = :draftId", nativeQuery = true)
+	List<Long> findCategoryIdByDraftId(@Param("draftId") Long draftId);
 }
