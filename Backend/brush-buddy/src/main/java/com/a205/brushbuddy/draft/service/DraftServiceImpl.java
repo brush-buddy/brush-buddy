@@ -198,6 +198,7 @@ public class DraftServiceImpl implements DraftService{
 
     // 북마크
     @Override
+    @Transactional
     public void createBookmarkDraft(int userId, Long draftId) throws Exception{
         Draft draft = draftRepository.findByDraftId(draftId);
         if(draft.getDraftIsDeleted()){
@@ -209,6 +210,7 @@ public class DraftServiceImpl implements DraftService{
     }
 
     @Override
+    @Transactional
     public void deleteBookmarkDraft(int userId, Long draftId) {
         Draft draft = draftRepository.findByDraftId(draftId);
 
@@ -245,7 +247,32 @@ public class DraftServiceImpl implements DraftService{
 
     }
 
+    @Override
+    @Transactional
+    public String downloadDraft(int userId, Long draftId) throws Exception{
+        Draft draft = draftRepository.findByDraftId(draftId);
+        if(draft == null){
+            throw new BaseException(ErrorCode.NOT_FOUND_DATA);
+        }
+        if(draft.getDraftIsDeleted()){
+            throw new BaseException(ErrorCode.NOT_FOUND_DATA);
+        }
+        // 작성한 사용자일 경우
+        if(draft.getUser().getUserId() == userId){
+            draft.setDraftDownload(draft.getDraftDownload() + 1);
 
+            return draft.getDraftFileLink();
+        }
+        // 구매한 사용자일 경우
+        if(purchaseRepository.findAllByPurchaseId_Draft_DraftIdAndPurchaseId_User_UserId(draftId, userId).orElseGet(()->null) != null){
+            draft.setDraftDownload(draft.getDraftDownload() + 1);
+
+            return draft.getDraftFileLink();
+        }
+
+        throw new BaseException(ErrorCode.UNAUTHORIZED);
+
+    }
 
 
 }

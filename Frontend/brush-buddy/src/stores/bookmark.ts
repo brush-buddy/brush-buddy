@@ -4,9 +4,10 @@ import { localAxios } from '../api/axios';
 
 const useBookmarksStore = defineStore("bookmarks", () => {
     const isBookmarked = ref(false); // 북마크 상태를 저장하는 변수
-    
-    function setBookmarkState(bookmarkState: boolean) {
+    const totalBookmarkNum = ref<number>(0);
+    function setBookmarkState(bookmarkState: boolean, bookmarkNum: number) {
         isBookmarked.value = bookmarkState; // 북마크 상태를 저장
+        totalBookmarkNum.value = bookmarkNum;
     }
 
     // async function getBookmarkState(draftId: number) { 
@@ -20,7 +21,8 @@ const useBookmarksStore = defineStore("bookmarks", () => {
          localAxios().post(`/draft/${draftId}/bookmark`)
         .then(() => {
            isBookmarked.value = true;
-          })
+        })
+        totalBookmarkNum.value += 1
          
     }
 
@@ -28,11 +30,13 @@ const useBookmarksStore = defineStore("bookmarks", () => {
         localAxios().delete(`/draft/${draftId}/bookmark`)
         .then(() => {
             isBookmarked.value = false // 북마크 상태를 저장
-          })
+        })
+        totalBookmarkNum.value -= 1
     }
     
     return {
         isBookmarked,
+        totalBookmarkNum,
         setBookmarkState,
         // getBookmarkState,
         addBookmark,
