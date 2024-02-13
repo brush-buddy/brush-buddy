@@ -3,7 +3,7 @@
     <v-item>
       <div class="rect">
         <div class="thumb">
-          <img :src="imageThumbnail" />
+          <img :src="imageThumbnail" class="elevation-5" />
         </div>
         <div class="icon">
           <v-icon
@@ -66,7 +66,7 @@ const props = defineProps<{
   width: 20rem;
   display: flex;
   justify-content: center;
-  margin: 0;
+  margin: 1rem 0 0 0;
   /* border-radius: 10rem; */
 }
 
@@ -76,7 +76,7 @@ img {
   height: 100%;
   object-fit: cover;
   z-index: 1;
-  border-radius: 3rem;
+  border-radius: 1rem;
 }
 
 .icon {
@@ -90,12 +90,12 @@ img {
 .color {
   position: absolute;
   left: -1rem;
-  bottom: -4rem;
+  bottom: -2rem;
   margin-top: 1rem;
-  padding: 0 2rem 0 2rem;
-  /* margin: 0 0  -1rem; */
+  padding: 0 1rem;
   width: 20rem;
   z-index: 2;
+  flex-wrap: wrap;
 }
 
 .thumb {
