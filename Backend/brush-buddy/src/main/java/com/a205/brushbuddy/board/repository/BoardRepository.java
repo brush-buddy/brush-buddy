@@ -1,12 +1,13 @@
 package com.a205.brushbuddy.board.repository;
 
-import com.a205.brushbuddy.board.domain.Board;
+import java.util.Optional;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.Optional;
+import com.a205.brushbuddy.board.domain.Board;
 
 @Repository
 public interface BoardRepository extends JpaRepository<Board, Long>, BoardSearchCustom {

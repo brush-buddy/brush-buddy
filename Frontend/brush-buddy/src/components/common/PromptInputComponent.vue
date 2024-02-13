@@ -5,6 +5,7 @@ import axios from 'axios'
 import { useRouter } from 'vue-router'
 import { useImageStore } from '../../stores/image'
 const host = import.meta.env.VITE_APP_AI_SERVER_URL
+
 const router = useRouter()
 const { setImage } = useImageStore()
 
