@@ -84,14 +84,18 @@ public class DraftServiceImpl implements DraftService{
         // return null;
     }
 
-    public DraftDetailResponseDto getDraftDetail(Long draftId) {
+    public DraftDetailResponseDto getDraftDetail(int userId, Long draftId) throws Exception{
 
-          try {
-            Draft draft = draftRepository.findByDraftId(draftId);
+
+              Draft draft = draftRepository.findByDraftId(draftId);
+              if(draft == null){
+                  throw new BaseException(ErrorCode.NOT_FOUND_DATA);
+              }
               List<Long> categoryIds = draftCategoryRepository.findCategoryIdByDraftId(draftId);
               List<Category> categories = categoryRepository.findCategoryContentByCategoryIdIn(categoryIds);
               List<String> categoryContents = categories.stream().map(Category::getCategoryContent).toList();
-
+          boolean bookmarked = bookmarkRepository.findByBookmarkId_User_UserId_AndBookmarkId_Draft_DraftId(userId, draftId).orElseGet(()->null) != null;
+            boolean buy = purchaseRepository.findAllByPurchaseId_Draft_DraftIdAndPurchaseId_User_UserId(draftId, userId).orElseGet(()->null) != null;
             return DraftDetailResponseDto.builder().draftId(draft.getDraftId())
                 .draftPrice(draft.getDraftPrice())
                 .draftColorCode(draft.getDraftColorCode())
@@ -106,12 +110,12 @@ public class DraftServiceImpl implements DraftService{
                 .draftPrompt(draft.getDraftPrompt())
                 .draftTimestamp(draft.getDraftTimestamp())
                 .userId(draft.getUser().getUserId())
+                    .isBuy(buy)
+                    .isBookmark(bookmarked)
+                    .isAuthor(draft.getUser().getUserId() == userId)
                 .categoryContents(categoryContents)
                 .build();
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            return null;
-        }
+
     }
 
     @Transactional

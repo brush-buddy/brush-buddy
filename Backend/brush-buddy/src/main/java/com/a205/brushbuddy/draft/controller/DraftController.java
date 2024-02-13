@@ -76,12 +76,12 @@ public class DraftController {
 	})
 	@ResponseBody
 	@GetMapping("/{draftId}")
-	public ResponseEntity<DraftDetailResponseDto> getDraftDetail(@PathVariable("draftId") long draftId, HttpServletRequest request) {
+	public ResponseEntity<DraftDetailResponseDto> getDraftDetail(@PathVariable("draftId") long draftId, HttpServletRequest request) throws Exception{
 		Integer userId = jwtUtil.getUserId(request)
 			.orElseThrow(() -> new BaseException(ErrorCode.INVALID_TOKEN)); // 헤더의 access token으로 userId 추출, null 반환시 유효하지 않은 토큰 오류 전송
 
-		DraftDetailResponseDto draft = draftService.getDraftDetail(draftId);
-		draft.setIsAuthor(draft.getUserId().equals(userId));
+		DraftDetailResponseDto draft = draftService.getDraftDetail(userId, draftId);
+
 		return new ResponseEntity<>(draft, HttpStatus.OK);
 	}
 	
