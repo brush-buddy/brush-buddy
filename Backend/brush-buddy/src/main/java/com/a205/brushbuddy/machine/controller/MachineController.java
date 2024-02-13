@@ -87,7 +87,15 @@ public class MachineController {
     public ResponseEntity<?> qrcode(@PathVariable Long machineId, HttpServletRequest request) {
         Integer userId = jwtUtil.getUserId(request)
                 .orElseThrow(() -> new BaseException(ErrorCode.INVALID_TOKEN));// 헤더의 access token으로 userId 추출, null 반환시 유효하지 않은 토큰 오류 전송
-        String result = machineService.connectMachine(userId, machineId);
+        machineService.connectMachine(userId, machineId);
         return ResponseEntity.ok("기기가 연결되었습니다.");
+    }
+
+    @DeleteMapping("/disconnect")
+    public ResponseEntity<?> logout(HttpServletRequest request) {
+        Integer userId = jwtUtil.getUserId(request)
+                .orElseThrow(() -> new BaseException(ErrorCode.INVALID_TOKEN));// 헤더의 access token으로 userId 추출, null 반환시 유효하지 않은 토큰 오류 전송
+       machineService.disconnectMachine(userId);
+        return ResponseEntity.ok("기기가 연결이 해제되었습니다.");
     }
 }

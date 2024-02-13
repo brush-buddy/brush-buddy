@@ -37,21 +37,20 @@ public class MachineServiceImpl implements MachineService{
 
     @Transactional
     @Override
-    public String connectMachine(Integer userId, Long machineId) {
-        String result = "";
+    public boolean connectMachine(Integer userId, Long machineId) {
         Machine machine= machineRepository.findById(machineId)
                 .orElseThrow(()-> new BaseException(ErrorCode.NOT_FOUND_DATA));
         machine.setUser(User.builder().userId(userId).build());
-
-        return result;
+        return true;
     }
 
+    @Transactional
     @Override
-    public String disconnectMachine(Integer userId) {
+    public boolean disconnectMachine(Integer userId) {
         Machine machine= machineRepository.findByUser_UserId(userId)
                 .orElseThrow(()-> new BaseException(ErrorCode.NOT_FOUND_DATA));
-
-        return null;
+        machine.setUser(null);
+        return true;
     }
 
     @Override
