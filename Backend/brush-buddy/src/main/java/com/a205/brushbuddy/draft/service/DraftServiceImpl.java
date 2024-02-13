@@ -100,7 +100,6 @@ public class DraftServiceImpl implements DraftService{
                 .draftPrice(draft.getDraftPrice())
                 .draftColorCode(draft.getDraftColorCode())
                 .draftThumbnail(draft.getDraftThumbnail())
-                .draftFileLink(draft.getDraftFileLink())
                 .draftIsAI(draft.getDraftIsAI())
                 .draftIsPublic(draft.getDraftIsPublic())
                 .draftIsDefault(draft.getDraftIsDefault())
