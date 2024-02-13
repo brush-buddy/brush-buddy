@@ -22,6 +22,7 @@ public class BoardDetailResponseDto {
     private List<String> hashtag;
     private String createdAt;
     private Boolean isHeart; // 좋아요 여부
+    private Boolean isMine; // 내가 쓴 글 인가
 
     // 생성자, getter 및 setter 메서드는 필요에 따라 추가할 수 있습니다
 

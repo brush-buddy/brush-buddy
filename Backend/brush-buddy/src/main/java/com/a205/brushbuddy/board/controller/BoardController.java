@@ -44,6 +44,7 @@ public class BoardController {
     // 게시글 검색 및 리스트 조회
     @GetMapping("/list")
     public ResponseEntity<?> getBoardList(BoardListRequestDto requestDto) {
+
         Pageable pageable = PageRequest.of(requestDto.getPageNum() - 1, //현재 페이지
             requestDto.getListNum(), // 페이지 당 개수
             requestDto.getDirection(), //오름차순 or 내림차순
@@ -113,7 +114,10 @@ public class BoardController {
 
     //댓글 리스트 조회
     @GetMapping("/{boardId}/replies")
-    public ResponseEntity<?> getReplies(@PathVariable long boardId, ReplyListRequestDto requestDto) {
+    public ResponseEntity<?> getReplies(@PathVariable long boardId, ReplyListRequestDto requestDto, HttpServletRequest request) {
+        Integer userId = jwtUtil.getUserId(request)
+                .orElseThrow(() -> new BaseException(ErrorCode.INVALID_TOKEN));// 헤더의 access token으로 userId 추출, null 반환시 유효하지 않은 토큰 오류 전송
+
         // pageable 생성
         Pageable pageable = PageRequest.of(requestDto.getPageNum() - 1, requestDto.getListNum(), Sort.Direction.DESC,
             "replyTimestamp");
@@ -131,6 +135,7 @@ public class BoardController {
                         .nickname(m.getUser().getUserNickname())
                         .contents(m.getReplyContent())
                         .createdAt(m.getReplyTimestamp().toString())
+                        .isMine(m.getUser().getUserId().equals(userId))
                         .build())
                 .toList())
             .pageNum(replies.getNumber() + 1)
