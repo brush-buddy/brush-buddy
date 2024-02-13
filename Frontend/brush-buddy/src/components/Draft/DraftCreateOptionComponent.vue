@@ -5,6 +5,7 @@ const fadein = ref(false)
 const buttonFadein = ref(false)
 import { useImageStore } from '../../stores/image'
 import { useRouter } from 'vue-router'
+const host = import.meta.env.VITE_APP_AI_SERVER_URL
 const router = useRouter()
 const { setImage } = useImageStore()
 const nextFadein = () => {
@@ -27,7 +28,7 @@ const makeImage = () => {
   console.log(fileData)
   if (file.value) {
     axios
-      .post('http://localhost:8000/api/v1/draft/pipo-local', fileData, {
+      .post(host + '/draft/pipo-local', fileData, {
         headers: {
           'content-type': 'multipart/form-data'
         }

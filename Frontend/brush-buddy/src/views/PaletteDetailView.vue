@@ -29,6 +29,7 @@ onMounted(async () => {
     listKeys.value.push(parseInt(element))
   })
   maxColorKey.value = Math.max(...listKeys.value) + 1
+  console.log(maxColorKey.value)
   paletteTitle.value = response.data.paletteName
 })
 const color = ref('')
@@ -53,12 +54,17 @@ const iconPush = (key: string) => {
 }
 
 const saveColor = () => {
-  paletteColorInfo.value.push([maxColorKey.value.toString, appendColorCode.value])
+  paletteColorInfo.value.push([maxColorKey.value, appendColorCode.value])
+  maxColorKey.value++
 }
 
 const saveServer = () => {
+  // paletteColorInfo.value.forEach((element) => {
+  //   console.log(element)
+  // })
   localAxios().put(`/palette/${paletteId}`, {
     paletteName: paletteTitle.value,
+
     paletteColorCode: paletteColorInfo.value.reduce(
       (obj: string[], [key, value]: [number, string]) => {
         obj[key] = value
