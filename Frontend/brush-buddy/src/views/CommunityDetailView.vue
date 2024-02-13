@@ -38,7 +38,13 @@
       <p class="thumbnailUnder">{{ community.views }}</p>
     </div>
     <div>
-      <v-carousel hide-delimiters class="elevation-2">
+      <v-carousel
+        :continuous="false"
+        :show-arrows="false"
+        hide-delimiter-background
+        delimiter-icon="mdi-square"
+        class="elevation-2"
+      >
         <v-carousel-item
           v-for="(item, i) in community.photo"
           :key="i"
@@ -52,15 +58,25 @@
         style="margin-top: 1rem; display: flex; justify-content: space-between; padding-right: 1rem"
       >
         <div>
-          <template v-for="(item, i) in community.hashtag">
-            <v-chip size="small" color="success" style="margin-right: 0.5rem">
+          <template v-for="(item, i) in community.hashtag" :key="i">
+            <v-chip size="small" :color="getRandomColor()" style="margin: 0.3rem">
               {{ item }}
             </v-chip>
           </template>
         </div>
 
-        <!-- <v-icon v-if="likeState" icon="mdi-thumb-up" @click=""></v-icon> -->
-        <!-- <v-icon v-if="!likeState" icon="mdi-thumb-up-outline" @click=""></v-icon> -->
+        <v-icon
+          v-if="isLike"
+          icon="mdi-thumb-up"
+          @click="removeLikeState(Number(boardId))"
+          size="x-large"
+        ></v-icon>
+        <v-icon
+          v-if="!isLike"
+          icon="mdi-thumb-up-outline"
+          @click="addLikeState(Number(boardId))"
+          size="x-large"
+        ></v-icon>
       </div>
     </div>
 
@@ -68,21 +84,45 @@
       <p>{{ community.contents }}</p>
     </div>
     <div id="reply">
-      <ReplyComponent :board-id="Number(boardId)" />
+      <ReplyComponent :board-id="Number(boardId)" @replyReload="reloadReplyList" />
     </div>
+
+    <div
+      style="display: flex; justify-content: center; flex-direction: column; align-items: center"
+    >
+      <template v-for="(item, i) in replyList" :key="i">
+        <CReplyListComponent
+          :replyList="item"
+          :board-id="Number(boardId)"
+          @replyReload="reloadReplyList"
+        />
+      </template>
+    </div>
+
     <div class="blank"></div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { useRoute } from 'vue-router'
-import { onMounted, inject, ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import ReplyComponent from '../components/DraftDetail/CReply.vue'
 import { localAxios } from '../api/axios'
-import { storeToRefs } from 'pinia'
-// import { useLikeStore } from '../stores/boardlike'
 
-// const { likeState } = storeToRefs(useLikeStore())
+import { storeToRefs } from 'pinia'
+import { getReplyList } from '../api/board'
+import type { ReplyListElement, BoardSearchParam } from '../api/board'
+import CReplyListComponent from '../components/DraftDetail/CReplyListComponent.vue'
+
+import { useLikeStore } from '../stores/boardlike'
+const { setLikeState, removeLikeState, addLikeState } = useLikeStore()
+const likeStore = useLikeStore()
+const { isLike } = storeToRefs(likeStore)
+
+function getRandomColor() {
+  return '#' + Math.floor(Math.random() * 16777215).toString(16)
+}
+
 const route = useRoute()
 const boardId = route.params.id
 const community = ref<any>({
@@ -95,12 +135,16 @@ const community = ref<any>({
   likeNumber: 0,
   views: 0,
   hashtag: [],
-  createdAt: '-'
+  createdAt: '-',
+  isHeart: false
 })
 
-const im = ref<any>({ order: '-1', imageUrl: '' })
-console.log('hi')
-console.log(im.value)
+const replyList = ref<ReplyListElement[]>([])
+
+const params = ref<BoardSearchParam>({
+  listNum: 10000,
+  pageNum: 1
+})
 
 console.log(route.params)
 onMounted(() => {
@@ -109,16 +153,30 @@ onMounted(() => {
     .then(function (response: any) {
       console.log(response.data)
       community.value = response.data
+      setLikeState(response.data.isHeart)
     })
-  // console.log(parseInt(boardId))
-  // useLikeStore().setLikeState(parseInt(boardId))
-  // console.log(likeState)
+
+  getReplyList(Number(boardId), params.value).then((res) => {
+    replyList.value = res.data.replyList
+  })
+  console.log('reply')
+  console.log(replyList.value)
 })
+
+// 댓글 리스트 리로드
+const reloadReplyList = () => {
+  console.log('reloadReplyList')
+  getReplyList(Number(boardId), params.value).then((res) => {
+    replyList.value = res.data.replyList
+    console.log(replyList.value)
+  })
+}
 </script>
 
 <style scoped>
 #reply {
-  margin-bottom: 6rem;
+  display: flex;
+  justify-content: center;
 }
 
 .blank {

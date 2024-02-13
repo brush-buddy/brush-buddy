@@ -31,10 +31,12 @@ type BoardListElement = {
 }
 
 type ReplyListElement = {
+    replyId : Number,
     userId : Number,
     nickname: String,
     contents: String,
-    createdAt: Date
+    createdAt: Date,
+    isMine: Boolean,
 }
 
 export type {
@@ -118,6 +120,7 @@ const removeHeart =  async (
 ): Promise<AxiosResponse> => {
     return await localAxios().delete(`/board/${boardId}/heart`)
 }
+
 
 
 export {

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useUserStore } from "../stores/user";
-import { useRouter } from "vue-router";
+import {ref} from 'vue';
+import HomeListView from "./HomeListView.vue";
 
 const login = () => {
   console.log("login");
@@ -15,22 +16,23 @@ const login = () => {
   
   window.Kakao.Auth.authorize(params);
 }
-
-const router = useRouter();
+const active = ref(false);
 const userStore = useUserStore();
 if (userStore.accessToken != '') {
-  router.push('/home');
+  active.value = true;
+  console.log(active.value);
 }
 </script>
 
 <template>
-  <div id="background">
+    <HomeListView v-if="active"/>
+
+  <div v-else id="background">
     <div id="home">
       <img src="../assets/logo.png" alt="logo" id="logo" />
       
       <img src="../assets/kakao.png" alt="kakao" @click="login" />  
     </div>
-
   </div>
 </template>
 
