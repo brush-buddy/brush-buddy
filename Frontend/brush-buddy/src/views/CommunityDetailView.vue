@@ -59,7 +59,7 @@
       >
         <div>
           <template v-for="(item, i) in community.hashtag" :key="i">
-            <v-chip size="small" color="success" style="margin: 0.3rem">
+            <v-chip size="small" :color="getRandomColor()" style="margin: 0.3rem">
               {{ item }}
             </v-chip>
           </template>
@@ -119,6 +119,10 @@ const { setLikeState, removeLikeState, addLikeState } = useLikeStore()
 const likeStore = useLikeStore()
 const { isLike } = storeToRefs(likeStore)
 
+function getRandomColor() {
+  return '#' + Math.floor(Math.random() * 16777215).toString(16)
+}
+
 const route = useRoute()
 const boardId = route.params.id
 const community = ref<any>({
@@ -171,7 +175,6 @@ const reloadReplyList = () => {
 
 <style scoped>
 #reply {
-  margin-bottom: 6rem;
   display: flex;
   justify-content: center;
 }

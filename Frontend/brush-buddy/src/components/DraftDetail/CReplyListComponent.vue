@@ -16,13 +16,21 @@ const removeReply = async () => {
     emits('replyReload')
   })
 }
+const generateRandomColorWithSameTone = () => {
+  // 채도와 명도를 랜덤하게 설정 (예: 30% ~ 70%)
+  var hue = parseInt(`${Math.random() * 24}`, 10) * 15
+  return `hsl(${hue}, 16%, 80%)`
+}
 </script>
 
 <template>
-  <v-card style="margin: 1rem; width: 40rem" class="elevation-2">
+  <v-card style="margin: 1rem; width: 90vw" class="elevation-2">
     <div style="padding: 1rem; display: flex; justify-content: space-between">
       <div style="display: flex">
-        <div id="profile-avartar">
+        <div
+          id="profile-avartar"
+          v-bind:style="{ backgroundColor: generateRandomColorWithSameTone() }"
+        >
           <img src="@/assets/logo.png" style="width: 1.5rem; height: 1.5rem" alt="프로필사진" />
         </div>
         <div>
@@ -33,19 +41,17 @@ const removeReply = async () => {
         </div>
       </div>
       <div>
-        <div class="text-center">
-          <v-btn icon="mdi-trash-can" size="small" v-model="dialog" activator="parent" color="red">
-            <v-dialog v-model="dialog" activator="parent" width="auto">
-              <v-card>
-                <v-card-text> 삭제 하시겠습니까? </v-card-text>
-                <v-card-actions style="display: flex; justify-content: flex-end">
-                  <v-btn color="primary" @click="dialog = false">취소</v-btn>
-                  <v-btn color="primary" @click="(dialog = false), removeReply()">삭제</v-btn>
-                </v-card-actions>
-              </v-card>
-            </v-dialog>
-          </v-btn>
-        </div>
+        <v-icon icon="mdi-trash-can" @click="(dialog = true), console.log('click')" color="red">
+        </v-icon>
+        <v-dialog v-model="dialog" width="auto">
+          <v-card>
+            <v-card-text> 삭제 하시겠습니까? </v-card-text>
+            <v-card-actions style="display: flex; justify-content: flex-end">
+              <v-btn color="primary" @click="dialog = false">취소</v-btn>
+              <v-btn color="primary" @click="(dialog = false), removeReply()">삭제</v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
       </div>
     </div>
   </v-card>

@@ -2,17 +2,22 @@
   <v-item-group multiple>
     <v-item>
       <div class="rect">
-        <div>
-          <!-- <CButton :text="" /> -->
-        </div>
         <div class="thumb">
           <img :src="imageThumbnail" />
         </div>
         <div class="icon">
-          <v-btn
-            :icon="isBookmarked ? 'mdi-bookmark-multiple' : 'mdi-bookmark-multiple-outline'"
-            @click="handleClick"
-          ></v-btn>
+          <v-icon
+            v-if="isBookmarked"
+            icon="mdi-bookmark-multiple"
+            @click="removeBookmark(props.draftId)"
+            size="x-large"
+          ></v-icon>
+          <v-icon
+            v-if="!isBookmarked"
+            icon="mdi-bookmark-multiple-outline"
+            @click="addBookmark(props.draftId)"
+            size="x-large"
+          ></v-icon>
         </div>
         <div class="color">
           <PaletteComponent :draft-id="props.draftId" :draft-color-code="props.draftColorCode" />
@@ -23,11 +28,16 @@
 </template>
 
 <script setup lang="ts">
-import { storeToRefs } from 'pinia'
-import { ref } from 'vue'
-import { addBookmark, removeBookmark } from '../../api/draft'
+import { useRoute } from 'vue-router'
+import { onMounted, ref } from 'vue'
 import { useBookmarksStore } from '../../stores/bookmark'
-const { isBookmarked } = storeToRefs(useBookmarksStore())
+import { localAxios } from '../../api/axios'
+
+import { storeToRefs } from 'pinia'
+const { removeBookmark, addBookmark } = useBookmarksStore()
+const BookmarkStore = useBookmarksStore()
+const { isBookmarked } = storeToRefs(BookmarkStore)
+
 import DraftThumbnailComponent from '../Draft/DraftThumbnailComponent.vue'
 import PaletteComponent from '../DraftDetail/PaletteComponent.vue'
 
@@ -38,13 +48,13 @@ const props = defineProps<{
 }>()
 
 // 북마크 추가 삭제
-const handleClick = () => {
-  if (isBookmarked) {
-    removeBookmark(props.draftId)
-  } else {
-    addBookmark(props.draftId)
-  }
-}
+// const handleClick = () => {
+//   if (isBookmarked) {
+//     removeBookmark(props.draftId)
+//   } else {
+//     addBookmark(props.draftId)
+//   }
+// }
 </script>
 
 <style scoped>
