@@ -18,7 +18,7 @@
       </template>
       <template v-slot:default="{ isActive }">
         <v-card title="프로필 수정">
-          <CModifyProfile/>
+          <CModifyProfile :nickname="nickName" @reloadInfo="getUserInfoReload"/>
           <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn text="Close Dialog" @click="isActive.value = false"></v-btn>
@@ -52,6 +52,15 @@ const logout = () => {
   signOut().then((res) => {
     alert('로그아웃 됐습니다.');
   });
+}
+
+const getUserInfoReload = () => {
+  console.log("reload called");
+  getUserInfo().then((res) => {
+    console.log(res.data);
+    nickName.value = res.data.userNickName;
+    milage.value = res.data.mileage;
+  })
 }
 </script>
 <style scoped>

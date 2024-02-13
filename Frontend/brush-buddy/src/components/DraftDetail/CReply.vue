@@ -1,5 +1,5 @@
 <template>
-  <div class="wrap elevation-2">
+  <v-card style="width: 40rem; display: flex">
     <div class="profile-wrap">
       <div id="profile-avartar">
         <img src="@/assets/logo.png" style="width: 1.5rem; height: 1.5rem" alt="프로필사진" />
@@ -22,7 +22,7 @@
         <v-btn :disabled="content === ''" @click="sendreply()" size="small">저장하기</v-btn>
       </div>
     </div>
-  </div>
+  </v-card>
 </template>
 
 <script setup lang="ts">
@@ -33,6 +33,8 @@ const text = ref('send')
 const props = defineProps({
   boardId: Number
 })
+
+const emits = defineEmits(['replyReload'])
 const content = ref('')
 const sendreply = () => {
   if (text.value === 'send') {
@@ -41,7 +43,9 @@ const sendreply = () => {
         contents: content.value
       })
       .then(function (response: any) {
+        content.value = ''
         console.log(response)
+        emits('replyReload')
       })
       .catch(function (error: any) {
         console.log(error)
@@ -90,7 +94,6 @@ const sendreply = () => {
 
 .reply {
   /* background-color: blue; */
-
   display: flex;
   flex-direction: column;
   margin: 1rem;

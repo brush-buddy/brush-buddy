@@ -13,5 +13,6 @@ public interface CategoryRepository extends JpaRepository<Category, Long>, Draft
 	List<Category> findByCategoryContentIn(List<String> categoryContent);
 	Category findByCategoryContent(String categoryContent);
 
+	List<Category> findCategoryContentByCategoryIdIn(List<Long> categoryId);
 
 }
