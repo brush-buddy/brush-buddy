@@ -1,26 +1,25 @@
 <template>
-    <div class="fixed_width">
-      <div class=palette>
-        <SinglePaletteComponent :color=color1 />
-      </div>
-      <div class=palette>
-        <SinglePaletteComponent :color=color2 />
-      </div>
-      <div class=palette>
-        <SinglePaletteComponent :color=color3 />
-      </div>
-      <div class=palette>
-        <SinglePaletteComponent :color=color4 />
-      </div>
-      <div class=palette>
-        <SinglePaletteComponent :color=color5 />
-      </div>
+  <div class="fixed_width">
+    <div class="palette">
+      <SinglePaletteComponent :color="color1" />
     </div>
+    <div class="palette">
+      <SinglePaletteComponent :color="color2" />
+    </div>
+    <div class="palette">
+      <SinglePaletteComponent :color="color3" />
+    </div>
+    <div class="palette">
+      <SinglePaletteComponent :color="color4" />
+    </div>
+    <div class="palette">
+      <SinglePaletteComponent :color="color5" />
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
-
-import SinglePaletteComponent from "../common/SinglePaletteComponent.vue";
+import SinglePaletteComponent from '../common/SinglePaletteComponent.vue'
 import { ref } from 'vue'
 
 const color1 = ref('#46C2C8')
@@ -29,7 +28,16 @@ const color3 = ref('#B7771F')
 const color4 = ref('#2454A5')
 const color5 = ref('#EEECDE')
 
+const props = defineProps<{
+  draftColorCode: string
+}>()
 
+const colorCode = JSON.parse(props.draftColorCode)
+color1.value = colorCode.color1
+color2.value = colorCode.color2
+color3.value = colorCode.color3
+color4.value = colorCode.color4
+color5.value = colorCode.color5
 </script>
 
 <style scoped>
@@ -38,7 +46,7 @@ const color5 = ref('#EEECDE')
   align-items: flex-end;
 }
 
-.palette{
+.palette {
   margin-right: -6px;
 }
 </style>

@@ -1,13 +1,6 @@
 <template>
   <div class="rect">
-    <div id="category">
-      <div id="category1">
-        <CButton :title="title1" :color="color1" />
-      </div>
-      <div id="category2">
-        <CButton :title="title2" :color="color2" />
-      </div>
-    </div>
+    <div id="category"></div>
     <div id="draft">
       <DraftDetailComponent />
     </div>
@@ -16,15 +9,8 @@
 </template>
 
 <script setup lang="ts">
-import CButton from '../Community/CButton.vue'
-import DraftDetailComponent from '../Draft/DraftDetailComponent.vue'
+import DraftDetailComponent from '../DraftDetail/DraftDetailComponent.vue'
 import { ref } from 'vue'
-
-const title1 = ref('물고기')
-const color1 = ref('#FFB6C1')
-
-const title2 = ref('바다')
-const color2 = ref('#FF7575')
 </script>
 
 <style scoped>

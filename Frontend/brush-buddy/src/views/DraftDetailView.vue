@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { useRoute } from 'vue-router'
 import { onMounted, inject, ref } from 'vue'
-import DraftDetailComponent from '../components/Draft/DraftDetailComponent.vue'
+import DraftDetailComponent from '../components/DraftDetail/DraftDetailComponent.vue'
+import PaletteDetailComponent from '../components/Palette/PaletteDetailComponent.vue'
 import { localAxios } from '../api/axios'
 const route = useRoute()
 const draftId = route.params.id
@@ -39,7 +40,13 @@ onMounted(() => {
 
 <template>
   <div>
-    <DraftDetailComponent :imageThumbnail="draft.draftThumbnail" />
+    {{ draft }}
+    <DraftDetailComponent
+      :draftId="draftId"
+      :imageThumbnail="draft.draftThumbnail"
+      :draftColorCode="draft.draftColorCode"
+    />
+    <div style="height: 6rem"></div>
   </div>
 </template>
 

@@ -14,7 +14,6 @@ export const useBookmarksStore = defineStore("bookmarks", () => {
 
      async function addBookmark(draftId: number) { 
         localAxios().post(`/draft/${draftId}/bookmark`)
-
     }
 
     async function removeBookmark(draftId: number) {
