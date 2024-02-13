@@ -10,7 +10,7 @@ import com.a205.brushbuddy.user.domain.User;
 @Repository
 public interface UserRepository extends JpaRepository<User, Integer> {
     //	User findByUserId(int userId);
-    Optional<User> findBySocialId(int userId, String socialId); // 소셜 로그인
+    Optional<User> findBySocialId(String socialId); // 소셜 로그인
 
     User findUserByUserId(int userId);
 }
