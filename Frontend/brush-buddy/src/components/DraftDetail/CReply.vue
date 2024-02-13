@@ -1,5 +1,5 @@
 <template>
-  <v-card style="width: 40rem; display: flex">
+  <v-card style="width: 90vw; display: flex">
     <div class="profile-wrap">
       <div id="profile-avartar">
         <img src="@/assets/logo.png" style="width: 1.5rem; height: 1.5rem" alt="프로필사진" />
@@ -98,6 +98,7 @@ const sendreply = () => {
   flex-direction: column;
   margin: 1rem;
   width: 90%;
+  /* margin-bottom: 1rem !important; */
   /* margin-right: 3rem; */
 }
 
