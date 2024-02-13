@@ -35,8 +35,8 @@ watch(
         <div
           v-bind:style="{ backgroundColor: value }"
           style="
-            width: 2.5rem;
-            height: 2.5rem;
+            width: 2.3rem;
+            height: 2.3rem;
             margin: 0.1rem;
             display: flex;
             justify-content: center;
@@ -46,6 +46,7 @@ watch(
             box-shadow: 0px 1px 1px 1px rgba(0, 0, 0, 0.25);
             border: 1.5px solid rgb(201, 201, 201);
           "
+          class="elevation-2"
         ></div>
       </template>
     </div>
