@@ -30,7 +30,6 @@ const newNickname = ref('');
 const modifyNickname = ()=>{
   localAxios().post(`/mypage/nickname`, {"newNickname":newNickname.value})
   .then((res)=>{
-    console.log(res);
     snackbar.value = true;
     emits("reloadInfo")
   });
