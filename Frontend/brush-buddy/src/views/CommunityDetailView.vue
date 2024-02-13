@@ -65,8 +65,18 @@
           </template>
         </div>
 
-        <!-- <v-icon v-if="likeState" icon="mdi-thumb-up" @click=""></v-icon> -->
-        <!-- <v-icon v-if="!likeState" icon="mdi-thumb-up-outline" @click=""></v-icon> -->
+        <v-icon
+          v-if="isLike"
+          icon="mdi-thumb-up"
+          @click="removeLikeState(Number(boardId))"
+          size="x-large"
+        ></v-icon>
+        <v-icon
+          v-if="!isLike"
+          icon="mdi-thumb-up-outline"
+          @click="addLikeState(Number(boardId))"
+          size="x-large"
+        ></v-icon>
       </div>
     </div>
 
@@ -95,16 +105,19 @@
 
 <script setup lang="ts">
 import { useRoute } from 'vue-router'
-import { onMounted, inject, ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import ReplyComponent from '../components/DraftDetail/CReply.vue'
 import { localAxios } from '../api/axios'
+
 import { storeToRefs } from 'pinia'
 import { getReplyList } from '../api/board'
 import type { ReplyListElement, BoardSearchParam } from '../api/board'
 import CReplyListComponent from '../components/DraftDetail/CReplyListComponent.vue'
-// import { useLikeStore } from '../stores/boardlike'
 
-// const { likeState } = storeToRefs(useLikeStore())
+import { useLikeStore } from '../stores/boardlike'
+const { setLikeState, removeLikeState, addLikeState } = useLikeStore()
+const likeStore = useLikeStore()
+const { isLike } = storeToRefs(likeStore)
 
 const route = useRoute()
 const boardId = route.params.id
@@ -118,7 +131,8 @@ const community = ref<any>({
   likeNumber: 0,
   views: 0,
   hashtag: [],
-  createdAt: '-'
+  createdAt: '-',
+  isHeart: false
 })
 
 const replyList = ref<ReplyListElement[]>([])
@@ -127,6 +141,7 @@ const params = ref<BoardSearchParam>({
   listNum: 10000,
   pageNum: 1
 })
+
 console.log(route.params)
 onMounted(() => {
   localAxios()
@@ -134,11 +149,8 @@ onMounted(() => {
     .then(function (response: any) {
       console.log(response.data)
       community.value = response.data
+      setLikeState(response.data.isHeart)
     })
-
-  // console.log(parseInt(boardId))
-  // useLikeStore().setLikeState(parseInt(boardId))
-  // console.log(likeState)
 
   getReplyList(Number(boardId), params.value).then((res) => {
     replyList.value = res.data.replyList
@@ -147,6 +159,7 @@ onMounted(() => {
   console.log(replyList.value)
 })
 
+// 댓글 리스트 리로드
 const reloadReplyList = () => {
   console.log('reloadReplyList')
   getReplyList(Number(boardId), params.value).then((res) => {
