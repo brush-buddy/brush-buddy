@@ -20,7 +20,6 @@ import VPaletteList from '../components/Diary/VPaletteList.vue'
 import PaletteDetailView from '../views/PaletteDetailView.vue'
 import VMyBoard from '../components/Diary/VMyBoard.vue'
 import HomeListView from '../views/HomeListView.vue'
-import MachineLoginView from '../views/MachineLoginView.vue'
 
 const router = createRouter({
   history: createWebHistory(""),
@@ -146,11 +145,6 @@ const router = createRouter({
       name: 'draftWriteView',
       path: "/draft/write",
       component: DraftPipoMakeViewVue,
-    },
-    {
-      name: "machineLoginView",
-      path: "/machineLogin/:id",
-      component: MachineLoginView,
     }
 
   ]
