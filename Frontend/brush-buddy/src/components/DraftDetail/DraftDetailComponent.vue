@@ -11,12 +11,14 @@
             icon="mdi-bookmark-multiple"
             @click="removeBookmark(props.draftId)"
             size="x-large"
+            color="white"
           ></v-icon>
           <v-icon
             v-if="!isBookmarked"
             icon="mdi-bookmark-multiple-outline"
             @click="addBookmark(props.draftId)"
             size="x-large"
+            color="white"
           ></v-icon>
         </div>
         <div class="color">
@@ -88,10 +90,11 @@ img {
 .color {
   position: absolute;
   left: -1rem;
-  bottom: 0;
+  bottom: -4rem;
   margin-top: 1rem;
   padding: 0 2rem 0 2rem;
   /* margin: 0 0  -1rem; */
+  width: 20rem;
   z-index: 2;
 }
 
