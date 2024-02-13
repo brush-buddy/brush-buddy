@@ -11,6 +11,7 @@ import com.a205.brushbuddy.draft.dto.response.DraftCreateResponseDto;
 import com.a205.brushbuddy.draft.dto.response.DraftDetailResponseDto;
 import com.a205.brushbuddy.draft.dto.response.DraftListResponseDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import org.springframework.http.ResponseEntity;
 
 public interface DraftService{
 
@@ -40,4 +41,6 @@ public interface DraftService{
 	void buyDraft(int userId, Long draftId) throws Exception;
 
 	boolean bookmarkCheck(Integer userId, Long draftId);
+
+	String downloadDraft(int userId, Long draftId) throws Exception;
 }
