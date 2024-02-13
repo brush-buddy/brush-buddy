@@ -1,5 +1,8 @@
 package com.a205.brushbuddy.draft.service;
 
+import com.a205.brushbuddy.board.domain.Board;
+import com.a205.brushbuddy.board.dto.BoardListResponseDto;
+import com.a205.brushbuddy.board.repository.BoardRepository;
 import com.a205.brushbuddy.draft.domain.Category;
 import com.a205.brushbuddy.draft.domain.Draft;
 import com.a205.brushbuddy.draft.domain.DraftCategory;
@@ -41,7 +44,7 @@ public class DraftServiceImpl implements DraftService{
     private final DraftCategoryRepository draftCategoryRepository;
     private final BookmarkRepository bookmarkRepository;
     private final PurchaseRepository purchaseRepository;
-
+    private final BoardRepository boardRepository;
     public Page<DraftListResponseDto> getDraftList(Pageable pageable) {
         try {
 
@@ -151,6 +154,11 @@ public class DraftServiceImpl implements DraftService{
         }
 
         return new DraftCreateResponseDto(draft.getDraftId(), palette.getPaletteId());
+    }
+
+    @Override
+    public Page<Board> getBoardListByDraftId(Long draftId, Pageable pageable) {
+        return boardRepository.findAllByDraft_DraftId(draftId, pageable);
     }
 
     @Transactional
