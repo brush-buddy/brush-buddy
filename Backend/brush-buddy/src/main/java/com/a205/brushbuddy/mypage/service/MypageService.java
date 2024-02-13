@@ -10,4 +10,5 @@ public interface MypageService {
     MypageGeneratedDraftListResponseDto getGeneratedBoardList(Integer userId, String search, Pageable pageable); // 생성한 도안 리스트 조회
     MypageBookmarkedDraftListResponseDto getBookmarkedBoardList(Integer userId, String search, Pageable pageable);// 북마크한 도안 리스트 조회
     MypagePurchasedDraftListResponseDto getPurchasedDraftList(Integer userId, String search, Pageable pageable);//구매한 도안 내역 리스트 조회
+    boolean modifyNickname(Integer userId, String newNickname); // 닉네임 수정
 }

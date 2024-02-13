@@ -25,7 +25,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, inject, onMounted } from 'vue'
+import { ref, onMounted } from 'vue'
 import { localAxios } from '../../api/axios'
 import DraftThumbnailComponent from '../Draft/DraftThumbnailComponent.vue'
 import type { DraftThumbnail } from '../../api/draft'
@@ -45,13 +45,8 @@ const scrollTrigger = () => {
   const observer = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
       if (entry.intersectionRatio > 0 && currentPage.value < pageCount.value) {
-        console.log('load...')
-
-        console.log(currentPage.value + ' ' + pageCount.value)
         showloader.value = true
         setTimeout(() => {
-          console.log('currentPage')
-          console.log(currentPage.value)
           localAxios()
             .get(
               searchValue.value == ''
@@ -69,7 +64,6 @@ const scrollTrigger = () => {
                 if (i % 2 === 1) communityThumbnailDataSecond.value.push(response.data.content[i])
                 else communityThumbnailDataFirst.value.push(response.data.content[i])
               }
-
               showloader.value = false
             })
           currentPage.value += 1
@@ -91,15 +85,12 @@ onMounted(() => {
   localAxios()
     .get('/draft/list?size=10&page=0')
     .then((response: any) => {
-      console.log('onload!')
-
       if (response.data.content == undefined) {
         return
       }
       // 총 페이지 수 설정
-      console.log(response.data)
-      console.log(response.data.content)
       pageCount.value = response.data.totalPages
+
       for (let i = 0; i < response.data.content.length; i++) {
         if (i % 2 === 1) communityThumbnailDataSecond.value.push(response.data.content[i])
         else communityThumbnailDataFirst.value.push(response.data.content[i])

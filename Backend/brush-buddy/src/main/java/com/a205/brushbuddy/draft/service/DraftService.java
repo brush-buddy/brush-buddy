@@ -1,5 +1,7 @@
 package com.a205.brushbuddy.draft.service;
 
+import com.a205.brushbuddy.board.domain.Board;
+import com.a205.brushbuddy.board.dto.BoardListResponseDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -9,6 +11,7 @@ import com.a205.brushbuddy.draft.dto.response.DraftCreateResponseDto;
 import com.a205.brushbuddy.draft.dto.response.DraftDetailResponseDto;
 import com.a205.brushbuddy.draft.dto.response.DraftListResponseDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import org.springframework.http.ResponseEntity;
 
 public interface DraftService{
 
@@ -17,9 +20,11 @@ public interface DraftService{
 
 	Page<DraftListResponseDto> getDraftListByCategory(Pageable pageable, String categoryContent);
 
-	DraftDetailResponseDto getDraftDetail(Long draftId);
+	DraftDetailResponseDto getDraftDetail(int userId, Long draftId) throws Exception;
 
 	DraftCreateResponseDto createDraft(int userId, DraftCreateRequestDto draftCreateDto) throws JsonProcessingException;
+
+	Page<Board> getBoardListByDraftId(Long draftId, Pageable pageable);
 
 	void deleteDraft(int userId, Long draftId) ;
 
@@ -36,4 +41,6 @@ public interface DraftService{
 	void buyDraft(int userId, Long draftId) throws Exception;
 
 	boolean bookmarkCheck(Integer userId, Long draftId);
+
+	String downloadDraft(int userId, Long draftId) throws Exception;
 }

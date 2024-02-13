@@ -1,24 +1,27 @@
 <template>
-  <div style="display: flex; justify-content: space-around">
-    <div style="display: flex; flex-direction: column; align-items: center">
-      <div v-for="(card, i) in boardThumbnailDataFirst" :key="i">
-        <CommunityComponent :boardThumbnail="card" />
-      </div>
+  <div>
+    <h2 style="margin-left: 1rem">이 도안으로 만든 그림들</h2>
+    <div style="display: flex; justify-content: space-around; margin-top: 1rem">
+      <div style="display: flex; flex-direction: column; align-items: center">
+        <div v-for="(card, i) in boardThumbnailDataFirst" :key="i">
+          <CommunityComponent :boardThumbnail="card" />
+        </div>
 
-      <footer>
-        <div ref="scrollTriggerElement2" id="scroll-trigger"></div>
-        <div class="circle-loader" v-if="showloader"></div>
-      </footer>
-    </div>
-    <div style="display: flex; flex-direction: column; align-items: center">
-      <div v-for="(card, i) in boardThumbnailDataSecond" :key="i">
-        <CommunityComponent :boardThumbnail="card" />
+        <footer>
+          <div ref="scrollTriggerElement2" id="scroll-trigger"></div>
+          <div class="circle-loader" v-if="showloader"></div>
+        </footer>
       </div>
+      <div style="display: flex; flex-direction: column; align-items: center">
+        <div v-for="(card, i) in boardThumbnailDataSecond" :key="i">
+          <CommunityComponent :boardThumbnail="card" />
+        </div>
 
-      <footer>
-        <div ref="scrollTriggerElement" id="scroll-trigger"></div>
-        <div class="circle-loader" v-if="showloader"></div>
-      </footer>
+        <footer>
+          <div ref="scrollTriggerElement" id="scroll-trigger"></div>
+          <div class="circle-loader" v-if="showloader"></div>
+        </footer>
+      </div>
     </div>
   </div>
   <div style="height: 5rem; width: 100vw"></div>
@@ -30,7 +33,8 @@ import { localAxios } from '../../api/axios'
 import CommunityComponent from '../../components/Community/CommunityComponent.vue'
 import type { BoardThumbnail } from '../../api/type'
 
-const searchValue = ref('')
+const props = defineProps({ draftId: Number })
+
 const boardThumbnailDataFirst = ref<BoardThumbnail[]>([])
 const boardThumbnailDataSecond = ref<BoardThumbnail[]>([])
 
@@ -49,7 +53,7 @@ const scrollTrigger = () => {
         showloader.value = true
         setTimeout(() => {
           localAxios()
-            .get('/board/list?listNum=20&pageNum=1&search=' + searchValue.value)
+            .get(`/draft/${props.draftId}/boardList?listNum=10&pageNum=${currentPage.value}`)
             .then((response: any) => {
               pageCount.value = response.data.totalPage
 
@@ -78,7 +82,7 @@ const scrollTrigger = () => {
 // 첫 페이지 로딩 시에 데이터를 불러오는 함수
 onMounted(() => {
   localAxios()
-    .get('/board/list?listNum=20&pageNum=1')
+    .get(`/draft/${props.draftId}/boardList?listNum=10&pageNum=1`)
     .then((response: any) => {
       // 총 페이지 수 설정
       pageCount.value = response.data.totalPage
@@ -90,27 +94,6 @@ onMounted(() => {
       currentPage.value = 1
     })
   scrollTrigger()
-})
-
-const searchList = (searchString: string) => {
-  searchValue.value = searchString
-  boardThumbnailDataFirst.value = []
-  boardThumbnailDataSecond.value = []
-  currentPage.value = 1
-  localAxios()
-    .get('/board/list?listNum=20&pageNum=1&search=' + searchString)
-    .then((response: any) => {
-      pageCount.value = response.data.totalPage
-      for (let i = 0; i < response.data.boards.length; i++) {
-        if (i % 2 === 1) boardThumbnailDataSecond.value.push(response.data.boards[i])
-        else boardThumbnailDataFirst.value.push(response.data.boards[i])
-      }
-      currentPage.value = 1
-    })
-}
-
-defineExpose({
-  searchList
 })
 </script>
 
