@@ -29,7 +29,9 @@ origins = [
     "http://localhost:5173",
     "http://localhost:5174",
     "https://localhost",
+    "https://brush-buddy.duckdns.org",
     "https://brush-buddy.duckdns.org/",
+    "https://bb-back.duckdns.org/",
 ]
 
 app.add_middleware(

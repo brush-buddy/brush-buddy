@@ -17,7 +17,9 @@ import SCommunityListComponentVue from '../components/Search/SCommunityListCompo
 import DraftPipoMakeViewVue from '../views/DraftPipoMakeView.vue'
 import DraftDetailView from '../views/DraftDetailView.vue'
 import VPaletteList from '../components/Diary/VPaletteList.vue'
-import paletteDetailView from '../views/PaletteDetailView.vue'
+import PaletteDetailView from '../views/PaletteDetailView.vue'
+import VMyBoard from '../components/Diary/VMyBoard.vue'
+import HomeListView from '../views/HomeListView.vue'
 const router = createRouter({
   history: createWebHistory(""),
   routes: [
@@ -26,6 +28,11 @@ const router = createRouter({
         name: 'home',
         path: '/',
         component: HomeView
+      },
+      {
+        name: 'homeList',
+        path: '/home',
+        component: HomeListView
       },
       {
         name: 'login',
@@ -57,6 +64,10 @@ const router = createRouter({
           {
             path: '/diary/heartList',
             component: VHeartList
+          },
+          {
+            path: '/diary/myboard',
+            component: VMyBoard
           },
           {
             path: '/diary/palette',
@@ -110,7 +121,7 @@ const router = createRouter({
     {
       name: 'paletteDetail',
       path: '/palette/:id',
-      component:paletteDetailView
+      component:PaletteDetailView
 
     },
     {

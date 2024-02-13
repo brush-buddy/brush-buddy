@@ -17,6 +17,29 @@ spring:
         format_sql: true
       #show-sql: true
 
+  kakao:
+    admin-key: ${KAKAO_ADMIN_KEY}
+    pay:
+      ## 브러쉬버디 마일리지 내역 기록용 사업장 ID 0으로 설정
+      workplaceid: 0
+      header:
+      cid: TC0ONETIME
+      ready:
+        request:
+          url: https://kapi.kakao.com/v1/payment/ready
+          approval: /api/v1/pay/approval
+          ## 후에 수정 필요 가능
+          cancel: /api/v1/pay/cancel
+          ## 후에 수정 필요 가능
+          fail: /api/v1/pay/fail
+          ## 후에 수정 필요 가능
+        response:
+          url: https://kapi.kakao.com/v1/payment/approve
+      approve:
+        request:
+        ## response 현재로는 필요 이상
+        response:
+
 jwt:
   secret: ${JWT_SECRET_KEY}
   security:

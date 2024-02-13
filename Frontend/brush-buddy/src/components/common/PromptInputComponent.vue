@@ -4,6 +4,7 @@ import { localAxios } from '../../api/axios'
 import axios from 'axios'
 import { useRouter } from 'vue-router'
 import { useImageStore } from '../../stores/image'
+const host = import.meta.env.VITE_APP_AI_SERVER_URL
 
 const router = useRouter()
 const { setImage } = useImageStore()
@@ -24,20 +25,18 @@ const makeImage = () => {
 }
 const makePipo = () => {
   console.log(prompt.value)
-  axios
-    .post('http://localhost:8000/api/v1/draft/pipo-s3', { url: imageSrc.value })
-    .then((response) => {
-      setImage(
-        true,
-        response.data.palette,
-        response.data.number_image,
-        response.data.color_image,
-        prompt.value
-      )
-      dialog.value = false
-      loadingState.value = false
-      router.push('/draft/write')
-    })
+  axios.post(host + '/draft/pipo-s3', { url: imageSrc.value }).then((response) => {
+    setImage(
+      true,
+      response.data.palette,
+      response.data.number_image,
+      response.data.color_image,
+      prompt.value
+    )
+    dialog.value = false
+    loadingState.value = false
+    router.push('/draft/write')
+  })
 }
 //-그려줘라고 입력하면 그림을 만들어드려요
 </script>

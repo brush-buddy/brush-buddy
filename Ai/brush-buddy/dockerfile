@@ -12,4 +12,5 @@ RUN pip install -r requirements.txt
 COPY . /brush-buddy
 EXPOSE 8000
 
+RUN mkdir -p ./assets
 CMD [ "python", "/brush-buddy/main.py", "--host", "0.0.0.0", "--port", "8000"]
