@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -38,8 +39,16 @@ public class MachineServiceImpl implements MachineService{
     @Transactional
     @Override
     public boolean connectMachine(Integer userId, Long machineId) {
+        //연결하려는 기기가 있는지 확인
         Machine machine= machineRepository.findById(machineId)
                 .orElseThrow(()-> new BaseException(ErrorCode.NOT_FOUND_DATA));
+
+        // 만약 이미 사용중인 기기가 있다면
+        Optional<Machine> usedMachine= machineRepository.findByUser_UserId(userId);
+        if(usedMachine.isPresent()){
+            usedMachine.get().setUser(null); // 해당 userid 초기화
+        }
+
         machine.setUser(User.builder().userId(userId).build());
         return true;
     }
