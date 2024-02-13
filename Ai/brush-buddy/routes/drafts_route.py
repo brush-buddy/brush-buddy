@@ -30,7 +30,8 @@ draft_router = APIRouter(
 async def ai_generate(prompt: requestPrompt.Prompt, user_id: int = 1):
     user = user_id
     # prompt -> 이미지 url
-    aigenerateimageurl = images.AiImage().createImage(prompt.prompt)
+    simplePrompt = "따라그리기 중간정도 난이도로 "
+    aigenerateimageurl = images.AiImage().createImage(simplePrompt + prompt.prompt)
     print(aigenerateimageurl)
 
     r = redis.StrictRedis(host="i10a205.p.ssafy.io", port=6379, db=0)
