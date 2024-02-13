@@ -1,5 +1,5 @@
 <template>
-  <div style="margin-top: 2rem">
+  <div>
     <h2 style="margin-left: 1rem">이 도안으로 만든 그림들</h2>
     <div style="display: flex; justify-content: space-around; margin-top: 1rem">
       <div style="display: flex; flex-direction: column; align-items: center">
