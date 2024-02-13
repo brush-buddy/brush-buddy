@@ -1,5 +1,8 @@
 package com.a205.brushbuddy.draft.service;
 
+import com.a205.brushbuddy.board.domain.Board;
+import com.a205.brushbuddy.board.dto.BoardListResponseDto;
+import com.a205.brushbuddy.board.repository.BoardRepository;
 import com.a205.brushbuddy.draft.domain.Category;
 import com.a205.brushbuddy.draft.domain.Draft;
 import com.a205.brushbuddy.draft.domain.DraftCategory;
@@ -41,7 +44,7 @@ public class DraftServiceImpl implements DraftService{
     private final DraftCategoryRepository draftCategoryRepository;
     private final BookmarkRepository bookmarkRepository;
     private final PurchaseRepository purchaseRepository;
-
+    private final BoardRepository boardRepository;
     public Page<DraftListResponseDto> getDraftList(Pageable pageable) {
         try {
 
@@ -81,19 +84,22 @@ public class DraftServiceImpl implements DraftService{
         // return null;
     }
 
-    public DraftDetailResponseDto getDraftDetail(Long draftId) {
+    public DraftDetailResponseDto getDraftDetail(int userId, Long draftId) throws Exception{
 
-          try {
-            Draft draft = draftRepository.findByDraftId(draftId);
+
+              Draft draft = draftRepository.findByDraftId(draftId);
+              if(draft == null){
+                  throw new BaseException(ErrorCode.NOT_FOUND_DATA);
+              }
               List<Long> categoryIds = draftCategoryRepository.findCategoryIdByDraftId(draftId);
               List<Category> categories = categoryRepository.findCategoryContentByCategoryIdIn(categoryIds);
               List<String> categoryContents = categories.stream().map(Category::getCategoryContent).toList();
-
+          boolean bookmarked = bookmarkRepository.findByBookmarkId_User_UserId_AndBookmarkId_Draft_DraftId(userId, draftId).orElseGet(()->null) != null;
+            boolean buy = purchaseRepository.findAllByPurchaseId_Draft_DraftIdAndPurchaseId_User_UserId(draftId, userId).orElseGet(()->null) != null;
             return DraftDetailResponseDto.builder().draftId(draft.getDraftId())
                 .draftPrice(draft.getDraftPrice())
                 .draftColorCode(draft.getDraftColorCode())
                 .draftThumbnail(draft.getDraftThumbnail())
-                .draftFileLink(draft.getDraftFileLink())
                 .draftIsAI(draft.getDraftIsAI())
                 .draftIsPublic(draft.getDraftIsPublic())
                 .draftIsDefault(draft.getDraftIsDefault())
@@ -103,12 +109,12 @@ public class DraftServiceImpl implements DraftService{
                 .draftPrompt(draft.getDraftPrompt())
                 .draftTimestamp(draft.getDraftTimestamp())
                 .userId(draft.getUser().getUserId())
+                    .isBuy(buy)
+                    .isBookmark(bookmarked)
+                    .isAuthor(draft.getUser().getUserId() == userId)
                 .categoryContents(categoryContents)
                 .build();
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            return null;
-        }
+
     }
 
     @Transactional
@@ -151,6 +157,11 @@ public class DraftServiceImpl implements DraftService{
         }
 
         return new DraftCreateResponseDto(draft.getDraftId(), palette.getPaletteId());
+    }
+
+    @Override
+    public Page<Board> getBoardListByDraftId(Long draftId, Pageable pageable) {
+        return boardRepository.findAllByDraft_DraftId(draftId, pageable);
     }
 
     @Transactional
