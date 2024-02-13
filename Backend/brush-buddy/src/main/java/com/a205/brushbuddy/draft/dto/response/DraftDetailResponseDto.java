@@ -24,8 +24,6 @@ public class DraftDetailResponseDto {
 
 	private String draftThumbnail;
 
-	private String draftFileLink;
-
 	private Boolean draftIsAI;
 
 	private Boolean draftIsPublic;
