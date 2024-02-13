@@ -10,7 +10,7 @@ import { storeToRefs } from 'pinia'
 import { useBookmarksStore } from '../stores/bookmark'
 const { setBookmarkState } = useBookmarksStore()
 const BookmarkStore = useBookmarksStore()
-const { isBookmarked } = storeToRefs(BookmarkStore)
+const { isBookmarked, totalBookmarkNum } = storeToRefs(BookmarkStore)
 
 const route = useRoute()
 const draftId = route.params.id
@@ -34,23 +34,21 @@ const draft = ref<any>({
   categoryContents: []
 })
 
+const downloadNum = ref(0)
+
 const im = ref<any>({ order: '-1', imageUrl: '' })
 const charge = ref(false)
 const dialog = ref(false)
 console.log(route.params)
 onMounted(() => {
   localAxios()
-    .get(`/draft/${draftId}/is-bookmarked`)
-    .then(function (response: any) {
-      console.log(response.data)
-      setBookmarkState(response.data)
-    })
-
-  localAxios()
     .get('draft/' + draftId)
     .then((res) => {
       draft.value = res.data
       console.log(draft.value)
+      setBookmarkState(res.data.isBookmark, res.data.draftBookmark)
+
+      downloadNum.value = draft.value.draftDownload
     })
 })
 
@@ -63,6 +61,38 @@ const purchase = () => {
     .catch((err) => {
       console.log(err)
       charge.value = true
+    })
+}
+
+const downloadImage = async (imageUrl: string) => {
+  try {
+    const response = await fetch(imageUrl)
+    const imageBlob = await response.blob()
+    const url = window.URL.createObjectURL(imageBlob)
+
+    const link = document.createElement('a')
+    link.href = url
+    link.download = 'downloaded_image' // 다운로드될 파일명
+    document.body.appendChild(link)
+    link.click()
+
+    // 클릭 후에는 링크를 제거
+    document.body.removeChild(link)
+    window.URL.revokeObjectURL(url)
+    downloadNum.value += 1
+  } catch (error) {
+    console.error('이미지 다운로드 중 오류 발생:', error)
+  }
+}
+
+const download = () => {
+  localAxios()
+    .get('draft/' + draftId + '/download')
+    .then((res) => {
+      downloadImage(res.data)
+    })
+    .catch((err) => {
+      console.log(err)
     })
 }
 </script>
@@ -82,15 +112,49 @@ const purchase = () => {
       :image-thumbnail="draft.draftThumbnail"
       :draft-color-code="draft.draftColorCode"
     />
+    <div
+      style="
+        display: flex;
+        justify-content: space-between;
+        margin-top: 3rem;
+        margin-bottom: 0.5rem;
+        align-items: center;
+        width: 100vw;
+        padding: 0 1rem;
+      "
+    >
+      <div>
+        <template v-for="(category, i) in draft.categoryContents" :key="i">
+          <v-chip color="pink" dark size="small" style="margin-right: 0.2rem">{{
+            category
+          }}</v-chip>
+        </template>
+      </div>
+      <div style="display: flex; align-items: center">
+        <v-icon icon="mdi-download-outline"></v-icon>
+        <p class="draftInfo">{{ downloadNum }}</p>
+        <v-icon icon="mdi-bookmark-outline"></v-icon>
+        <p class="draftInfo">{{ totalBookmarkNum }}</p>
+      </div>
+    </div>
     <div style="display: flex; justify-content: space-between; width: 100vw; padding: 0 1rem">
       <div style="height: 4rem; display: flex; align-items: center">
         <div v-if="draft.isAuthor | draft.isBuy">
-          <v-btn prepend-icon="mdi-download" size="small">다운로드하기</v-btn>
+          <v-btn
+            prepend-icon="mdi-download"
+            size="small"
+            @click="download()"
+            variant="tonal"
+            color="purple-darken-2"
+            >다운로드하기</v-btn
+          >
         </div>
       </div>
       <div style="height: 4rem; display: flex; align-items: center">
         <div v-if="draft.isAuthor">
-          <v-btn prepend-icon="mdi-pencil" size="small">수정하기</v-btn>
+          <v-btn variant="tonal" color="pink-darken-2" prepend-icon="mdi-pencil" size="small"
+            >수정하기</v-btn
+          >
         </div>
         <div v-if="!draft.isAuthor">
           <v-btn
@@ -117,8 +181,10 @@ const purchase = () => {
                 >
               </div>
               <v-card-actions style="display: flex; justify-content: flex-end">
-                <v-btn color="primary" @click="(dialog = false), purchase()">구매하기</v-btn>
-                <v-btn color="primary" @click="dialog = false">취소</v-btn>
+                <v-btn variant="tonal" color="pink-darken-2" @click="(dialog = false), purchase()"
+                  >구매하기</v-btn
+                >
+                <v-btn variant="tonal" color="pink-darken-2" @click="dialog = false">취소</v-btn>
               </v-card-actions>
             </v-card>
           </v-dialog>
@@ -150,4 +216,9 @@ const purchase = () => {
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+.draftInfo {
+  margin: 0 0.5rem;
+  font-size: 1.5rem;
+}
+</style>
