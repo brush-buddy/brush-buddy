@@ -45,6 +45,7 @@ onMounted(() => {
     .get('draft/' + draftId)
     .then((res) => {
       draft.value = res.data
+      console.log(draft.value)
       setBookmarkState(res.data.isBookmark, res.data.draftBookmark)
 
       downloadNum.value = draft.value.draftDownload
@@ -114,26 +115,46 @@ const download = () => {
     <div
       style="
         display: flex;
-        justify-content: flex-end;
-        margin-top: 0.5rem;
+        justify-content: space-between;
+        margin-top: 3rem;
         margin-bottom: 0.5rem;
         align-items: center;
+        width: 100vw;
+        padding: 0 1rem;
       "
     >
-      <v-icon icon="mdi-download-outline" size="small"></v-icon>
-      <p class="thumbnailUnder">{{ downloadNum }}</p>
-      <v-icon icon="mdi-bookmark-outline" size="small"></v-icon>
-      <p class="thumbnailUnder">{{ totalBookmarkNum }}</p>
+      <div>
+        <template v-for="(category, i) in draft.categoryContents" :key="i">
+          <v-chip color="pink" dark size="small" style="margin-right: 0.2rem">{{
+            category
+          }}</v-chip>
+        </template>
+      </div>
+      <div style="display: flex; align-items: center">
+        <v-icon icon="mdi-download-outline"></v-icon>
+        <p class="draftInfo">{{ downloadNum }}</p>
+        <v-icon icon="mdi-bookmark-outline"></v-icon>
+        <p class="draftInfo">{{ totalBookmarkNum }}</p>
+      </div>
     </div>
     <div style="display: flex; justify-content: space-between; width: 100vw; padding: 0 1rem">
       <div style="height: 4rem; display: flex; align-items: center">
         <div v-if="draft.isAuthor | draft.isBuy">
-          <v-btn prepend-icon="mdi-download" size="small" @click="download()">다운로드하기</v-btn>
+          <v-btn
+            prepend-icon="mdi-download"
+            size="small"
+            @click="download()"
+            variant="tonal"
+            color="purple-darken-2"
+            >다운로드하기</v-btn
+          >
         </div>
       </div>
       <div style="height: 4rem; display: flex; align-items: center">
         <div v-if="draft.isAuthor">
-          <v-btn prepend-icon="mdi-pencil" size="small">수정하기</v-btn>
+          <v-btn variant="tonal" color="pink-darken-2" prepend-icon="mdi-pencil" size="small"
+            >수정하기</v-btn
+          >
         </div>
         <div v-if="!draft.isAuthor">
           <v-btn
@@ -160,8 +181,10 @@ const download = () => {
                 >
               </div>
               <v-card-actions style="display: flex; justify-content: flex-end">
-                <v-btn color="primary" @click="(dialog = false), purchase()">구매하기</v-btn>
-                <v-btn color="primary" @click="dialog = false">취소</v-btn>
+                <v-btn variant="tonal" color="pink-darken-2" @click="(dialog = false), purchase()"
+                  >구매하기</v-btn
+                >
+                <v-btn variant="tonal" color="pink-darken-2" @click="dialog = false">취소</v-btn>
               </v-card-actions>
             </v-card>
           </v-dialog>
@@ -193,4 +216,9 @@ const download = () => {
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+.draftInfo {
+  margin: 0 0.5rem;
+  font-size: 1.5rem;
+}
+</style>
