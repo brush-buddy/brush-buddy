@@ -37,8 +37,6 @@ import CommunityComponent from '../components/Community/CommunityComponent.vue'
 import type { BoardThumbnail } from '../api/type'
 import CWriteButton from '../components/Community/CWriteButton.vue'
 
-const axios = inject('axios')
-
 const boardThumbnailDataFirst = ref<BoardThumbnail[]>([])
 const boardThumbnailDataSecond = ref<BoardThumbnail[]>([])
 
@@ -59,7 +57,7 @@ const scrollTrigger = () => {
         setTimeout(() => {
           localAxios()
             .get(
-              'http://localhost:8080/api/v1/board/list?direction=DESC&listNum=10&pageNum=' +
+              '/board/list?direction=DESC&listNum=10&pageNum=' +
                 currentPage.value
             )
             .then((response: any) => {
