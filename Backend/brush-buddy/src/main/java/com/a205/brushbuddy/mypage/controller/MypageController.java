@@ -7,15 +7,15 @@ import com.a205.brushbuddy.mypage.dto.request.*;
 import com.a205.brushbuddy.mypage.dto.response.*;
 import com.a205.brushbuddy.mypage.service.MypageService;
 import com.a205.brushbuddy.util.JwtUtil;
+import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
@@ -88,5 +88,17 @@ public class MypageController {
                 requestDto.getOrder());
         MypagePurchasedDraftListResponseDto dto = mypageService.getPurchasedDraftList(userId, requestDto.getSearch(), pageable);
         return  ResponseEntity.ok(dto);
+    }
+
+    @PostMapping("/nickname")
+    public ResponseEntity<?> modifyNickname(@RequestBody MypageModifyNicknameRequestDto requestDto, HttpServletRequest request){
+        Integer userId = jwtUtil.getUserId(request)
+                .orElseThrow(() -> new BaseException(ErrorCode.INVALID_TOKEN)); // 헤더의 access token으로 userId 추출, null 반환시 유효하지 않은 토큰 오류 전송
+        boolean result = mypageService.modifyNickname(userId, requestDto.getNewNickname());
+        if (result) {
+            return ResponseEntity.ok("Nickname successfully modified");
+        } else {
+            throw new BaseException(ErrorCode.BAD_REQUEST);
+        }
     }
 }

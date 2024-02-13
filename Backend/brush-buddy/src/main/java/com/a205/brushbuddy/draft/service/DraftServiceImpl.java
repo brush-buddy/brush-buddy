@@ -83,13 +83,11 @@ public class DraftServiceImpl implements DraftService{
 
     public DraftDetailResponseDto getDraftDetail(Long draftId) {
 
-
           try {
             Draft draft = draftRepository.findByDraftId(draftId);
               List<Long> categoryIds = draftCategoryRepository.findCategoryIdByDraftId(draftId);
               List<Category> categories = categoryRepository.findCategoryContentByCategoryIdIn(categoryIds);
               List<String> categoryContents = categories.stream().map(Category::getCategoryContent).toList();
-
 
             return DraftDetailResponseDto.builder().draftId(draft.getDraftId())
                 .draftPrice(draft.getDraftPrice())

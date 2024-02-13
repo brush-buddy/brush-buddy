@@ -1,13 +1,14 @@
 <template>
   <v-card-text>
     <div>
-      <v-text-field :label="curNick"></v-text-field>
+      <v-text-field :label="nickname" v-model="newNickname"></v-text-field>
     </div>
     <div id="buttons">
-      <v-btn @click="snackbar = true">apply</v-btn>
+      <v-btn @click="modifyNickname" >apply</v-btn>
       <div @click="withdrawal">회원 탈퇴</div>
     </div>
   </v-card-text>
+
   <!-- 닉네임 수정 스낵바 -->
   <v-snackbar v-model="snackbar" :timeout="timeout">
     {{ text }}
@@ -22,7 +23,18 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import {withDraw} from "../../api/user"
-const curNick = ref("현재 닉네임");
+import {localAxios} from "../../api/axios"
+defineProps(["nickname"]);
+const emits = defineEmits(["reloadInfo"])
+const newNickname = ref('');
+const modifyNickname = ()=>{
+  localAxios().post(`/mypage/nickname`, {"newNickname":newNickname.value})
+  .then((res)=>{
+    console.log(res);
+    snackbar.value = true;
+    emits("reloadInfo")
+  });
+};
 const withdrawal = () => {
   withDraw().then(() => {
     alert("회원탈퇴 완료");
