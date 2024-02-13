@@ -1,5 +1,8 @@
 package com.a205.brushbuddy.draft.controller;
 
+import com.a205.brushbuddy.board.domain.Board;
+import com.a205.brushbuddy.board.dto.BoardListRequestDto;
+import com.a205.brushbuddy.board.dto.BoardListResponseDto;
 import com.a205.brushbuddy.draft.dto.request.DraftCategoryModifyRequestDto;
 import com.a205.brushbuddy.draft.dto.request.DraftCreateRequestDto;
 import com.a205.brushbuddy.draft.dto.request.DraftListRequestDto;
@@ -22,6 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -72,12 +76,12 @@ public class DraftController {
 	})
 	@ResponseBody
 	@GetMapping("/{draftId}")
-	public ResponseEntity<DraftDetailResponseDto> getDraftDetail(@PathVariable("draftId") long draftId, HttpServletRequest request) {
+	public ResponseEntity<DraftDetailResponseDto> getDraftDetail(@PathVariable("draftId") long draftId, HttpServletRequest request) throws Exception{
 		Integer userId = jwtUtil.getUserId(request)
 			.orElseThrow(() -> new BaseException(ErrorCode.INVALID_TOKEN)); // 헤더의 access token으로 userId 추출, null 반환시 유효하지 않은 토큰 오류 전송
 
-		DraftDetailResponseDto draft = draftService.getDraftDetail(draftId);
-		draft.setIsAuthor(draft.getUserId().equals(userId));
+		DraftDetailResponseDto draft = draftService.getDraftDetail(userId, draftId);
+
 		return new ResponseEntity<>(draft, HttpStatus.OK);
 	}
 	
@@ -203,6 +207,35 @@ public class DraftController {
 		System.out.println(userId +" "+ draftId);
 		boolean check = draftService.bookmarkCheck(userId, draftId);
 		return new ResponseEntity<>(!check, HttpStatus.OK);
+	}
+
+
+	@GetMapping("/{draftId}/boardList")
+	public ResponseEntity<?> getBoardList(BoardListRequestDto requestDto, @PathVariable Long draftId){
+		Pageable pageable = PageRequest.of(requestDto.getPageNum() - 1, //현재 페이지
+				requestDto.getListNum(), // 페이지 당 개수
+				requestDto.getDirection(), //오름차순 or 내림차순
+				requestDto.getOrder()); // 기준
+
+		Page<Board> boards = draftService.getBoardListByDraftId(draftId, pageable); //정렬 기준
+
+		//결과물 dto로 변환
+		BoardListResponseDto result = BoardListResponseDto.builder()
+				.boards(boards.getContent().stream().map(
+						m -> BoardListResponseDto.BoardDTO.builder()
+								.boardId(m.getBoardId())
+								.boardTitle(m.getBoardTitle())
+								.views(m.getBoardWatch())
+								.thumbnail(m.getBoardThumbnail())
+								.likeNumber(m.getBoardLikeNumber())
+								.createdAt(m.getBoardTimestamp().toString())
+								.build()).toList())
+				.length(boards.getNumberOfElements())
+				.pageNum(boards.getNumber() + 1)
+				.totalPage(boards.getTotalPages())
+				.build();
+
+		return ResponseEntity.ok(result);
 	}
 
 

@@ -2,6 +2,7 @@
 import { useRoute } from 'vue-router'
 import { onMounted, inject, ref } from 'vue'
 import DraftDetailComponent from '../components/DraftDetail/DraftDetailComponent.vue'
+import DraftDetailCommunityThumbnailListComponent from '../components/DraftDetail/DraftDetailCommunityThumbnailListComponent.vue'
 import PaletteDetailComponent from '../components/Palette/PaletteDetailComponent.vue'
 import { localAxios } from '../api/axios'
 
@@ -54,12 +55,21 @@ onMounted(() => {
 </script>
 
 <template>
-  <div style="display: flex; justify-content: center; bottom: 2rem">
+  <div
+    style="
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      bottom: 2rem;
+      flex-direction: column;
+    "
+  >
     <DraftDetailComponent
       :draft-id="Number(draftId)"
       :image-thumbnail="draft.draftThumbnail"
       :draft-color-code="draft.draftColorCode"
     />
+    <DraftDetailCommunityThumbnailListComponent :draft-id="Number(draftId)" />
   </div>
 </template>
 
