@@ -238,5 +238,12 @@ public class DraftController {
 		return ResponseEntity.ok(result);
 	}
 
+	@GetMapping("/{draftId}/download")
+	public ResponseEntity<?> downloadDraft(@PathVariable Long draftId, HttpServletRequest request) throws Exception {
+		Integer userId = jwtUtil.getUserId(request)
+				.orElseThrow(() -> new BaseException(ErrorCode.INVALID_TOKEN)); // 헤더의 access token으로 userId 추출, null 반환시 유효하지 않은 토큰 오류 전송
+
+		return ResponseEntity.ok(draftService.downloadDraft(userId, draftId));
+	}
 
 }
