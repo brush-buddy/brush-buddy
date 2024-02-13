@@ -35,10 +35,28 @@ const getPurchaseList = async (
     ) : Promise<AxiosResponse> => {
    return await localAxios().get('/mypage/payments/list', {params : params})
 }
+
+//북마크 추가 api
+const addBookmark = async (
+    draftId: Number,
+): Promise<AxiosResponse> => {
+    return await localAxios().post(`/draft/${draftId}/bookmark`)
+}
+
+//북마크 취소 api
+const removeBookmark = async (
+    draftId: Number,
+): Promise<AxiosResponse> => {
+    return await localAxios().delete(`/draft/${draftId}/bookmark`)
+}
+
 export {
     getMadeList,
-    getPurchaseList
+    getPurchaseList,
+    addBookmark,
+    removeBookmark
 };
+    
 interface DraftPipoInfo { 
     pipoUrl? : String,
     pipoPalette?: JSON,
@@ -50,6 +68,6 @@ interface DraftThumbnail {
     draftBookmark?: number,
     draftDownload?: number,
     draftId?: number,
-    draftThumbnail?: string
+    draftThumbnail?: string 
 }
 export type {DraftPipoInfo, DraftThumbnail}

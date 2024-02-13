@@ -20,12 +20,10 @@ const dialog = ref(false)
 const file = ref([])
 const loadingState = ref(false)
 const makeImage = () => {
-  console.log(file.value[0])
   loadingState.value = true
   let fileData = new FormData()
   fileData.append('image', file.value[0])
-  console.log(fileData.get('image'))
-  console.log(fileData)
+
   if (file.value) {
     axios
       .post(host + '/draft/pipo-local', fileData, {
@@ -37,11 +35,12 @@ const makeImage = () => {
         setImage(false, res.data.palette, res.data.number_image, res.data.color_image, 'draft')
         dialog.value = false
         loadingState.value = false
-        router.push('/draft/write')
       })
       .catch((err) => {
+        console.log(err)
         loadingState.value = false
       })
+    router.push('/draft/write')
   }
 }
 const preview = ref('../../assets/images/empty.png')

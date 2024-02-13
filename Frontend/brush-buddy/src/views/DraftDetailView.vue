@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { useRoute } from 'vue-router'
 import { onMounted, inject, ref } from 'vue'
-import DraftDetailComponent from '../components/Draft/DraftDetailComponent.vue'
-// import axios from 'axios'
+import DraftDetailComponent from '../components/DraftDetail/DraftDetailComponent.vue'
+import PaletteDetailComponent from '../components/Palette/PaletteDetailComponent.vue'
 import { localAxios } from '../api/axios'
 const route = useRoute()
 const draftId = route.params.id
@@ -20,7 +20,8 @@ const draft = ref<any>({
   draftDownload: 5,
   draftBookmark: 10,
   draftPrompt: 'Sample prompt 1',
-  draftTimestamp: '2024-01-29T03:00:00.000+00:00'
+  draftTimestamp: '2024-01-29T03:00:00.000+00:00',
+  categoryContents: []
 })
 
 const im = ref<any>({ order: '-1', imageUrl: '' })
@@ -39,9 +40,12 @@ onMounted(() => {
 </script>
 
 <template>
-  <div>
-    {{ draft }}
-    <DraftDetailComponent />
+  <div style="display: flex; justify-content: center; bottom: 2rem">
+    <DraftDetailComponent
+      :draft-id="Number(draftId)"
+      :image-thumbnail="draft.draftThumbnail"
+      :draft-color-code="draft.draftColorCode"
+    />
   </div>
 </template>
 
