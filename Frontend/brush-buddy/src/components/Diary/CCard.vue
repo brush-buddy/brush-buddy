@@ -1,6 +1,6 @@
 <template>
   <div id="cardWrapper">
-    <div id="container">
+    <router-link :to="{ name: 'boardDetail', params: { id: board.boardId } }">
       <div id="title">{{ board.boardTitle }}</div>
       <div id="thumbnailBox">
         <div id="thumbnail">
@@ -13,21 +13,20 @@
         <img src="../../assets/icon/heart_filled.png" alt="view" width="20rem" height="20rem" />
         <div>&nbsp;{{ board.views }}</div>
       </div>
-    </div>
+    </router-link>
   </div>
 </template>
 <script setup lang="ts">
 import { defineProps } from 'vue'
 
 const prop = defineProps(['board'])
-// console.log("incard",prop.board);
+console.log("incard",prop.board);
 </script>
 <style scoped>
 #cardWrapper {
   border-style: solid;
   border-width: 0 0 1px;
   border-color: gray;
-  padding: 0.5rem 0 1rem;
 }
 #thumbnailBox {
   display: flex;
@@ -37,7 +36,6 @@ const prop = defineProps(['board'])
 #thumbnail {
   background-color: #ffffff;
   width: 90vw;
-  padding: 1rem;
   overflow: hidden;
   > img {
     width: 100%;
@@ -47,12 +45,20 @@ const prop = defineProps(['board'])
 }
 #title {
   margin-left: 5vw;
+  margin-top: 1vh;
+  margin-bottom: 1vh;
   font-size: 1.5rem;
   font-weight: 600;
 }
 #rel {
+  margin-right: 5vw;
+  margin-top: 1vh;
+  margin-bottom: 1vh;
   display: flex;
   justify-content: flex-end;
-  margin-right: 5vw;
+}
+a {
+  text-decoration: none;
+  color: black;
 }
 </style>

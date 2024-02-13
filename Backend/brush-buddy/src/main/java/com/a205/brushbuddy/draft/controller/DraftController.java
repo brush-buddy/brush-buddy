@@ -182,7 +182,7 @@ public class DraftController {
 		Integer userId = jwtUtil.getUserId(request)
 				.orElseThrow(() -> new BaseException(ErrorCode.INVALID_TOKEN)); // 헤더의 access token으로 userId 추출, null 반환시 유효하지 않은 토큰 오류 전송
 
-		URI uri = new URI("http://localhost:8000/api/v1/draft/ai-generation");
+		URI uri = new URI("https://bb-ai.duckdns.org/api/v1/draft/ai-generation");
 
 		ResponseEntity<String> str =  restTemplate.postForEntity(uri, new DraftMakeRequestDto(userId, prompt), String.class);
 		System.out.println(str.toString());

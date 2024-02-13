@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -112,10 +113,12 @@ public class BoardServiceImpl implements BoardService{
 
     //게시글 상세 보기
     @Override
-    public BoardDetailResponseDto getDetail(Long boardId) {
+    public BoardDetailResponseDto getDetail(Integer userId, Long boardId) {
         // id로 보드 찾기
         Board result = boardRepository.findByBoardIdAndBoardIsDeletedFalse(boardId)
                 .orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND_DATA));
+        // 해당 게시글의 좋아요 여부 가지고 오기
+        Optional<Heart> isHeart = heartRepository.findByHeartId_User_UserIdAndHeartId_Board_BoardId(userId, boardId);
 
         //해당 게시물의 조회수 증가
         result.setBoardWatch(result.getBoardWatch()+1);
@@ -147,6 +150,7 @@ public class BoardServiceImpl implements BoardService{
                         .likeNumber(result.getBoardLikeNumber())
                         .thumbnail(result.getBoardThumbnail())
                         .views(result.getBoardWatch())
+                        .isHeart(isHeart.isPresent()) // 좋아요 데이터 존재하면 체크하기
                         .photo(photos); // 가져온 사진 넣어주기
 
         //도안 있는지 확인하고 없으면 그냥 보내기
