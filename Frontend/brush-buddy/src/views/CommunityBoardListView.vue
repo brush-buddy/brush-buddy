@@ -56,10 +56,7 @@ const scrollTrigger = () => {
         showloader.value = true
         setTimeout(() => {
           localAxios()
-            .get(
-              '/board/list?direction=DESC&listNum=10&pageNum=' +
-                currentPage.value
-            )
+            .get('/board/list?direction=DESC&listNum=10&pageNum=' + currentPage.value)
             .then((response: any) => {
               pageCount.value = response.data.totalPage
 

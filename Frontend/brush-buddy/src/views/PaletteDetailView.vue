@@ -59,9 +59,9 @@ const saveColor = () => {
 }
 
 const saveServer = () => {
-  // paletteColorInfo.value.forEach((element) => {
-  //   console.log(element)
-  // })
+  paletteColorInfo.value.forEach((element: any) => {
+    console.log(element)
+  })
   localAxios().put(`/palette/${paletteId}`, {
     paletteName: paletteTitle.value,
 
