@@ -4,6 +4,13 @@ import { onMounted, inject, ref } from 'vue'
 import DraftDetailComponent from '../components/DraftDetail/DraftDetailComponent.vue'
 import PaletteDetailComponent from '../components/Palette/PaletteDetailComponent.vue'
 import { localAxios } from '../api/axios'
+
+import { storeToRefs } from 'pinia'
+import { useBookmarksStore } from '../stores/bookmark'
+const { setBookmarkState } = useBookmarksStore()
+const BookmarkStore = useBookmarksStore()
+const { isBookmarked } = storeToRefs(BookmarkStore)
+
 const route = useRoute()
 const draftId = route.params.id
 const draft = ref<any>({
@@ -30,6 +37,13 @@ console.log(im.value)
 
 console.log(route.params)
 onMounted(() => {
+  localAxios()
+    .get(`/draft/${draftId}/is-bookmarked`)
+    .then(function (response: any) {
+      console.log(response.data)
+      setBookmarkState(response.data)
+    })
+
   localAxios()
     .get('draft/' + draftId)
     .then((res) => {
