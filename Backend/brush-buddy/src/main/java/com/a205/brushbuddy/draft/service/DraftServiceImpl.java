@@ -2,6 +2,7 @@ package com.a205.brushbuddy.draft.service;
 
 import com.a205.brushbuddy.draft.domain.Category;
 import com.a205.brushbuddy.draft.domain.Draft;
+import com.a205.brushbuddy.draft.domain.DraftCategory;
 import com.a205.brushbuddy.draft.dto.request.DraftCategoryModifyRequestDto;
 import com.a205.brushbuddy.draft.dto.request.DraftCreateRequestDto;
 import com.a205.brushbuddy.draft.dto.response.DraftCreateResponseDto;
@@ -81,8 +82,15 @@ public class DraftServiceImpl implements DraftService{
     }
 
     public DraftDetailResponseDto getDraftDetail(Long draftId) {
+
+
           try {
             Draft draft = draftRepository.findByDraftId(draftId);
+              List<Long> categoryIds = draftCategoryRepository.findCategoryIdByDraftId(draftId);
+              List<Category> categories = categoryRepository.findCategoryContentByCategoryIdIn(categoryIds);
+              List<String> categoryContents = categories.stream().map(Category::getCategoryContent).toList();
+
+
             return DraftDetailResponseDto.builder().draftId(draft.getDraftId())
                 .draftPrice(draft.getDraftPrice())
                 .draftColorCode(draft.getDraftColorCode())
@@ -97,6 +105,7 @@ public class DraftServiceImpl implements DraftService{
                 .draftPrompt(draft.getDraftPrompt())
                 .draftTimestamp(draft.getDraftTimestamp())
                 .userId(draft.getUser().getUserId())
+                .categoryContents(categoryContents)
                 .build();
         } catch (Exception e) {
             System.out.println(e.getMessage());
