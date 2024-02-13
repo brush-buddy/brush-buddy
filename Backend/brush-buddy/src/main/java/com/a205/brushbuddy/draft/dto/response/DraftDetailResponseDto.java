@@ -15,6 +15,7 @@ public class DraftDetailResponseDto {
 	private Integer userId;
 	private Integer draftPrice;
 
+	private Boolean isAuthor;
 	private String draftColorCode;
 
 	private String draftThumbnail;
