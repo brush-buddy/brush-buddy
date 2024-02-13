@@ -19,6 +19,9 @@ public class DraftDetailResponseDto {
 	private Boolean isAuthor;
 	private String draftColorCode;
 
+	private Boolean isBookmark;
+	private Boolean isBuy;
+
 	private String draftThumbnail;
 
 	private String draftFileLink;
