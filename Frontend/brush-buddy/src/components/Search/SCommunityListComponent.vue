@@ -25,7 +25,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, inject, onMounted } from 'vue'
+import { ref, onMounted } from 'vue'
 import { localAxios } from '../../api/axios'
 import CommunityComponent from '../../components/Community/CommunityComponent.vue'
 import type { BoardThumbnail } from '../../api/type'
@@ -46,15 +46,11 @@ const scrollTrigger = () => {
   const observer = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
       if (entry.intersectionRatio > 0 && currentPage.value < pageCount.value) {
-        console.log('load...')
-
-        console.log(currentPage.value + ' ' + pageCount.value)
         showloader.value = true
         setTimeout(() => {
           localAxios()
             .get('/board/list?listNum=20&pageNum=1&search=' + searchValue.value)
             .then((response: any) => {
-              console.log(response.data.boards)
               pageCount.value = response.data.totalPage
 
               for (let i = 0; i < response.data.boards.length; i++) {

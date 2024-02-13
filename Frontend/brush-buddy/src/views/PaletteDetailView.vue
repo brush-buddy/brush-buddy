@@ -29,7 +29,7 @@ onMounted(async () => {
     listKeys.value.push(parseInt(element))
   })
   maxColorKey.value = Math.max(...listKeys.value) + 1
-  console.log(maxColorKey.value)
+
   paletteTitle.value = response.data.paletteName
 })
 const color = ref('')
