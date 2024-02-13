@@ -1,4 +1,4 @@
-FROM summa1234/brushbuddy:latest
+FROM python:3.10
 
 RUN apt-get update && apt-get install -y python3-pip
 RUN apt-get -y install libgl1-mesa-glx
