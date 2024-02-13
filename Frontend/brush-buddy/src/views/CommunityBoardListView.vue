@@ -56,10 +56,7 @@ const scrollTrigger = () => {
         showloader.value = true
         setTimeout(() => {
           localAxios()
-            .get(
-              '/board/list?direction=DESC&listNum=10&pageNum=' +
-                currentPage.value
-            )
+            .get('/board/list?direction=DESC&listNum=10&pageNum=' + currentPage.value)
             .then((response: any) => {
               pageCount.value = response.data.totalPage
 
@@ -87,7 +84,7 @@ const scrollTrigger = () => {
 
 onMounted(() => {
   localAxios()
-    .get('http://localhost:8080/api/v1/board/list?direction=DESC&listNum=10&pageNum=1')
+    .get('/board/list?direction=DESC&listNum=10&pageNum=1')
     .then((response: any) => {
       console.log('onload!')
       // 총 페이지 수 설정

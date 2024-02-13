@@ -38,7 +38,13 @@
       <p class="thumbnailUnder">{{ community.views }}</p>
     </div>
     <div>
-      <v-carousel hide-delimiters class="elevation-2">
+      <v-carousel
+        :continuous="false"
+        :show-arrows="false"
+        hide-delimiter-background
+        delimiter-icon="mdi-square"
+        class="elevation-2"
+      >
         <v-carousel-item
           v-for="(item, i) in community.photo"
           :key="i"
@@ -52,8 +58,8 @@
         style="margin-top: 1rem; display: flex; justify-content: space-between; padding-right: 1rem"
       >
         <div>
-          <template v-for="(item, i) in community.hashtag">
-            <v-chip size="small" color="success" style="margin-right: 0.5rem">
+          <template v-for="(item, i) in community.hashtag" :key="i">
+            <v-chip size="small" color="success" style="margin: 0.3rem">
               {{ item }}
             </v-chip>
           </template>
@@ -68,8 +74,21 @@
       <p>{{ community.contents }}</p>
     </div>
     <div id="reply">
-      <ReplyComponent :board-id="Number(boardId)" />
+      <ReplyComponent :board-id="Number(boardId)" @replyReload="reloadReplyList" />
     </div>
+
+    <div
+      style="display: flex; justify-content: center; flex-direction: column; align-items: center"
+    >
+      <template v-for="(item, i) in replyList" :key="i">
+        <CReplyListComponent
+          :replyList="item"
+          :board-id="Number(boardId)"
+          @replyReload="reloadReplyList"
+        />
+      </template>
+    </div>
+
     <div class="blank"></div>
   </div>
 </template>
@@ -80,6 +99,9 @@ import { onMounted, inject, ref } from 'vue'
 import ReplyComponent from '../components/DraftDetail/CReply.vue'
 import { localAxios } from '../api/axios'
 import { storeToRefs } from 'pinia'
+import { getReplyList } from '../api/board'
+import type { ReplyListElement, BoardSearchParam } from '../api/board'
+import CReplyListComponent from '../components/DraftDetail/CReplyListComponent.vue'
 // import { useLikeStore } from '../stores/boardlike'
 
 // const { likeState } = storeToRefs(useLikeStore())
@@ -98,10 +120,12 @@ const community = ref<any>({
   createdAt: '-'
 })
 
-const im = ref<any>({ order: '-1', imageUrl: '' })
-console.log('hi')
-console.log(im.value)
+const replyList = ref<ReplyListElement[]>([])
 
+const params = ref<BoardSearchParam>({
+  listNum: 10000,
+  pageNum: 1
+})
 console.log(route.params)
 onMounted(() => {
   localAxios()
@@ -110,15 +134,32 @@ onMounted(() => {
       console.log(response.data)
       community.value = response.data
     })
+
   // console.log(parseInt(boardId))
   // useLikeStore().setLikeState(parseInt(boardId))
   // console.log(likeState)
+
+  getReplyList(Number(boardId), params.value).then((res) => {
+    replyList.value = res.data.replyList
+  })
+  console.log('reply')
+  console.log(replyList.value)
 })
+
+const reloadReplyList = () => {
+  console.log('reloadReplyList')
+  getReplyList(Number(boardId), params.value).then((res) => {
+    replyList.value = res.data.replyList
+    console.log(replyList.value)
+  })
+}
 </script>
 
 <style scoped>
 #reply {
   margin-bottom: 6rem;
+  display: flex;
+  justify-content: center;
 }
 
 .blank {
