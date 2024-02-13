@@ -2,14 +2,18 @@
   <div class="rect">
     <div id="category"></div>
     <div id="draft">
-      <DraftDetailComponent />
+      <!-- <DraftDetailComponent
+        :draft-id="draftId"
+        :image-thumbnail="draft.draftThumbnail"
+        :draft-color-code="draft.draftColorCode"
+      /> -->
     </div>
     <div id="palette"></div>
   </div>
 </template>
 
 <script setup lang="ts">
-import DraftDetailComponent from '../DraftDetail/DraftDetailComponent.vue'
+// import DraftDetailComponent from '../DraftDetail/DraftDetailComponent.vue'
 import { ref } from 'vue'
 </script>
 

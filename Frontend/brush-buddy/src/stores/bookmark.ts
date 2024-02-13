@@ -13,13 +13,17 @@ export const useBookmarksStore = defineStore("bookmarks", () => {
     }
 
      async function addBookmark(draftId: number) { 
-        localAxios().post(`/draft/${draftId}/bookmark`)
+         localAxios().post(`/draft/${draftId}/bookmark`)
+        .then((response: any) => {
+           isBookmarked.value = !isBookmarked.value;
+          })
+         
     }
 
     async function removeBookmark(draftId: number) {
         localAxios().post(`/draft/${draftId}/is-bookmarked`)
         .then((response: any) => {
-            isBookmarked.value = response.data; // 북마크 상태를 저장
+            isBookmarked.value = !isBookmarked.value // 북마크 상태를 저장
           })
     }
     

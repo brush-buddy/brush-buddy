@@ -83,6 +83,7 @@ import { storeToRefs } from 'pinia'
 // import { useLikeStore } from '../stores/boardlike'
 
 // const { likeState } = storeToRefs(useLikeStore())
+
 const route = useRoute()
 const boardId = route.params.id
 const community = ref<any>({

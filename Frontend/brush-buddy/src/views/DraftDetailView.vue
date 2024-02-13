@@ -20,7 +20,8 @@ const draft = ref<any>({
   draftDownload: 5,
   draftBookmark: 10,
   draftPrompt: 'Sample prompt 1',
-  draftTimestamp: '2024-01-29T03:00:00.000+00:00'
+  draftTimestamp: '2024-01-29T03:00:00.000+00:00',
+  categoryContents: []
 })
 
 const im = ref<any>({ order: '-1', imageUrl: '' })
@@ -39,14 +40,12 @@ onMounted(() => {
 </script>
 
 <template>
-  <div>
-    {{ draft }}
+  <div style="display: flex; justify-content: center; bottom: 2rem">
     <DraftDetailComponent
-      :draftId="draftId"
-      :imageThumbnail="draft.draftThumbnail"
-      :draftColorCode="draft.draftColorCode"
+      :draft-id="Number(draftId)"
+      :image-thumbnail="draft.draftThumbnail"
+      :draft-color-code="draft.draftColorCode"
     />
-    <div style="height: 6rem"></div>
   </div>
 </template>
 
