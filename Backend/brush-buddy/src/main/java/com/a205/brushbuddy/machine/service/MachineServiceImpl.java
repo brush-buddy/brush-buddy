@@ -36,6 +36,8 @@ public class MachineServiceImpl implements MachineService{
         return null;
     }
 
+
+
     @Transactional
     @Override
     public boolean connectMachine(Integer userId, Long machineId) {
@@ -63,14 +65,21 @@ public class MachineServiceImpl implements MachineService{
     }
 
     @Override
-    public MachinePrintResponseDto convertRGB2CMYKW(MachinePrintRequestDto requestDto) {
+    public Long getLoginMahcineId(Integer userId) {
+        Machine machine= machineRepository.findByUser_UserId(userId)
+                .orElseThrow(()-> new BaseException(ErrorCode.NOT_FOUND_DATA));
+        return machine.getMachineId();
+    }
+
+    @Override
+    public MachinePrintResponseDto convertRGB2CMYKW(Long machineId, MachinePrintRequestDto requestDto) {
         String color = requestDto.getRGBCode()
                 .substring(1);
 
         int[] cmykw = rgbToCmyk(color);
 
         return MachinePrintResponseDto.builder()
-                .id(requestDto.getId())
+                .id(machineId.toString())
                 .color(MachinePrintResponseDto.ColorDTO.builder()
                         .c(cmykw[0])
                         .m(cmykw[1])
