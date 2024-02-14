@@ -35,12 +35,14 @@ const makeImage = () => {
         setImage(false, res.data.palette, res.data.number_image, res.data.color_image, 'draft')
         dialog.value = false
         loadingState.value = false
+        router.push('/draft/write')
       })
       .catch((err) => {
         console.log(err)
         loadingState.value = false
+        router.push('/draft')
       })
-    router.push('/draft/write')
+    
   }
 }
 const preview = ref('../../assets/images/empty.png')

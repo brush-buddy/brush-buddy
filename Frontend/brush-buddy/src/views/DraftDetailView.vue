@@ -1,16 +1,17 @@
 <script setup lang="ts">
 import { useRoute } from 'vue-router'
-import { onMounted, inject, ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import DraftDetailComponent from '../components/DraftDetail/DraftDetailComponent.vue'
 import DraftDetailCommunityThumbnailListComponent from '../components/DraftDetail/DraftDetailCommunityThumbnailListComponent.vue'
-import PaletteDetailComponent from '../components/Palette/PaletteDetailComponent.vue'
+import items from '../stores/menutypes'
+
 import { localAxios } from '../api/axios'
 
 import { storeToRefs } from 'pinia'
 import { useBookmarksStore } from '../stores/bookmark'
 const { setBookmarkState } = useBookmarksStore()
 const BookmarkStore = useBookmarksStore()
-const { isBookmarked, totalBookmarkNum } = storeToRefs(BookmarkStore)
+const { totalBookmarkNum } = storeToRefs(BookmarkStore)
 
 const route = useRoute()
 const draftId = route.params.id
@@ -36,18 +37,20 @@ const draft = ref<any>({
 
 const downloadNum = ref(0)
 
-const im = ref<any>({ order: '-1', imageUrl: '' })
 const charge = ref(false)
 const dialog = ref(false)
+const modify = ref(false)
+const categories = ref([])
+
 console.log(route.params)
 onMounted(() => {
   localAxios()
     .get('draft/' + draftId)
     .then((res) => {
       draft.value = res.data
+      categories.value = res.data.categoryContents
       console.log(draft.value)
       setBookmarkState(res.data.isBookmark, res.data.draftBookmark)
-
       downloadNum.value = draft.value.draftDownload
     })
 })
@@ -72,7 +75,7 @@ const downloadImage = async (imageUrl: string) => {
 
     const link = document.createElement('a')
     link.href = url
-    link.download = 'downloaded_image' // 다운로드될 파일명
+    link.download = 'downloaded_image.jpeg' // 다운로드될 파일명
     document.body.appendChild(link)
     link.click()
 
@@ -90,6 +93,19 @@ const download = () => {
     .get('draft/' + draftId + '/download')
     .then((res) => {
       downloadImage(res.data)
+    })
+    .catch((err) => {
+      console.log(err)
+    })
+}
+
+const modifyCategories = () => {
+  localAxios()
+    .put('draft/' + draftId, {
+      categoryList: categories.value
+    })
+    .then((res) => {
+      console.log(res)
     })
     .catch((err) => {
       console.log(err)
@@ -118,13 +134,13 @@ const download = () => {
         justify-content: space-between;
         margin-top: 3rem;
         margin-bottom: 0.5rem;
-        align-items: center;
+        align-items: flex-start;
         width: 100vw;
         padding: 0 1rem;
       "
     >
       <div>
-        <template v-for="(category, i) in draft.categoryContents" :key="i">
+        <template v-for="(category, i) in categories" :key="i">
           <v-chip color="pink" dark size="small" style="margin-right: 0.2rem">{{
             category
           }}</v-chip>
@@ -152,9 +168,64 @@ const download = () => {
       </div>
       <div style="height: 4rem; display: flex; align-items: center">
         <div v-if="draft.isAuthor">
-          <v-btn variant="tonal" color="pink-darken-2" prepend-icon="mdi-pencil" size="small"
+          <v-btn
+            variant="tonal"
+            color="pink-darken-2"
+            prepend-icon="mdi-pencil"
+            size="small"
+            @click="modify = true"
             >수정하기</v-btn
           >
+          <v-dialog v-model="modify" width="auto">
+            <v-card style="width: 20rem">
+              <div
+                style="
+                  display: flex;
+                  flex-wrap: wrap;
+                  flex-direction: column;
+                  align-items: center;
+                  padding: 2rem 2rem 0rem 2rem;
+                "
+              >
+                <!-- {{ items }} -->
+                <v-autocomplete
+                  v-model="categories"
+                  :items="items['items'].value"
+                  chips
+                  closable-chips
+                  color="blue-grey-lighten-2"
+                  item-title="text"
+                  item-value="text"
+                  label="카테고리"
+                  multiple
+                  style="width: 15rem"
+                  bg-color="white"
+                >
+                  <template v-slot:chip="{ props, item }">
+                    <v-chip
+                      v-bind="props"
+                      :prepend-icon="item.raw.icon"
+                      :text="item.raw.text"
+                    ></v-chip>
+                  </template>
+
+                  <template v-slot:item="{ props, item }">
+                    <v-list-item
+                      v-bind="props"
+                      :prepend-icon="item.raw.icon"
+                      :title="item.raw.text"
+                    ></v-list-item>
+                  </template>
+                </v-autocomplete>
+              </div>
+              <v-card-actions style="display: flex; justify-content: flex-end">
+                <v-btn color="primary" @click="modify = false">취소</v-btn>
+                <v-btn color="success" @click="(modify = false), modifyCategories()"
+                  >수정하기</v-btn
+                >
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
         </div>
         <div v-if="!draft.isAuthor">
           <v-btn
