@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { on } from 'events';
 import { QrcodeStream } from 'vue-qrcode-reader'
 import { useRouter} from 'vue-router';
 import { connectMachine } from "../../api/machine"

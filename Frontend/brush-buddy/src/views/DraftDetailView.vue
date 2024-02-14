@@ -3,7 +3,6 @@ import { useRoute } from 'vue-router'
 import { onMounted, inject, ref } from 'vue'
 import DraftDetailComponent from '../components/DraftDetail/DraftDetailComponent.vue'
 import DraftDetailCommunityThumbnailListComponent from '../components/DraftDetail/DraftDetailCommunityThumbnailListComponent.vue'
-import PaletteDetailComponent from '../components/Palette/PaletteDetailComponent.vue'
 import { localAxios } from '../api/axios'
 
 import { storeToRefs } from 'pinia'

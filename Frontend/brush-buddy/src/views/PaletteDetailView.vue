@@ -82,13 +82,13 @@ const removeItem = () => {
 
 import { printPaint  } from '@/api/machine'
 
-const printColor = (color:String) => {
+const printColor = async (color:String) => {
   const data = {
     id : 1,
     color : color
   }
   
-  printPaint(data)
+  await printPaint(data)
 }
 </script>
 
