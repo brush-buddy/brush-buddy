@@ -26,19 +26,31 @@
         </v-card>
       </template>
     </v-dialog>
-    <div id="milage">
-      <div>보유한 마일리지</div>
-      <div id="amount">
-        <div id="num">{{milage}}</div>
-        <div id="M">M</div>
-      </div>
-    </div>
+    <!-- 마일리지 히스토리-->
+    <v-dialog width="75%">
+      <template v-slot:activator="{ props }">
+        <div id="milage" v-bind="props">
+          <div>보유한 마일리지 <u style="color:gray">히스토리 보기</u></div>
+          <div id="amount">
+            <div id="num">{{milage}}</div>
+            <div id="M">M</div>
+          </div>
+        </div>
+      </template>
+      <!-- 마일리지 히스토리 팝업 -->
+      <!-- <template v-slot:default> -->
+        <v-card title="마일리지 히스토리">
+          <CMileageHistoryVue></CMileageHistoryVue>
+        </v-card>
+      <!-- </template> -->
+    </v-dialog>
   </div>
 </template>
 <script setup lang="ts">
 import CModifyProfile from "./CModifyProfile.vue";
 import {getUserInfo, signOut} from "../../api/user"
 import {onMounted, ref} from "vue";
+import CMileageHistoryVue from "./CMileageHistory.vue";
 const nickName = ref('');
 const milage = ref(0);
 onMounted(() => {
