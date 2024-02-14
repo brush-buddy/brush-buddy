@@ -1,18 +1,12 @@
 package com.a205.brushbuddy.board.controller;
 
+import org.hibernate.annotations.Parameter;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.a205.brushbuddy.board.domain.Board;
 import com.a205.brushbuddy.board.domain.Reply;
@@ -32,6 +26,7 @@ import com.a205.brushbuddy.util.JwtUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @RestController
@@ -80,6 +75,16 @@ public class BoardController {
         boardService.writeBoard(userId, requestDto);
         return ResponseEntity.ok().build();
     }
+//    @RequestMapping(value = "", method = RequestMethod.POST, produces = "application/json", consumes = "multipart/form-data")
+//    public ResponseEntity<?> writeBoard(
+//            @RequestParam(value = "title") String title,
+//            @RequestParam(value = "contents") String contents,
+//            @RequestParam(value = "hashtags") String hashtags,
+//            @RequestParam(value = "photo") MultipartFile photo,
+//            @RequestParam(value = "draftId") String draftId
+//            ) throws Exception{
+//        System.out.println();
+//    }
 
     // 게시판 상세조회
     @GetMapping("/{boardId}")

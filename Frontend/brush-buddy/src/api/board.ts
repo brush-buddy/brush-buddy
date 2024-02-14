@@ -17,7 +17,10 @@ type BoardDetail = {
     title : String,
     contents : String,
     hashtags : String[],
-    photo : BoardImage[],
+    photo : {
+        order : Number,
+        img: String
+    }[],
     draftId? : Number
 }
 
@@ -58,6 +61,7 @@ const getBoardList = async (
 const writeBoard = async (
     data: BoardDetail
     ) : Promise<AxiosResponse> => {
+        console.log("writeBoard called ",data)
     return await localAxios().post('/board', data)
 }
 
