@@ -18,11 +18,6 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 public class KakaopayApproveResponseDto {
-    public static final int size = 15;
-    public static final String[] name = {"aid", "tid", "cid", "sid", "partner_order_id", "partner_user_id",
-        "payment_method_type", "amount",
-        "card_info", "item_name", "item_code", "quantity", "created_at", "approved_at", "payloa"};
-
     private String aid;
     private String tid;
     private String cid;
