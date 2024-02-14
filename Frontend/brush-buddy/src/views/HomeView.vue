@@ -1,44 +1,43 @@
 <script setup lang="ts">
-import { useUserStore } from "../stores/user";
-import {ref} from 'vue';
-import HomeListView from "./HomeListView.vue";
+import { useUserStore } from '../stores/user'
+import { ref } from 'vue'
+import HomeListView from './HomeListView.vue'
 
 const login = () => {
-  console.log("login");
-  
-  const redirect_uri = encodeURIComponent(`${import.meta.env.VITE_APP_KAKAO_REDIRECT_URL}`);
+  console.log('login')
+
+  const redirect_uri = encodeURIComponent(`${import.meta.env.VITE_APP_KAKAO_REDIRECT_URL}`)
   const client_id = `${import.meta.env.VITE_APP_KAKAO_API_REST_KEY}` // TODO: 키 삽입
   const URI = `https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${client_id}&redirect_uri=${redirect_uri}`
-  
+
   const params = {
     redirectUri: `${import.meta.env.VITE_APP_KAKAO_REDIRECT_URL}`
   }
-  
-  window.Kakao.Auth.authorize(params);
+
+  window.Kakao.Auth.authorize(params)
 }
-const active = ref(false);
-const userStore = useUserStore();
+const active = ref(false)
+const userStore = useUserStore()
 if (userStore.accessToken != '') {
-  active.value = true;
-  console.log(active.value);
+  active.value = true
 }
 </script>
 
 <template>
-    <HomeListView v-if="active"/>
+  <HomeListView v-if="active" />
 
   <div v-else id="background">
     <div id="home">
       <img src="../assets/logo.png" alt="logo" id="logo" />
-      
-      <img src="../assets/kakao.png" alt="kakao" @click="login" />  
+
+      <img src="../assets/kakao.png" alt="kakao" @click="login" />
     </div>
   </div>
 </template>
 
 <style scoped>
 #background {
-  background-image: url("../assets/background.png");
+  background-image: url('../assets/background.png');
   background-repeat: no-repeat;
   background-attachment: fixed;
   background-size: cover;
