@@ -30,7 +30,9 @@ import { localAxios } from '../../api/axios'
 import DraftThumbnailComponent from '../Draft/DraftThumbnailComponent.vue'
 import type { DraftThumbnail } from '../../api/draft'
 
-const searchValue = ref('')
+const props = defineProps<{
+  searchValue: string
+}>()
 const communityThumbnailDataFirst = ref<DraftThumbnail[]>([])
 const communityThumbnailDataSecond = ref<DraftThumbnail[]>([])
 
@@ -49,9 +51,9 @@ const scrollTrigger = () => {
         setTimeout(() => {
           localAxios()
             .get(
-              searchValue.value == ''
+              props.searchValue == ''
                 ? '/draft/list?size=10&page=' + currentPage.value
-                : '/draft/list?size=10&page=' + currentPage.value + '&search=' + searchValue.value
+                : '/draft/list?size=10&page=' + currentPage.value + '&search=' + props.searchValue
             )
             .then((response: any) => {
               if (response.data.content == undefined) {
@@ -83,7 +85,11 @@ const scrollTrigger = () => {
 
 onMounted(() => {
   localAxios()
-    .get('/draft/list?size=10&page=0')
+    .get(
+      props.searchValue == ''
+        ? '/draft/list?size=10&page=0'
+        : '/draft/list?size=10&page=0' + currentPage.value + '&search=' + props.searchValue
+    )
     .then((response: any) => {
       if (response.data.content == undefined) {
         return
@@ -101,13 +107,12 @@ onMounted(() => {
   scrollTrigger()
 })
 
-const searchList = (searchString: string) => {
-  searchValue.value = searchString
+const searchList = () => {
   communityThumbnailDataFirst.value = []
   communityThumbnailDataSecond.value = []
-
+  console.log(`community search called with searchValue: ${props.searchValue}`)
   localAxios()
-    .get('/draft/list?size=10&page=0&search=' + searchString)
+    .get('/draft/list?size=10&page=0&search=' + props.searchValue)
     .then((response: any) => {
       if (response.data.content == undefined) {
         return
