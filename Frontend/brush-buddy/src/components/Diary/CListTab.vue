@@ -29,6 +29,40 @@ const activeTab = ref<string | null>('made')
 const setActiveTab = (path: string) => {
   activeTab.value = path
 }
+import { watch, onMounted } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
+
+const route = useRoute();
+const router = useRouter();
+
+const updateTabFromUrl = () => {
+      const path = router.currentRoute.value.path;
+      console.log(path)
+      switch (path) {
+        case '/diary':
+        activeTab.value = 'made';
+          break;
+        case '/diary/purchaseDraft':
+        activeTab.value = 'purchase';
+          break;
+        case '/diary/bookmarkDraft':
+        activeTab.value = 'bookmark';
+          break;
+        case '/diary/myboard':
+          activeTab.value = 'board';
+           break;
+        case '/diary/palette':
+          activeTab.value = 'palette';
+          break;
+      }
+    };
+
+watch(route, updateTabFromUrl);
+onMounted(
+  () => {
+    updateTabFromUrl()
+  }
+)
 </script>
 <style scoped>
 .sticky {
