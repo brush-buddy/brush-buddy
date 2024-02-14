@@ -18,9 +18,17 @@ const login = () => {
 }
 const active = ref(false)
 const userStore = useUserStore()
-if (userStore.accessToken != '') {
-  active.value = true
-}
+import {  isLogin } from "../api/user"
+
+import { onMounted } from 'vue'; 
+onMounted( async () => {
+  await isLogin()
+  .then(({data}) => {
+    active.value = data 
+  }).catch((error) => {
+    console.log("isLogin error")
+  });;
+});
 </script>
 
 <template>
