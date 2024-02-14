@@ -103,7 +103,7 @@ public class KakaopayController {
                     KakaopayApproveRequestDto.builder().cid("TC0ONETIME").partner_order_id(mileageNumber.toString())
                             .partner_user_id(String.valueOf(userId)).item_name("mileage").quantity("1")
                             .total_amount(String.valueOf(mileage)).tax_free_amount("0")
-                            .approval_url("https://brush-buddy.duckdns.org/pay/complete")
+                            .approval_url("https://brush-buddy.duckdns.org/pay/success")
                             .cancel_url("https://brush-buddy.duckdns.org/pay/cancel")
                             .fail_url("https://brush-buddy.duckdns.org/pay/fail").build());
             String tid = Objects.requireNonNull(payApprove.getBody()).getTid();
