@@ -22,6 +22,11 @@ import VMyBoard from '../components/Diary/VMyBoard.vue'
 import HomeListView from '../views/HomeListView.vue'
 import payViewVue from '../views/payView.vue'
 import payChargeVue from '../views/payCharge.vue'
+import successComponentVue from '../components/Pay/successComponent.vue'
+import cancelComponentVue from '../components/Pay/cancelComponent.vue'
+import failCompoenentVue from '../components/Pay/failCompoenent.vue'
+
+
 const router = createRouter({
   history: createWebHistory(""),
   routes: [
@@ -149,8 +154,25 @@ const router = createRouter({
     },
     {
       name: 'pay',
-      path: '/pay/:status/:pg_token',
-      component: payViewVue,
+      path: '/pay',
+      children: [
+        {
+          path: '/pay',
+          component: DiaryView
+        },
+        {
+          path: '/pay/success',
+          component: successComponentVue
+        },
+        {
+          path: '/pay/cancel',
+          component: cancelComponentVue
+        },
+        {
+          path: '/pay/fail',
+          component: failCompoenentVue
+        }
+      ]
     },
     {
       name: 'charge',
