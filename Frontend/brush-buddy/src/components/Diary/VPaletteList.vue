@@ -18,6 +18,7 @@
           width="auto"
           :scrim="false"
           transition="dialog-bottom-transition"
+          class="camera-dialog"
         >
           <template v-slot:activator="{ props }">
             <v-btn
@@ -32,13 +33,13 @@
             기기 연결하기
             </v-btn>
           </template>
-          <v-card>
+          <v-card class="camera-card">
             <v-card-title class="text-h5">
               기기 연결 하기
             </v-card-title>
             <v-card-text>QR코드를 카메라에 인식시켜주세요</v-card-text>
             <v-card-actions>
-              <v-spacer>
+              <v-spacer class="camera-component">
                 <CameraQRCodeComponent class="camera-component" @machineConnect="cameraOn=false"></CameraQRCodeComponent>
                 <v-btn
                   class="buttonUnder"
@@ -180,11 +181,24 @@ import { disconnectMachine } from "@/api/machine";
   .machine-button{
     display: flex;
     justify-content: end;
-    padding: 2rem 3rem
+    padding: 1vh 5vw
   }
   .camera-component{
-    height: 30vh;
-    width: 30vw;
+    height: 40vh;
+    width: 80%;
+  }
+
+  .camera-card{
+    padding-top: 2vh;
+    display: flex;
+    align-items: center;
+  }
+  .camera-component{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
   }
   </style>
   
