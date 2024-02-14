@@ -46,19 +46,24 @@ public class MachineController {
     // 물감을 출력한다.
     // redis로 pub하여 구독 중인 fastapi가 클라이언트에게 요청을 보낸다.
     @PostMapping("/print")
-    public ResponseEntity<?> print(@RequestBody MachinePrintRequestDto requestDto) throws JsonProcessingException {
+    public ResponseEntity<?> print(@RequestBody MachinePrintRequestDto requestDto, HttpServletRequest request) throws JsonProcessingException {
+        // 연결된 기기 ID 가져오기
+        Integer userId = jwtUtil.getUserId(request)
+                .orElseThrow(() -> new BaseException(ErrorCode.INVALID_TOKEN));// 헤더의 access token으로 userId 추출, null 반환시 유효하지 않은 토큰 오류 전송
+
+        Long machineId = machineService.getLoginMahcineId(userId);
 
         // WebSocket를 통해 서버에 연결하기 위한 URI
         URI url = UriComponentsBuilder.newInstance()
                 .scheme("ws")
                 .host("i10a205.p.ssafy.io")
-                .path("/ws/print/"+requestDto.getId())
+                .path("/ws/print/"+ machineId)
                 .port(3004)
                 .build().encode(StandardCharsets.UTF_8).toUri();
 
 
 //        // 색깔을 String 형태로 변환
-        MachinePrintResponseDto responseDto = machineService.convertRGB2CMYKW(requestDto);
+        MachinePrintResponseDto responseDto = machineService.convertRGB2CMYKW(machineId,requestDto);
         ObjectMapper objectMapper = new ObjectMapper();
         String cmd = objectMapper.writeValueAsString(responseDto);
 

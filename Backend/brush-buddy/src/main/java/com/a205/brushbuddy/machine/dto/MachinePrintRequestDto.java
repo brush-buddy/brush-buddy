@@ -11,6 +11,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MachinePrintRequestDto {
-    String id;
     String RGBCode; // Hexcode
 }
