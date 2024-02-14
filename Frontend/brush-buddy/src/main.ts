@@ -24,6 +24,8 @@ const vuetify = createVuetify({
       },
 });
 const pinia = createPinia();
+import piniaPluginPersistedState from 'pinia-plugin-persistedstate';
+pinia.use(piniaPluginPersistedState)
 
 declare global {
   interface Window {

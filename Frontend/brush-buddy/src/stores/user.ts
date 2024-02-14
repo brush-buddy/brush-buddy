@@ -1,17 +1,22 @@
-import { defineStore } from "pinia";
-import { ref } from "vue";
+import { defineStore } from 'pinia'
+import { ref } from 'vue'
 
-const useUserStore = defineStore("user", () => {
-    const accessToken = ref('');
-    function setAccessToken(newToken:string){
-        accessToken.value = newToken
+const useUserStore = defineStore(
+  'user',
+  () => {
+    const accessToken = ref('')
+    function setAccessToken(newToken: string) {
+      accessToken.value = newToken
     }
 
     return {
-        accessToken,
-        setAccessToken
+      accessToken,
+      setAccessToken
     }
-})
+  },
+  {
+    persist: true
+  }
+)
 
-
-export {useUserStore}
+export { useUserStore }
