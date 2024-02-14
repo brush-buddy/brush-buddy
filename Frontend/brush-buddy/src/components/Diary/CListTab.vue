@@ -36,7 +36,7 @@ const setActiveTab = (path: string) => {
   top: 0px;
   line-height: 4rem;
   background-color: #ffffff;
-  z-index: 99999;
+
 }
 #tab {
   display: flex;

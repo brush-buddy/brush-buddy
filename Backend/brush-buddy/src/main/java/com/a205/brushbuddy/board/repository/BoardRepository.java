@@ -18,5 +18,5 @@ public interface BoardRepository extends JpaRepository<Board, Long>, BoardSearch
 	Page<Board> findByUser_UserIdAndBoardTitleContainsAndBoardIsDeletedFalse(Integer userId, String search, Pageable pageable); // 내가 쓴 게시글 리스트 조회 (검색어 포함)
 	Page<Board> findByUser_UserIdAndBoardIsDeletedFalse(Integer userId, Pageable pageable); // 내가 쓴 게시글 리스트 조회
 
-	Page<Board> findAllByDraft_DraftId(Long draftId, Pageable pageable);
+	Page<Board> findAllByDraft_DraftIdAndBoardIsDeletedIsFalse(Long draftId, Pageable pageable);
 }

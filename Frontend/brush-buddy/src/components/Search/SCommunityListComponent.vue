@@ -30,7 +30,9 @@ import { localAxios } from '../../api/axios'
 import CommunityComponent from '../../components/Community/CommunityComponent.vue'
 import type { BoardThumbnail } from '../../api/type'
 
-const searchValue = ref('')
+const props = defineProps<{
+  searchValue: string
+}>()
 const boardThumbnailDataFirst = ref<BoardThumbnail[]>([])
 const boardThumbnailDataSecond = ref<BoardThumbnail[]>([])
 
@@ -49,7 +51,7 @@ const scrollTrigger = () => {
         showloader.value = true
         setTimeout(() => {
           localAxios()
-            .get('/board/list?listNum=20&pageNum=1&search=' + searchValue.value)
+            .get('/board/list?listNum=20&pageNum=1&search=' + props.searchValue)
             .then((response: any) => {
               pageCount.value = response.data.totalPage
 
@@ -77,8 +79,13 @@ const scrollTrigger = () => {
 
 // 첫 페이지 로딩 시에 데이터를 불러오는 함수
 onMounted(() => {
+  console.log('make community list called ' + props.searchValue)
   localAxios()
-    .get('/board/list?listNum=20&pageNum=1')
+    .get(
+      props.searchValue == ''
+        ? '/board/list?listNum=20&pageNum=1'
+        : '/board/list?listNum=20&pageNum=1&search=' + props.searchValue
+    )
     .then((response: any) => {
       // 총 페이지 수 설정
       pageCount.value = response.data.totalPage
@@ -92,13 +99,17 @@ onMounted(() => {
   scrollTrigger()
 })
 
-const searchList = (searchString: string) => {
-  searchValue.value = searchString
+const searchList = () => {
+  console.log(`community search called with searchValue: ${props.searchValue}`)
   boardThumbnailDataFirst.value = []
   boardThumbnailDataSecond.value = []
   currentPage.value = 1
   localAxios()
-    .get('/board/list?listNum=20&pageNum=1&search=' + searchString)
+    .get(
+      props.searchValue === ''
+        ? '/board/list?listNum=20&pageNum=1'
+        : '/board/list?listNum=20&pageNum=1&search=' + props.searchValue
+    )
     .then((response: any) => {
       pageCount.value = response.data.totalPage
       for (let i = 0; i < response.data.boards.length; i++) {

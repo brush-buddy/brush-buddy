@@ -12,7 +12,7 @@ import java.util.List;
 
 @Repository
 public interface DraftRepository extends JpaRepository<Draft, Long> {
-	@NonNull Page<Draft> findAll(@NonNull Pageable pageable);
+	@NonNull Page<Draft> findAllByDraftIsDeletedIsFalseAndDraftIsPublicIsTrue(@NonNull Pageable pageable);
 	Draft findByDraftId(Long draftId);
 	Page<Draft> findAllByDraftIdIn(List<Long> DraftIdList, Pageable pageable);
 
