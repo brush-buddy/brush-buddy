@@ -11,8 +11,8 @@ function login(params: Object, success: (data:string) => void, fail: (error:stri
 
 
 // 리프레쉬 토큰 재발급 
-function getRefresh() : Promise<AxiosResponse>{
-    return instance.get('/auth/refresh');
+async function getRefresh() : Promise<AxiosResponse>{
+    return await instance.get('/auth/refresh');
 }
 
 // 로그아웃  
