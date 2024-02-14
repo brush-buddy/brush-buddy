@@ -24,6 +24,7 @@ app.add_middleware(
 connected_clients: Dict[str, WebSocket] = {}
 # message_from_client: Dict[str, str]  = {}
 semaphore = asyncio.Semaphore(value=1)
+timeout = 5;
 
 # 클라이언트가 WebSocket으로 연결될 때 호출되는 핸들러
 @app.websocket("/ws/{client_id}")
@@ -41,15 +42,13 @@ async def websocket_endpoint(websocket: WebSocket, client_id : str):
 
     try:
         # 클라이언트와 연결 유지를 진행한다.
-
+        # 서버가 클라이언트에게 핑을 날리고 다시 받는다.
         while True:
             async with semaphore:
-                data = await websocket.receive_text()
-                # message_from_client['message'] = data
-                # print(message_from_client.get('message'))
-
+                await websocket.send_text(f"ping")
+                data = await asyncio.wait_for(websocket.receive_text(),timeout=timeout) # 핑 보내고 5초대기
             print(f"client {client_id} said : {data}")
-            await websocket.send_text(f"Message text was: {data}")
+            await asyncio.sleep(5)
 
     # except WebSocketDisconnect:
     #     await websocket.close()
