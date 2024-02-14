@@ -10,13 +10,7 @@ function login(params: Object, success: (data:string) => void, fail: (error:stri
 }
 
 async function isLogin(){
-  instance.get("/auth/isLogin")
-  .then(({data}) => {
-    return data
-  }).catch((error) => {
-    console.log("isLogin error")
-    return false
-  });
+  return await instance.get("/auth/isLogin");
 }
 
 // 리프레쉬 토큰 재발급 
