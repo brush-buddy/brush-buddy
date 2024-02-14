@@ -8,7 +8,6 @@ from io import BytesIO
 from typing import Dict, List
 
 import cv2
-import db
 import numpy as np
 import redis
 import requests
@@ -31,7 +30,7 @@ draft_router = APIRouter(
 async def ai_generate(prompt: requestPrompt.Prompt, user_id: int = 1):
     user = user_id
     # prompt -> 이미지 url
-    simplePrompt = "Simple"
+    simplePrompt = "Simple Cute"
     aigenerateimageurl = images.AiImage().createImage(simplePrompt + prompt.prompt)
     # print(aigenerateimageurl)
 
@@ -43,7 +42,7 @@ async def ai_generate(prompt: requestPrompt.Prompt, user_id: int = 1):
 
     # cnt = db.redis.save_callnum(user)
 
-    if int(call_num) > 30:
+    if int(call_num) > 20:
         return JSONResponse(
             status_code=status.HTTP_429_TOO_MANY_REQUESTS,
             content={"error": "Too Many Requests"},
@@ -56,20 +55,22 @@ async def ai_generate(prompt: requestPrompt.Prompt, user_id: int = 1):
 @draft_router.post("/pipo-local", status_code=200, response_model=responsePipo.Pipo)
 async def to_pipo_savelocal(image: UploadFile = File(...)):
     # try:
-    UPLOAD_DIR = "./assets"  # 이미지를 저장할 서버 경로
+    # UPLOAD_DIR = "./assets"  # 이미지를 저장할 서버 경로
+
+    uuid_val = uuid.uuid1()
 
     content = await image.read()
-    filename = "image.jpg"
-    with open(os.path.join(UPLOAD_DIR, filename), "wb") as fp:
-        print("11111")
+    filename = f"image_{uuid_val}.jpg"
+    with open(filename, "wb") as fp:
         fp.write(content)  # 서버 로컬 스토리지에 이미지 저장 (쓰기)
-        print("22222")
 
-    content = cv2.imread("./assets/image.jpg")
+    content = cv2.imread(filename)
 
     json_string_palette, colored_draft_url, numbered_draft_url = (
         drafts.Drafts().pipo_convert(content)
     )
+
+    os.remove(filename)
 
     return responsePipo.Pipo(
         number_image=numbered_draft_url,
@@ -82,7 +83,7 @@ async def to_pipo_savelocal(image: UploadFile = File(...)):
 async def to_pipo_saves3(url: requestUrl.Url):
 
     uuid_val = uuid.uuid1()
-    img_dest = f"./assets/{uuid_val}.jpg"
+    img_dest = f"tmp_{uuid_val}.jpg"
 
     urllib.request.urlretrieve(url.url, img_dest)
 
@@ -91,6 +92,8 @@ async def to_pipo_saves3(url: requestUrl.Url):
     json_string_palette, colored_draft_url, numbered_draft_url = (
         drafts.Drafts().pipo_convert(content)
     )
+
+    os.remove(img_dest)
 
     return responsePipo.Pipo(
         number_image=numbered_draft_url,
