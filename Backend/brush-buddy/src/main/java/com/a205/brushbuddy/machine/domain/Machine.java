@@ -30,8 +30,8 @@ public class Machine {
     @JoinColumn(name = "user_id")
     private User user; // 사용 중인 사용자 ID
 
+    @Enumerated(EnumType.STRING)
     @Column(columnDefinition = "enum('personal','admin')", name = "owner", nullable = false)
-    @ColumnDefault("'personal'")
     private OwnerType owner; // 소유자 (personal or business)
 
     @Column(name = "machine_paint_amount")

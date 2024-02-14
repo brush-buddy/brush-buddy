@@ -20,6 +20,7 @@ import VPaletteList from '../components/Diary/VPaletteList.vue'
 import PaletteDetailView from '../views/PaletteDetailView.vue'
 import VMyBoard from '../components/Diary/VMyBoard.vue'
 import HomeListView from '../views/HomeListView.vue'
+
 const router = createRouter({
   history: createWebHistory(""),
   routes: [

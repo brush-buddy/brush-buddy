@@ -14,6 +14,7 @@ import com.a205.brushbuddy.user.domain.User;
 import com.a205.brushbuddy.util.S3Uploader;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class BoardServiceImpl implements BoardService{
@@ -82,10 +84,12 @@ public class BoardServiceImpl implements BoardService{
                         .build());
             }
 
+            log.info(requestDto.getPhoto().toString());
             //게시판에 연관된 이미지 하나씩 저장
             for(BoardWriteRequestDto.PhotoDTO photoDTO : requestDto.getPhoto()){
                 //base64 디코딩 및 s3 업로드
                 String url = s3Uploader.uploadBase64Image(photoDTO.getImg(), "board"); //s3에 멀티파트 파일로 직접 업로드
+                log.info(url);
 
                 //이미지 엔티티 생성
                 Image img = Image.builder()
@@ -97,6 +101,7 @@ public class BoardServiceImpl implements BoardService{
                 //썸네일인지 확인하고 넣어주기
                 if(photoDTO.getOrder() == 1){
                     result.setBoardThumbnail(url);
+                    log.info("thumnail: " + url);
                     boardRepository.save(result);
                 }
 
@@ -152,6 +157,7 @@ public class BoardServiceImpl implements BoardService{
                         .views(result.getBoardWatch())
                         .isHeart(isHeart.isPresent()) // 좋아요 데이터 존재하면 체크하기
                         .isMine(result.getUser().getUserId().equals(userId)) // 가져온 게시판이 나의 게시판인가
+                        .authorNickname(result.getUser().getUserNickname())
                         .photo(photos); // 가져온 사진 넣어주기
 
         //도안 있는지 확인하고 없으면 그냥 보내기
