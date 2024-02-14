@@ -74,7 +74,6 @@ function localAxios(){
         userStore.setRefresh(true); // 문닫기 (한 번만 요청)
 
         const { data } = await getRefresh();
-        console.log(data)
 
         userStore.setAccessToken('Bearer '+data); // refresh token은 쿠키에 담긴다.
         // storeUserToken('refresh', data.refresh);
