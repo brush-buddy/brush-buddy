@@ -9,6 +9,15 @@ function login(params: Object, success: (data:string) => void, fail: (error:stri
   .catch(fail);
 }
 
+async function isLogin(){
+  instance.get("/auth/isLogin")
+  .then(({data}) => {
+    return data
+  }).catch((error) => {
+    console.log("isLogin error")
+    return false
+  });
+}
 
 // 리프레쉬 토큰 재발급 
 async function getRefresh() : Promise<AxiosResponse>{
@@ -36,4 +45,4 @@ const getUserInfo = async () : Promise<AxiosResponse> => {
  return await localAxios().get('/user');
 }
 
-  export {login, getRefresh, signOut, withDraw, getUserInfo}
+  export {login, getRefresh, signOut, withDraw, getUserInfo, isLogin}
