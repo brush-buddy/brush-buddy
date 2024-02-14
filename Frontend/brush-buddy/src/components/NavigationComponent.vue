@@ -5,6 +5,45 @@ const activeTab = ref<string | null>('home')
 const setActiveTab = (path: string) => {
   activeTab.value = path
 }
+
+import { watch, onMounted } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
+
+const route = useRoute();
+const router = useRouter();
+
+const updateTabFromUrl = () => {
+      const path = router.currentRoute.value.path;
+      console.log(path)
+      switch (path) {
+        case '/':
+        activeTab.value = 'home';
+          break;
+        case '/search':
+        activeTab.value = 'search';
+          break;
+        case '/draft':
+        activeTab.value = 'draft';
+          break;
+        case '/community':
+          activeTab.value = 'community';
+           break;
+      //   case '/diary':
+      //     activeTab.value = 'diary';
+      //     break;
+      }
+
+      if(path.startsWith("/diary")){
+        activeTab.value = 'diary';
+      }
+    };
+
+watch(route, updateTabFromUrl);
+onMounted(
+  () => {
+    updateTabFromUrl()
+  }
+)
 </script>
 
 <template>
