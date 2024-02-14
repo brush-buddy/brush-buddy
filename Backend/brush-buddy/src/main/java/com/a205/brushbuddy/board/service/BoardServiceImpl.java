@@ -157,6 +157,7 @@ public class BoardServiceImpl implements BoardService{
                         .views(result.getBoardWatch())
                         .isHeart(isHeart.isPresent()) // 좋아요 데이터 존재하면 체크하기
                         .isMine(result.getUser().getUserId().equals(userId)) // 가져온 게시판이 나의 게시판인가
+                        .authorNickname(result.getUser().getUserNickname())
                         .photo(photos); // 가져온 사진 넣어주기
 
         //도안 있는지 확인하고 없으면 그냥 보내기
