@@ -11,7 +11,7 @@ import lombok.Data;
 @Builder
 public class MileageHistoryResponseDto {
     private Page<Mileage> history;
-    private Integer length;
-    private Integer pageNum;
-    private Integer totalPage;
+//    private Integer length;
+//    private Integer pageNum;
+//    private Integer totalPage;
 }

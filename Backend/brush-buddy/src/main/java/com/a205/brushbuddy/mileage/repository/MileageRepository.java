@@ -13,8 +13,7 @@ import jakarta.transaction.Transactional;
 @Repository
 public interface MileageRepository extends JpaRepository<Mileage, Long> {
 
-    @Transactional
-    @Query
-    Page<Mileage> findAllByUserOrderByMileageTimestampDesc(Integer userId, Pageable pageable);
-
+//    @Transactional
+//    @Query
+    Page<Mileage> findAllByUser_UserIdOrderByMileageTimestampDesc(Integer userId, Pageable pageable);
 }

@@ -26,7 +26,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/v1/milage")
+@RequestMapping("/api/v1/mileage")
 @RequiredArgsConstructor
 public class MileageController {
     private final MileageService mileageService;
@@ -45,15 +45,19 @@ public class MileageController {
     public ResponseEntity<MileageHistoryResponseDto> getHistory(MileageHistoryReqeustDto mileageHistoryReqeustDto,
         HttpServletRequest request) {
         Integer userId = jwtUtil.getUserId(request).orElseThrow(() -> new BaseException(ErrorCode.UNAUTHORIZED));
+
+        System.out.println(userId);
         Pageable pageable = PageRequest.of(mileageHistoryReqeustDto.getPageNum() - 1,
             mileageHistoryReqeustDto.getListNum());
 
         Page<Mileage> result = mileageService.getMileageHistory(userId, pageable);
+
+        System.out.println(result.stream().toList().toString());
         MileageHistoryResponseDto mileageHistoryResponseDto = MileageHistoryResponseDto.builder()
             .history(result)
-            .length(result.getNumberOfElements())
-            .pageNum(result.getNumber() + 1)
-            .totalPage(result.getTotalPages())
+//            .length(result.getNumberOfElements())
+//            .pageNum(result.getNumber() + 1)
+//            .totalPage(result.getTotalPages())
             .build();
 
         return new ResponseEntity<MileageHistoryResponseDto>(mileageHistoryResponseDto, HttpStatus.OK);

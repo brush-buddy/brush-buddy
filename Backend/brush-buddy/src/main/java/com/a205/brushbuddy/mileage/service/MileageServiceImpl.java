@@ -43,6 +43,6 @@ public class MileageServiceImpl implements MileageService {
 
     @Override
     public Page<Mileage> getMileageHistory(int userId, Pageable pageable) {
-        return mileageRepository.findAllByUserOrderByMileageTimestampDesc(userId, pageable);
+        return mileageRepository.findAllByUser_UserIdOrderByMileageTimestampDesc(userId, pageable);
     }
 }

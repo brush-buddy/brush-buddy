@@ -6,7 +6,7 @@ import lombok.Data;
 @Data
 @Builder
 public class MileageSpendRequestDto {
-    private Integer workplaceId;
+    private int workplaceId;
     private int mileageAmount;
     private String mileageContent;
 }
