@@ -6,7 +6,7 @@
       </div>
       <div>
         <div id="name-box">
-          <span id="name" @click="logout">{{nickName}}</span>
+          <span id="name" @click="logout">{{ nickName }}</span>
           <span>님</span>
         </div>
         <div>다채로운 하루 되세요!</div>
@@ -18,7 +18,7 @@
       </template>
       <template v-slot:default="{ isActive }">
         <v-card title="프로필 수정">
-          <CModifyProfile :nickname="nickName" @reloadInfo="getUserInfoReload"/>
+          <CModifyProfile :nickname="nickName" @reloadInfo="getUserInfoReload" />
           <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn text="Close Dialog" @click="isActive.value = false"></v-btn>
@@ -26,40 +26,44 @@
         </v-card>
       </template>
     </v-dialog>
-    <div id="milage">
+    <div id="milage" @click="router.push('/charge')">
       <div>보유한 마일리지</div>
       <div id="amount">
-        <div id="num">{{milage}}</div>
+        <div id="num">{{ milage }}</div>
         <div id="M">M</div>
       </div>
     </div>
   </div>
 </template>
 <script setup lang="ts">
-import CModifyProfile from "./CModifyProfile.vue";
-import {getUserInfo, signOut} from "../../api/user"
-import {onMounted, ref} from "vue";
-const nickName = ref('');
-const milage = ref(0);
+import CModifyProfile from './CModifyProfile.vue'
+import { getUserInfo, signOut } from '../../api/user'
+import { onMounted, ref } from 'vue'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
+const nickName = ref('')
+const milage = ref(0)
+
 onMounted(() => {
   getUserInfo().then((res) => {
-    console.log(res.data);
-    nickName.value = res.data.userNickName;
-    milage.value = res.data.mileage;
+    console.log(res.data)
+    nickName.value = res.data.userNickName
+    milage.value = res.data.mileage
   })
-});
+})
 const logout = () => {
   signOut().then((res) => {
-    alert('로그아웃 됐습니다.');
-  });
+    alert('로그아웃 됐습니다.')
+  })
 }
 
 const getUserInfoReload = () => {
-  console.log("reload called");
+  console.log('reload called')
   getUserInfo().then((res) => {
-    console.log(res.data);
-    nickName.value = res.data.userNickName;
-    milage.value = res.data.mileage;
+    console.log(res.data)
+    nickName.value = res.data.userNickName
+    milage.value = res.data.mileage
   })
 }
 </script>
