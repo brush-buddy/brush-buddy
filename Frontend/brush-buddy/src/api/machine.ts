@@ -1,9 +1,7 @@
 import { localAxios } from "./axios";
 
 type MachineRequestType = {
-    id : Number,
     color : String
-
 }
 
 export type {

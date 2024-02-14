@@ -81,15 +81,18 @@ const removeItem = () => {
 }
 
 import { printPaint  } from '@/api/machine'
+import { useUserStore } from '@/stores/user'
 
 const printColor = async (color:String) => {
   const data = {
-    id : 1,
     color : color
   }
   
   await printPaint(data)
 }
+
+const userStore = useUserStore();
+
 </script>
 
 <template>
