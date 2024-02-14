@@ -9,6 +9,7 @@ import { localAxios } from '../api/axios'
 
 import { storeToRefs } from 'pinia'
 import { useBookmarksStore } from '../stores/bookmark'
+import router from '@/router'
 const { setBookmarkState } = useBookmarksStore()
 const BookmarkStore = useBookmarksStore()
 const { totalBookmarkNum } = storeToRefs(BookmarkStore)
@@ -111,6 +112,17 @@ const modifyCategories = () => {
       console.log(err)
     })
 }
+
+const deleteDraft = () => {
+  localAxios()
+  .delete('/draft/'+draftId)
+  .then((res) => {
+    alert("도안이 삭제 처리 되었습니다.")
+    router.push("/search")
+  }).catch((error) => {
+    alert("오류로 인해 삭제에 실패했습니다.")
+  })
+}
 </script>
 
 <template>
@@ -167,7 +179,7 @@ const modifyCategories = () => {
         </div>
       </div>
       <div style="height: 4rem; display: flex; align-items: center">
-        <div v-if="draft.isAuthor">
+        <div class="author-buttons" v-if="draft.isAuthor">
           <v-btn
             variant="tonal"
             color="pink-darken-2"
@@ -175,6 +187,14 @@ const modifyCategories = () => {
             size="small"
             @click="modify = true"
             >수정하기</v-btn
+          >
+          <v-btn
+            variant="tonal"
+            color="white-darken-2"
+            prepend-icon="mdi-delete"
+            size="small"
+            @click="deleteDraft"
+            >삭제하기</v-btn
           >
           <v-dialog v-model="modify" width="auto">
             <v-card style="width: 20rem">
@@ -291,5 +311,10 @@ const modifyCategories = () => {
 .draftInfo {
   margin: 0 0.5rem;
   font-size: 1.5rem;
+}
+.author-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 1vw;
 }
 </style>
