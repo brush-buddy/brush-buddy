@@ -9,9 +9,9 @@
       </div>
       <div id="rel">
         <img src="../../assets/icon/view.png" alt="view" width="20rem" height="20rem" />
-        <div>&nbsp;{{ board.likeNumber }}&nbsp;&nbsp;</div>
+        <div>&nbsp;{{ board.views }}&nbsp;&nbsp;</div>
         <img src="../../assets/icon/heart_filled.png" alt="view" width="20rem" height="20rem" />
-        <div>&nbsp;{{ board.views }}</div>
+        <div>&nbsp;{{ board.likeNumber }}</div>
       </div>
     </router-link>
   </div>
