@@ -1,5 +1,8 @@
 package com.a205.brushbuddy.mileage.service;
 
+import com.a205.brushbuddy.mileage.domain.MileageLog;
+import com.a205.brushbuddy.mileage.repository.MileageLogRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -19,6 +22,7 @@ import lombok.RequiredArgsConstructor;
 public class MileageServiceImpl implements MileageService {
     private final MileageRepository mileageRepository;
     private final UserRepository userRepository;
+    private final MileageLogRepository mileageLogRepository;
 
     @Override
     public Mileage spendMileage(int userId, MileageSpendRequestDto mileageSpendRequestDto) {
@@ -39,6 +43,32 @@ public class MileageServiceImpl implements MileageService {
 
         mileageRepository.save(mileage);
         return mileage;
+    }
+
+    @Override
+    public Long requestOrderInfo(int price, int userId) {
+        MileageLog mileageLog = new MileageLog();
+        mileageLog.setUser(User.builder().userId(userId).build());
+        mileageLog.setPrice(price);
+        mileageLog.setMileageLogStatus("충전");
+
+        // 주문 요청 후에 주문 번호를 가지고 옵니다.
+        return mileageLogRepository.save(mileageLog).getMileageLogId();
+    }
+
+    @Override
+    @Transactional
+    public void setMileageTid(Long mileageLogId, String tid) {
+        MileageLog mileageLog = mileageLogRepository.findByMileageLogId(mileageLogId)
+            .orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND));
+        mileageLog.setTid(tid);
+        mileageLogRepository.save(mileageLog);
+    }
+
+    @Override
+    public MileageLog getMileageLog(String tid) {
+        return mileageLogRepository.findByTid(tid)
+            .orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND));
     }
 
     @Override

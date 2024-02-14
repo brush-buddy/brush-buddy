@@ -1,31 +1,25 @@
 package com.a205.brushbuddy.pay.dto.request;
 
+import lombok.*;
 import org.springframework.beans.factory.annotation.Value;
-
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
 
 /**
  * @author SSAFY
  * https://developers.kakao.com/docs/latest/ko/kakaopay/single-payment#approve-request-body
  */
-@Getter
-@Setter
-@ToString
-@NoArgsConstructor
-public class KakaopayApproveRequestDto {
-    public static final int size = 5;
-    public static final String[] name = {"cid", "tid", "partner_order_id", "artner_user_id", "pg_token"};
-    @Value("${spring.kakao.pay.cid-key}")
-    private String cid;
-    private String tid;
-    private String partnerOrderId;
-    private String partnerUserId;
-    private String pgToken;
 
-    public String[] getValue() {
-        return new String[] {cid, tid, partnerOrderId, partnerUserId, pgToken};
-    }
+
+@Data
+@Builder
+public class KakaopayApproveRequestDto {
+    private String cid;
+    private String partner_order_id;
+    private String partner_user_id;
+    private String item_name;
+    private String quantity;
+    private String total_amount;
+    private String tax_free_amount;
+    private String approval_url;
+    private String cancel_url;
+    private String fail_url;
 }
