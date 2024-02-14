@@ -68,7 +68,6 @@
     </div>
     <div>
       <v-carousel
-        :continuous="false"
         :show-arrows="false"
         hide-delimiter-background
         delimiter-icon="mdi-square"
@@ -78,8 +77,7 @@
           v-for="(item, i) in community.photo"
           :key="i"
           :src="item.imgUrl"
-          cover
-        ></v-carousel-item>
+        >{{item.imgUrl}}</v-carousel-item>
       </v-carousel>
     </div>
     <div>

@@ -67,12 +67,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref, toRaw } from 'vue'
+import { ref } from 'vue'
 import TextAreaComponent from '../common/TextAreaComponent.vue'
 import { writeBoard } from '../../api/board'
 import { getMadeList, getPurchaseList } from '../../api/draft'
 import { useRouter } from 'vue-router'
-import type { BoardImage } from '../../api/board'
+import type { BoardImage, BoardDetail } from '../../api/board'
 import type { DraftPurchase, DraftMade } from '../../api/draft'
 interface ExtendedFile extends File {
   preview: string
@@ -153,40 +153,46 @@ const router = useRouter()
 const submitForm = async () => {
   if (selectedFiles.value.length > 0) {
     try {
-      // 이미지 파일 변환
-      selectedFiles.value.forEach((selectedfile, index) => {
-        const reader = new FileReader()
-        // 파일을 base64로 읽기
-        reader.readAsDataURL(selectedfile)
-        reader.onload = (e) => {
-          const base64Data = e?.target?.result as string
-          if (base64Data) {
-            const boardImage: BoardImage = {
-              order: index + 1,
-              img: base64Data
+      const convertedImages = await Promise.all(selectedFiles.value.map((selectedfile, index) => {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader()
+          // 파일을 base64로 읽기
+          reader.readAsDataURL(selectedfile)
+          reader.onload = (e) => {
+            const base64Data = e?.target?.result as string
+            if (base64Data) {
+              const boardImage: BoardImage = {
+                order: index + 1,
+                img: base64Data
+              }
+              convertedFiles.value.push(boardImage)
+              resolve(boardImage)
+            } else {
+              reject(new Error('이미지 변환 실패'))
             }
-            convertedFiles.value.push(boardImage)
           }
-        }
-      })
-      const response = await writeBoard({
+        })
+      }))
+      console.log("converted ", convertedImages);
+      const boardData: BoardDetail = {
         title: savedTitle.value,
         contents: savedContent.value,
         hashtags: chips.value,
         photo: convertedFiles.value,
         draftId: savedDraftId.value
-      }).then((res) => {
-        alert('저장되었습니다.')
-        router.push('/community')
-      })
-      // Axios를 사용하여 서버로 데이터 전송
-      console.log('서버 응답 : 저장완료', response)
+      };
+      
+      await writeBoard(boardData)
+      .then((res)=>alert('저장되었습니다'))
+      .catch((err)=>console.log(err));
+      
     } catch (error) {
-      console.error('서버 요청 오류:', error)
+      console.error(error)
     }
-  } else {
-    alert('사진을 업로드해주세요')
   }
+ else{
+   alert('이미지를 선택해주세요.')
+ }
 }
 </script>
 
