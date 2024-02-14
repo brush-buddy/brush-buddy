@@ -79,12 +79,26 @@ const removeItem = () => {
   localAxios().delete(`/palette/${paletteId}`)
   router.push('/diary')
 }
+
+import { printPaint  } from '@/api/machine'
+import { useUserStore } from '@/stores/user'
+
+const printColor = async (color:String) => {
+  const data = {
+    color : color
+  }
+  
+  await printPaint(data)
+}
+
+const userStore = useUserStore();
+
 </script>
 
 <template>
   <div style="display: flex; justify-content: center">
     <v-card style="padding: 1rem; width: 80vw" elevation="5">
-      <v-img :src="paletteInfo.draftImage" style="margin: 1rem"></v-img>
+      <v-img :src="paletteInfo.draftImage" style="height: 60vh; margin: 1rem"></v-img>
 
       <h2 v-if="!modifyState">{{ paletteTitle }}</h2>
       <div v-if="modifyState">

@@ -92,6 +92,7 @@ const setActiveTab = (path: string) => {
   left: 0;
   width: 100vw;
   height: 10vh; /* 적절한 높이로 조정하세요 */
+  z-index: 99999;
 }
 
 .bottom-navbar a {
