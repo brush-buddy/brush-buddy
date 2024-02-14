@@ -76,7 +76,7 @@ class AiImage(BaseModel):
 
         # 텍스트를 이미지에 추가
         draw.text(
-            (5, 5),
+            (10, 10),
             watermark_text,
             font=font,
             font_size=60,
@@ -90,19 +90,18 @@ class AiImage(BaseModel):
         s3 = aws.s3_connection()
         uuid_val = uuid.uuid1()
         file_name = f"watermark_{uuid_val}.png"
-        file_path = f"./watermark/{file_name}"
 
         key = f"draft/watermark/{file_name}"
 
-        if not os.path.exists("watermark"):
-            os.makedirs("watermark")
+        # if not os.path.exists("watermark"):
+        #     os.makedirs("watermark")
 
         # 로컬 디렉토리에 이미지 저장
-        input_image.save(f"{file_path}")
+        input_image.save(file_name)
 
-        s3.upload_file(file_path, "brush-buddy", key)
+        s3.upload_file(file_name, "brush-buddy", key)
 
         # 워터 마크 로컬 파일 지우기
-        os.remove(file_path)
+        os.remove(file_name)
 
-        return f"https://brush-buddy.s3.ap-northeast-2.amazonaws.com/draft/watermark/{file_name}"
+        return f"https://brush-buddy.s3.ap-northeast-2.amazonaws.com/{key}"
