@@ -80,19 +80,18 @@ const removeItem = () => {
   router.push('/diary')
 }
 
-import { printPaint  } from '@/api/machine'
+import { printPaint } from '@/api/machine'
 import { useUserStore } from '@/stores/user'
 
-const printColor = async (color:String) => {
+const printColor = async (color: String) => {
   const data = {
-    color : color
+    color: color
   }
-  
+
   await printPaint(data)
 }
 
-const userStore = useUserStore();
-
+const userStore = useUserStore()
 </script>
 
 <template>
@@ -131,6 +130,7 @@ const userStore = useUserStore();
                 size="x-large"
                 :color="color"
                 style="margin: 1rem"
+                @click="printColor(color)"
               ></v-btn>
               <div>
                 <p>출력하시겠습니까?</p>
