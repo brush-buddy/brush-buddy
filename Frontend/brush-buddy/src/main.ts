@@ -11,7 +11,7 @@ import { aliases, mdi } from 'vuetify/iconsets/mdi'
 import "@mdi/font/css/materialdesignicons.min.css";
 import 'vuetify/styles'
 import { createPinia } from 'pinia';
-import { VueQrcodeReader } from 'vue-qrcode-reader';
+
 const vuetify = createVuetify({
     components,
     directives,
@@ -32,5 +32,5 @@ declare global {
 }
 
 window.Kakao.init(import.meta.env.VITE_APP_KAKAO_API_JS_KEY);
-createApp(App).use(router).use(vuetify).use(pinia).use(VueQrcodeReader).mount('#app');
+createApp(App).use(router).use(vuetify).use(pinia).mount('#app');
 

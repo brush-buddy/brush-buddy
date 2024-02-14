@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { QrcodeStream } from 'vue-qrcode-reader'
-import { useRouter} from 'vue-router';
+import { useRouter } from 'vue-router';
 import { connectMachine } from "../../api/machine"
 import { useUserStore } from '../../stores/user'
 const router = useRouter();
@@ -39,7 +38,7 @@ const onDetect = async (code :Array<QRCode>) => {
 
 <template>
     <div>
-        <QrcodeStream @detect="onDetect"></QrcodeStream>
+        <qrcode-stream @detect="onDetect"></qrcode-stream>
     </div>
 </template>
 
