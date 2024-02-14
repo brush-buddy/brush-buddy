@@ -2,6 +2,8 @@ package com.a205.brushbuddy.auth.controller;
 
 import com.a205.brushbuddy.auth.dto.KakaoTokenDto;
 import com.a205.brushbuddy.auth.dto.SignInResponse;
+import com.a205.brushbuddy.auth.jwt.JwtTokenProvider;
+import com.a205.brushbuddy.auth.jwt.JwtValidationType;
 import com.a205.brushbuddy.auth.service.AuthService;
 import com.a205.brushbuddy.auth.service.KakaoService;
 import com.a205.brushbuddy.auth.vo.Token;
@@ -24,7 +26,7 @@ import java.security.Principal;
 public class AuthController {
     private final AuthService authService;
     private  final KakaoService kakaoService;
-
+    private  final JwtTokenProvider jwtTokenProvider;
     @GetMapping
     public ResponseEntity<?> signInWithAuthCode(@RequestParam("code") String code) throws URISyntaxException {
         String tokens = kakaoService.getToken(code); // 카카오로 부터 access token, refresh token을 가지고 온다.
@@ -94,5 +96,14 @@ public class AuthController {
         return ResponseEntity.ok()
                 .header("Set-Cookie", cookie)
                 .body(token.getAccessToken()); // body에는 access token을 넣는다.
+    }
+
+    @GetMapping("/isLogin")
+    public ResponseEntity<?> isLogin(@CookieValue(value = "refreshToken") String refreshToken){
+        if(jwtTokenProvider.validateToken(refreshToken) == JwtValidationType.VALID_JWT){
+            return ResponseEntity.ok(true);
+        }else{
+            return ResponseEntity.ok(false);
+        }
     }
 }
