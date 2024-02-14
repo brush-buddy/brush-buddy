@@ -12,5 +12,7 @@ public interface MachineService {
 
     boolean disconnectMachine(Integer userId); // 기기 해제
 
-    MachinePrintResponseDto convertRGB2CMYKW(MachinePrintRequestDto requestDto); // 색깔 변경 로직
+    Long getLoginMahcineId(Integer userId);
+
+    MachinePrintResponseDto convertRGB2CMYKW(Long machineId, MachinePrintRequestDto requestDto); // 색깔 변경 로직
 }

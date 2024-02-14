@@ -1,4 +1,61 @@
 <template>
+  <div class= "machine-button">     
+
+        <v-btn
+          v-if="userStore.isMachineConnected()"
+          class="buttonUnder"
+          color="red-darken-1"
+          size="small"
+          variant="tonal"
+          prepend-icon="mdi-location-exit"
+          @click="disconnectBtn"
+        >
+        기기 연결해제
+        </v-btn>
+        <v-dialog
+          v-model="cameraOn"
+          persistent
+          width="auto"
+          :scrim="false"
+          transition="dialog-bottom-transition"
+        >
+          <template v-slot:activator="{ props }">
+            <v-btn
+              v-if="!userStore.isMachineConnected()"
+              class="buttonUnder"
+              color="green-darken-1"
+              size="small"
+              variant="tonal"
+              prepend-icon="mdi-connection"
+              @click="cameraOn = true"
+            >
+            기기 연결하기
+            </v-btn>
+          </template>
+          <v-card>
+            <v-card-title class="text-h5">
+              기기 연결 하기
+            </v-card-title>
+            <v-card-text>QR코드를 카메라에 인식시켜주세요</v-card-text>
+            <v-card-actions>
+              <v-spacer>
+                <CameraQRCodeComponent class="camera-component" @machineConnect="cameraOn=false"></CameraQRCodeComponent>
+                <v-btn
+                  class="buttonUnder"
+                  color="red-darken-1"
+                  size="small"
+                  variant="tonal"
+                  prepend-icon="mdi-exit-to-app"
+                  @click="cameraOn=false"
+                  >
+                  그만두기
+               </v-btn>
+              </v-spacer>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+  </div>
+  
     <div>
       <v-infinite-scroll :items="items" :onLoad="load">
         <div v-for="(item, index) in items" :key="index">
@@ -7,12 +64,14 @@
       </v-infinite-scroll>
     </div>
     <div id="navarea"></div>
-  </template>
-  <script setup lang="ts">
+</template>
+<script setup lang="ts">
   import CPaletteCard from "./CPaletteCard.vue";
-  import { ref } from "vue";
+  import { ref, type Ref } from "vue";
   import {localAxios} from "../../api/axios";
-  
+  import { useUserStore } from "@/stores/user";
+  import  CameraQRCodeComponent  from "@/components/Palette/CameraQRCodeComponent.vue"
+import { disconnectMachine } from "@/api/machine";
   // madeDraft 불러오기
   interface HeartListRes {
     palettes: {
@@ -96,11 +155,36 @@
       options.done("error");
     }
   };
+
+  //기기 연결 로직
+  const userStore = useUserStore();
+  const cameraOn : Ref<boolean> = ref(false);
+
+  const disconnectBtn = async () => {
+    disconnectMachine()
+    .then(() => {
+      userStore.setConnectedMachine(-1);
+      alert("기기 연결 해제 성공")
+    })
+    .catch(() => {
+      alert("기기 연결 해제 실패")
+    })
+  }
   </script>
   
   <style scoped>
   #navarea {
     height: 10vh;
     width: 100%;
-  }</style>
+  }
+  .machine-button{
+    display: flex;
+    justify-content: end;
+    padding: 2rem 3rem
+  }
+  .camera-component{
+    height: 30vh;
+    width: 30vw;
+  }
+  </style>
   

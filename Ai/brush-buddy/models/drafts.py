@@ -1,4 +1,5 @@
 import json
+import os
 import time
 import uuid
 from io import BytesIO
@@ -21,8 +22,8 @@ class Drafts(BaseModel):
     def pipo_convert(self, np_image, color_label=False, **kwargs):
 
         # time stamp
-        a = uuid.uuid1()
-        t_stamp = time.strftime("%Y%m%d%H%M%S", time.localtime())
+        uuid_val = uuid.uuid1()
+        # t_stamp = time.strftime("%Y%m%d%H%M%S", time.localtime())
 
         aws = AwsS3()
 
@@ -44,18 +45,20 @@ class Drafts(BaseModel):
         color_indexs, color_rbg_values = painting.get_clustered_color_info(painting_img)
 
         # s3에 색칠된 도안 업로드 ========================================
-        file_name = f"colored_draft_{t_stamp}.png"  # 업로드할 파일 이름
+        colored_file_name = f"colored_draft_{uuid_val}.png"  # 업로드할 파일 이름
         bucket_name = "brush-buddy"
         # brushbuddy0  # 버켓 주소
-        key = f"draft/colored/colored_draft_{t_stamp}.png"  # s3  내부 이미지 파일 이름
+        colored_key = (
+            f"draft/colored/{colored_file_name}.png"  # s3  내부 이미지 파일 이름
+        )
 
-        colored_file_path = f"/colored_img/{file_name}"  # 업로드할 파일 이름
+        colored_file_path = f"./colored/{colored_file_name}"  # 업로드할 파일 이름
 
-        cv2.imwrite(file_name, painting_img)
+        cv2.imwrite(colored_file_path, painting_img)
 
         # aws s3에 색칠된 도안 "colored_draft_YYYYMMDDHH.png"로 저장
         try:
-            s3.upload_file(file_name, bucket_name, key)
+            s3.upload_file(colored_file_path, bucket_name, colored_key)
         except Exception as e:
             print(e)
 
@@ -69,7 +72,7 @@ class Drafts(BaseModel):
         # key = 번호, value = hexcode 로 되어있는 dictionary생성
         for idx, rbg in enumerate(color_rbg_values):
             hexcode = aiImg.bgr_to_hex(rbg)
-            print(f"{idx} idx,{hexcode} hex_code")
+            # print(f"{idx} idx,{hexcode} hex_code")
             hexarray[f"{idx + 1}"] = hexcode
 
         # # 확인 코드
@@ -95,28 +98,33 @@ class Drafts(BaseModel):
         # output : numbering 된 np.array 형태의 도안
         numbering_img = numbering.run(img_lab, lab, color_label=color_label)
 
-        numbering_file_path = (
-            f"/numbering_img/numbering_draft_{t_stamp}.PNG"  # 업로드할 파일 이름
-        )
+        numbering_file_name = f"numbering_draft_{uuid_val}.PNG"  # 업로드할 파일 이름
 
-        numbering_file_name = f"numbering_draft_{t_stamp}.PNG"  # 업로드할 파일 이름
+        numbering_file_path = f"./numbering/{numbering_file_name}"  # 업로드할 파일 이름
 
-        cv2.imwrite(numbering_file_name, numbering_img)
+        cv2.imwrite(numbering_file_path, numbering_img)
 
         # s3에 numbering 된 도안 업로드 ========================================
 
-        numbered_key = f"draft/numbering/numbering_draft_{t_stamp}.PNG"  # s3  내부 이미지 파일 이름
+        numbered_key = (
+            f"draft/numbering/{numbering_file_name}"  # s3  내부 이미지 파일 이름
+        )
+
+        # 워터마크 추가
+        watermark_draft_url = aiImg.add_watermark(numbering_file_path)
 
         # aws s3에 색칠된 도안 "colored_draft_YYYYMMDDHH.png"로 저장
         try:
-            s3.upload_file(numbering_file_name, bucket_name, numbered_key)
+
+            s3.upload_file(numbering_file_path, bucket_name, numbered_key)
+
         except Exception as e:
             print(e)
 
-        # return palette, numbered_draft_url
-
-        colored_draft_url = f"https://brush-buddy.s3.ap-northeast-2.amazonaws.com/draft/colored/{file_name}"
-
         numbered_draft_url = f"https://brush-buddy.s3.ap-northeast-2.amazonaws.com/draft/numbering/{numbering_file_name}"
 
-        return hexcode_json_string, colored_draft_url, numbered_draft_url
+        # # 파일 삭제
+        os.remove(colored_file_path)
+        os.remove(numbering_file_path)
+
+        return hexcode_json_string, watermark_draft_url, numbered_draft_url
