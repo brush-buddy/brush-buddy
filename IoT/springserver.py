@@ -5,6 +5,8 @@ import json
 
 device_id = 2
 uri = f"ws://i10a205.p.ssafy.io:3004/ws/print/{device_id}" 
+# uri = f"ws://localhost:3004/ws/print/{device_id}" 
+
 connected_websocket = ''
 timeout = 10
 
