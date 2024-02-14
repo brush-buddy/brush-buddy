@@ -1,5 +1,7 @@
 package com.a205.brushbuddy.machine.service;
 
+import com.a205.brushbuddy.exception.BaseException;
+import com.a205.brushbuddy.exception.ErrorCode;
 import com.a205.brushbuddy.machine.domain.Machine;
 import com.a205.brushbuddy.machine.domain.OwnerType;
 import com.a205.brushbuddy.machine.dto.MachinePrintRequestDto;
@@ -9,10 +11,12 @@ import com.a205.brushbuddy.machine.dto.MachineRegisterResponseDto;
 import com.a205.brushbuddy.machine.repository.MachineRepository;
 import com.a205.brushbuddy.user.domain.User;
 import com.a205.brushbuddy.workplace.domain.Workplace;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -32,15 +36,50 @@ public class MachineServiceImpl implements MachineService{
         return null;
     }
 
+
+
+    @Transactional
     @Override
-    public MachinePrintResponseDto convertRGB2CMYKW(MachinePrintRequestDto requestDto) {
+    public boolean connectMachine(Integer userId, Long machineId) {
+        //연결하려는 기기가 있는지 확인
+        Machine machine= machineRepository.findById(machineId)
+                .orElseThrow(()-> new BaseException(ErrorCode.NOT_FOUND_DATA));
+
+        // 만약 이미 사용중인 기기가 있다면
+        Optional<Machine> usedMachine= machineRepository.findByUser_UserId(userId);
+        if(usedMachine.isPresent()){
+            usedMachine.get().setUser(null); // 해당 userid 초기화
+        }
+
+        machine.setUser(User.builder().userId(userId).build());
+        return true;
+    }
+
+    @Transactional
+    @Override
+    public boolean disconnectMachine(Integer userId) {
+        Machine machine= machineRepository.findByUser_UserId(userId)
+                .orElseThrow(()-> new BaseException(ErrorCode.NOT_FOUND_DATA));
+        machine.setUser(null);
+        return true;
+    }
+
+    @Override
+    public Long getLoginMahcineId(Integer userId) {
+        Machine machine= machineRepository.findByUser_UserId(userId)
+                .orElseThrow(()-> new BaseException(ErrorCode.NOT_FOUND_DATA));
+        return machine.getMachineId();
+    }
+
+    @Override
+    public MachinePrintResponseDto convertRGB2CMYKW(Long machineId, MachinePrintRequestDto requestDto) {
         String color = requestDto.getRGBCode()
                 .substring(1);
 
         int[] cmykw = rgbToCmyk(color);
 
         return MachinePrintResponseDto.builder()
-                .id(requestDto.getId())
+                .id(machineId.toString())
                 .color(MachinePrintResponseDto.ColorDTO.builder()
                         .c(cmykw[0])
                         .m(cmykw[1])
