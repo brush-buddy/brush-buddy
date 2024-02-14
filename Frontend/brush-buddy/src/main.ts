@@ -11,7 +11,7 @@ import { aliases, mdi } from 'vuetify/iconsets/mdi'
 import "@mdi/font/css/materialdesignicons.min.css";
 import 'vuetify/styles'
 import { createPinia } from 'pinia';
-import { VueQrcodeReader } from '../node_modules/vue-qrcode-reader/dist/vue-qrcode-reader.js';
+import { VueQrcodeReader } from 'vue-qrcode-reader';
 const vuetify = createVuetify({
     components,
     directives,
