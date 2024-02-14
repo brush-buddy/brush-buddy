@@ -14,6 +14,9 @@ const useUserStore = defineStore("user", () => {
     function setConnectedMachine(machineId : Number){
         connectedMachine.value = machineId
     }
+    function isMachineConnected(){ // 기기연결 여부 확인
+        return connectedMachine.value != -1;
+    }
     function setRefresh(value : boolean){
         isRefreshing.value = value
     }
@@ -37,7 +40,8 @@ const useUserStore = defineStore("user", () => {
         setRefresh,
         subscribers,
         addSubscriber,
-        onAccessTokenFetched
+        onAccessTokenFetched,
+        isMachineConnected
 
     }
   }

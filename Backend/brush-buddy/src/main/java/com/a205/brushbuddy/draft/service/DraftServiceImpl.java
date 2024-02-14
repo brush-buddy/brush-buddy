@@ -48,7 +48,7 @@ public class DraftServiceImpl implements DraftService{
     public Page<DraftListResponseDto> getDraftList(Pageable pageable) {
         try {
 
-            return draftRepository.findAll(pageable).map(p->DraftListResponseDto.builder()
+            return draftRepository.findAllByDraftIsDeletedIsFalseAndDraftIsPublicIsTrue(pageable).map(p->DraftListResponseDto.builder()
                     .draftId(p.getDraftId())
                     .draftThumbnail(p.getDraftThumbnail())
                     .draftTimestamp(p.getDraftTimestamp())
@@ -91,12 +91,17 @@ public class DraftServiceImpl implements DraftService{
               if(draft == null){
                   throw new BaseException(ErrorCode.NOT_FOUND_DATA);
               }
+              if(!draft.getDraftIsPublic()){
+                  if(draft.getUser().getUserId() != userId){
+                      throw new BaseException(ErrorCode.UNAUTHORIZED);
+                  }
+              }
               List<Long> categoryIds = draftCategoryRepository.findCategoryIdByDraftId(draftId);
               List<Category> categories = categoryRepository.findCategoryContentByCategoryIdIn(categoryIds);
               List<String> categoryContents = categories.stream().map(Category::getCategoryContent).toList();
-          boolean bookmarked = bookmarkRepository.findByBookmarkId_User_UserId_AndBookmarkId_Draft_DraftId(userId, draftId).orElseGet(()->null) != null;
-            boolean buy = purchaseRepository.findAllByPurchaseId_Draft_DraftIdAndPurchaseId_User_UserId(draftId, userId).orElseGet(()->null) != null;
-            return DraftDetailResponseDto.builder().draftId(draft.getDraftId())
+             boolean bookmarked = bookmarkRepository.findByBookmarkId_User_UserId_AndBookmarkId_Draft_DraftId(userId, draftId).orElseGet(()->null) != null;
+             boolean buy = purchaseRepository.findAllByPurchaseId_Draft_DraftIdAndPurchaseId_User_UserId(draftId, userId).orElseGet(()->null) != null;
+             return DraftDetailResponseDto.builder().draftId(draft.getDraftId())
                 .draftPrice(draft.getDraftPrice())
                 .draftColorCode(draft.getDraftColorCode())
                 .draftThumbnail(draft.getDraftThumbnail())
@@ -161,7 +166,7 @@ public class DraftServiceImpl implements DraftService{
 
     @Override
     public Page<Board> getBoardListByDraftId(Long draftId, Pageable pageable) {
-        return boardRepository.findAllByDraft_DraftId(draftId, pageable);
+        return boardRepository.findAllByDraft_DraftIdAndBoardIsDeletedIsFalse(draftId, pageable);
     }
 
     @Transactional
@@ -177,6 +182,7 @@ public class DraftServiceImpl implements DraftService{
     }
 
     @Override
+    @Transactional
     public boolean updateDraft(long draftId, DraftCategoryModifyRequestDto draftCategoryModifyRequestDto) {
         Draft draft = draftRepository.findByDraftId(draftId);
         if(draft == null){
