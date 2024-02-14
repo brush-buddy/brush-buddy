@@ -18,4 +18,6 @@ public interface MileageService {
     void setMileageTid(Long mileageLogId, String tid);
 
     MileageLog getMileageLog(String tid);
+
+    void addMileage(int userId, Long mileageLogId);
 }
