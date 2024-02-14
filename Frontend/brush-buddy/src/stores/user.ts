@@ -40,7 +40,7 @@ const useUserStore = defineStore("user", () => {
         onAccessTokenFetched
 
     }
-})
+  }
+)
 
-
-export {useUserStore}
+export { useUserStore }

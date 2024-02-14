@@ -19,6 +19,7 @@
     "cors": "^2.8.5",
     "infinite-loading-vue3-ts": "^1.0.5",
     "pinia": "^2.1.7",
+    "pinia-plugin-persistedstate": "^3.2.1",
     "styled-components": "^6.1.8",
     "styled-reset": "^4.5.2",
     "vue": "^3.4.15",
