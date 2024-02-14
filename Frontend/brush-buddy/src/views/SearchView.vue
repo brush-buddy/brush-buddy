@@ -2,13 +2,17 @@
   <div>
     <div class="searchBar">
       <div class="searchInputBar">
-        <form action="">
-          <v-icon color="purple" icon="mdi-magnify"></v-icon>
-          <input type="text" placeholder="search" id="searchInput" v-model="searchValue" />
-          <v-icon @click="makeSearch()">
-            <v-icon color="purple" icon="mdi-arrow-left-bottom"></v-icon>
-          </v-icon>
-        </form>
+        <v-icon color="purple" icon="mdi-magnify"></v-icon>
+        <input
+          type="text"
+          placeholder="search"
+          id="searchInput"
+          v-model="searchValue"
+          v-on:keyup.enter="makeSearch()"
+        />
+        <v-icon @click="makeSearch()">
+          <v-icon color="purple" icon="mdi-arrow-left-bottom"></v-icon>
+        </v-icon>
       </div>
 
       <v-tabs v-model="tab" color="purple-darken-2" grow style="margin-bottom: 1rem; width: 100vw">
@@ -39,8 +43,9 @@ const tab = ref(1)
 
 const makeSearch = () => {
   console.log('search')
-  draftList.value?.searchList(searchValue.value)
-  communityList.value?.searchList(searchValue.value)
+
+  draftList.value?.searchList()
+  communityList.value?.searchList()
 }
 </script>
 

@@ -109,7 +109,7 @@ public class DraftController {
 
 	})
 	@ResponseBody
-	@PostMapping("/{draftId}")
+	@PutMapping("/{draftId}")
 	public ResponseEntity<String> updateDraft(@PathVariable long draftId, @RequestBody DraftCategoryModifyRequestDto draftCategoryModifyRequestDto, HttpServletRequest request) {
 		Integer userId = jwtUtil.getUserId(request)
 				.orElseThrow(() -> new BaseException(ErrorCode.INVALID_TOKEN)); // 헤더의 access token으로 userId 추출, null 반환시 유효하지 않은 토큰 오류 전송
