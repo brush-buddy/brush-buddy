@@ -45,20 +45,33 @@ public class MileageController {
     public ResponseEntity<MileageHistoryResponseDto> getHistory(MileageHistoryReqeustDto mileageHistoryReqeustDto,
         HttpServletRequest request) {
         Integer userId = jwtUtil.getUserId(request).orElseThrow(() -> new BaseException(ErrorCode.UNAUTHORIZED));
+        int listNum = mileageHistoryReqeustDto.getListNum() == 0 ? 10 : mileageHistoryReqeustDto.getListNum();
+        int pageNum = mileageHistoryReqeustDto.getPageNum() == 0 ? 1 : mileageHistoryReqeustDto.getPageNum() - 1;
+        System.out.println(listNum+","+pageNum);
+        Pageable pageable = PageRequest.of(pageNum, listNum);
 
-        System.out.println(userId);
-        Pageable pageable = PageRequest.of(mileageHistoryReqeustDto.getPageNum() - 1,
-            mileageHistoryReqeustDto.getListNum());
-
-        Page<Mileage> result = mileageService.getMileageHistory(userId, pageable);
-
-        System.out.println(result.stream().toList().toString());
+        Page<Mileage> history = mileageService.getMileageHistory(userId, pageable);
         MileageHistoryResponseDto mileageHistoryResponseDto = MileageHistoryResponseDto.builder()
-            .history(result)
-//            .length(result.getNumberOfElements())
-//            .pageNum(result.getNumber() + 1)
-//            .totalPage(result.getTotalPages())
+            .history(history.getContent()
+                .stream()
+                .map(e -> Mileage.builder()
+                    .mileageId(e.getMileageId())
+                    .user(e.getUser())
+                    .workplaceId(e.getWorkplaceId())
+                    .mileageTimestamp(e.getMileageTimestamp())
+                    .mileageBefore(e.getMileageBefore())
+                    .mileageAfter(e.getMileageAfter())
+                    .mileageAmount(e.getMileageAmount())
+                    .mileageContent(e.getMileageContent())
+                    .build())
+                .toList())
+            .length(history.getNumberOfElements())
+            .pageNum(history.getNumber() + 1)
+            .totalPage(history.getTotalPages())
             .build();
+
+        System.out.println(history.getSize());
+        history.stream().toList().forEach(e -> System.out.println(e.toString()));
 
         return new ResponseEntity<MileageHistoryResponseDto>(mileageHistoryResponseDto, HttpStatus.OK);
     }

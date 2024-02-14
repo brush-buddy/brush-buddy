@@ -21,8 +21,8 @@ public class Mileage {
     @Column(name = "mileage_id", nullable = false)
     private Long mileageId;
 
-    @JoinColumn(name = "user_id", nullable = false)
-    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false)
+    @ManyToOne//(fetch = FetchType.LAZY) // LAZY 에러 발생
     private User user;
 
     @Column(name = "workplace_id", nullable = true)

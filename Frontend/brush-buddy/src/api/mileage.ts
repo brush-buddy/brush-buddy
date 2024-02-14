@@ -1,26 +1,39 @@
-import type { AxiosResponse } from "axios";
 import { localAxios } from "./axios";
+import type { AxiosResponse } from "axios";
 
 type Mileage = {
-    date: String,
-    amount: Number,
-    after: Number,
-    content: String,
-}
-
-type MileageHistoryReqeustType = {
-    listNum: Number,
-    pageNum: Number,
-}
-
-type MileageSpendRequestType = {
-    workplaceId: Number,
-    mileageAmount: Number,
+    mileageId: number,
+    userId: number,
+    workplaceId: number,
+    mileageTimestamp: String,
+    mileageBefore: number,
+    mileageAfter: number,
+    mileageAmount: number,
     mileageContent: String,
 }
 
+type MileageHistoryReqeustParam = {
+    pageNum?: number,
+    listNum?: number,
+}
+
+type MileageSpendRequestParam = {
+    workplaceId: number,
+    mileageAmount: number,
+    mileageContent: String,
+}
+
+
+const getMileageHistory =
+    async (params: MileageHistoryReqeustParam):
+        Promise<AxiosResponse> => { return await localAxios().get('/mileage/history', { params: params }) };
+
 export type {
     Mileage,
-    MileageHistoryReqeustType,
-    MileageSpendRequestType
+    MileageHistoryReqeustParam,
+    MileageSpendRequestParam,
+}
+
+export { 
+    getMileageHistory,
 }

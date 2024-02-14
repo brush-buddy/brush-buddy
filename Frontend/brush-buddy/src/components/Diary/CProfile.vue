@@ -40,7 +40,9 @@
       <!-- 마일리지 히스토리 팝업 -->
       <!-- <template v-slot:default> -->
         <v-card title="마일리지 히스토리">
-          <CMileageHistoryVue></CMileageHistoryVue>
+          <v-card-actions>
+            <CMileageHistoryVue/>
+          </v-card-actions>
         </v-card>
       <!-- </template> -->
     </v-dialog>
