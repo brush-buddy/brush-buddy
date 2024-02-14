@@ -123,7 +123,7 @@ class Drafts(BaseModel):
 
         numbered_draft_url = f"https://brush-buddy.s3.ap-northeast-2.amazonaws.com/draft/numbering/{numbering_file_name}"
 
-        # 파일 삭제
+        # # 파일 삭제
         os.remove(colored_file_path)
         os.remove(numbering_file_path)
 
