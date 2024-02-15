@@ -1,5 +1,6 @@
 package com.a205.brushbuddy.palette.dto;
 
+import jakarta.annotation.Nullable;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,6 +17,7 @@ public class PaletteListResponseDto {
     private int length;
     private List<PaletteDTO> palettes;
 
+
     @Data
     @Builder
     @NoArgsConstructor
@@ -27,5 +29,6 @@ public class PaletteListResponseDto {
         private String paletteColorCode;
         private String paletteModifiedTime;
         private String paletteCreatedAt;
+        private String nickName;
     }
 }

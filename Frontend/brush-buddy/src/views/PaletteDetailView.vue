@@ -13,16 +13,20 @@ const paletteInfo = ref({
   paletteName: '',
   paletteColorCode: '',
   paletteModifiedTime: '',
-  paletteCreatedAt: ''
+  paletteCreatedAt: '',
+  isAdmin: false,
+  nickName: ''
 })
 const paletteTitle = ref()
 const paletteColorInfo = ref()
 const maxColorKey = ref(-1)
+const isAdmin = ref(false)
 onMounted(async () => {
   dialog.value = false
   const response = await localAxios().get(`/palette/${paletteId}`)
   paletteInfo.value = response.data
   paletteColorInfo.value = Object.entries(JSON.parse(response.data.paletteColorCode))
+
   const listKeys = ref<number[]>([])
   Object.keys(JSON.parse(response.data.paletteColorCode))
   Object.keys(JSON.parse(response.data.paletteColorCode)).forEach((element: string) => {
@@ -31,6 +35,7 @@ onMounted(async () => {
   maxColorKey.value = Math.max(...listKeys.value) + 1
 
   paletteTitle.value = response.data.paletteName
+  isAdmin.value = response.data.isAdmin
 })
 const color = ref('')
 
@@ -85,7 +90,7 @@ import { useUserStore } from '@/stores/user'
 
 const printColor = async (color: String) => {
   const data = {
-    color: color
+    rgbcode: color
   }
 
   await printPaint(data)
@@ -95,11 +100,11 @@ const userStore = useUserStore()
 </script>
 
 <template>
-  <div style="display: flex; justify-content: center">
+  <div style="display: flex; justify-content: center; margin-top: 2rem">
     <v-card style="padding: 1rem; width: 80vw" elevation="5">
-      <v-img :src="paletteInfo.draftImage" style="height: 60vh; margin: 1rem"></v-img>
+      <v-img :src="paletteInfo.draftImage" style="max-height: 60vh; margin: 1rem"></v-img>
 
-      <h2 v-if="!modifyState">{{ paletteTitle }}</h2>
+      <h2 v-if="!modifyState" style="margin-bottom: 1rem">{{ paletteTitle }}</h2>
       <div v-if="modifyState">
         <v-text-field type="text" v-model="paletteTitle" append-inner-icon="mdi-pencil" />
       </div>
@@ -123,7 +128,7 @@ const userStore = useUserStore()
         <v-dialog v-model="dialog" width="auto">
           <v-card v-if="!modifyState">
             <v-card-text> 연결된 기기 {{}}</v-card-text>
-
+            {{ color }}
             <div style="padding: 1rem; display: flex; align-items: center">
               <v-btn
                 icon="mdi-format-color-fill"
@@ -178,6 +183,7 @@ const userStore = useUserStore()
         <v-dialog v-model="removedialog" persistent width="auto">
           <template v-slot:activator="{ props }">
             <v-btn
+              v-if="paletteInfo.isAdmin"
               class="buttonUnder"
               color="red-darken-1"
               size="small"
@@ -208,7 +214,7 @@ const userStore = useUserStore()
         </v-dialog>
 
         <v-btn
-          v-if="!modifyState"
+          v-if="!modifyState && paletteInfo.isAdmin"
           class="buttonUnder"
           color="green-darken-1"
           size="small"
@@ -219,7 +225,7 @@ const userStore = useUserStore()
           수정하기
         </v-btn>
         <v-btn
-          v-if="modifyState"
+          v-if="modifyState && paletteInfo.isAdmin"
           class="buttonUnder"
           color="purple-darken-1"
           size="small"
@@ -229,11 +235,11 @@ const userStore = useUserStore()
         >
           수정 완료하기
         </v-btn>
+        <v-btn v-if="!paletteInfo.isAdmin" prepend-icon="mdi-copy"> 내 팔레트에 복제하기 </v-btn>
       </div>
     </v-card>
-
-    <footer style="height: 10rem"></footer>
   </div>
+  <footer style="height: 8rem; width: 100vw"></footer>
 </template>
 
 <style scoped>
