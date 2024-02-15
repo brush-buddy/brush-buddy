@@ -4,7 +4,6 @@ import os
 import uuid
 
 import numpy as np
-from dotenv import load_dotenv
 from models.awsS3 import AwsS3
 from openai import OpenAI
 from PIL import Image, ImageDraw, ImageFont
@@ -17,7 +16,6 @@ class AiImage(BaseModel):
     def createImage(self, prompt: str) -> str:
 
         # openai api key
-        load_dotenv(verbose=True)
 
         # 환경변수 불러오기
         # OPEN_AI_KEY = os.getenv("OPEN_AI_KEY")
