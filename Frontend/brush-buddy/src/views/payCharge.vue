@@ -13,10 +13,8 @@ const purchase = (price: Number) => {
       console.log('결제 요청 성공')
       setTid(res.data.body.tid)
       setTimeout(() => {}, 10000)
-      if (user.indexOf('iPhone') > -1) {
-        window.location.href = res.data.body.ios_app_scheme
-      } else if (user.indexOf('Android') > -1) {
-        window.location.href = res.data.body.android_app_scheme
+      if (user.indexOf('iPhone') > -1 || user.indexOf('Android') > -1) {
+        window.location.href = res.data.body.next_redirect_mobile_url
       } else {
         window.location.href = res.data.body.next_redirect_pc_url
       }

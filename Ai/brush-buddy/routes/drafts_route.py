@@ -38,8 +38,7 @@ async def ai_generate(resBody: requestPrompt.Prompt):
     print(r.get(user), "callnum")  # callnum 확인용
     call_num = r.get(user)
     print(resBody.prompt, "prompt")
-    if resBody.prompt == "":
-
+    if resBody.prompt == "" or resBody.prompt == "\"\"":
         return responseImage.Img_url(image_url="", left_cnt=20 - int(call_num))
 
     print("체크체크")
