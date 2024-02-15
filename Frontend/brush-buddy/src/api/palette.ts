@@ -25,13 +25,28 @@ type PaletteModifyRequestType = {
     paletteName : String,
     paletteColorCode : Object,
 }
-
+type PaletteListType = {
+    draftImage : string,
+    paletteId : Number,
+    paletteName : string,
+    paletteColorCode : string,
+    paletteModifiedTime : Date,
+    paletteCreatedAt : Date,
+    nickName : string,
+}
 export type {
     SearchParam,
     NewPaletteType,
     PaletteDetailType,
-    PaletteModifyRequestType
-    }
+    PaletteModifyRequestType,
+    PaletteListType
+}
+const getBoardListAll = async (
+    params: SearchParam
+    ) : Promise<AxiosResponse> => {
+   return await localAxios().get(`/palette/allList?pageNum=${params.pageNum}&listNum=${params.listNum}`)
+}    
+
 
 //게시글 리스트 조회 api
 const getBoardList = async (
@@ -81,6 +96,7 @@ const deletePalette= async (
 
 
 export {
+    getBoardListAll,
     getBoardList,
     newPalette,
     detailPalette,

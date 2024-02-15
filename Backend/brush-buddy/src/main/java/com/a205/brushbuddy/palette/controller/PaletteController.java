@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Objects;
 
 @Slf4j
 @RestController
@@ -23,6 +24,36 @@ import java.util.List;
 public class PaletteController {
     public final PaletteService paletteService;
     public final JwtUtil jwtUtil;
+
+    @GetMapping("/allList")
+    public ResponseEntity<?> getAllPaletteList(PaletteListRequestDto requestDto, HttpServletRequest request) throws Exception{
+        //pageable 생성
+        Pageable pageable = PageRequest.of(
+            requestDto.getPageNum() - 1,
+            requestDto.getListNum(),
+            requestDto.getDirection(),
+            requestDto.getOrder());
+
+        List<Palette> result =  paletteService.getAllPaletteList(pageable);
+
+        PaletteListResponseDto dto = PaletteListResponseDto.builder()
+            .palettes(result.stream().map(m ->PaletteListResponseDto.PaletteDTO.builder()
+                .nickName(m.getUser().getUserNickname())
+                    .paletteName(m.getPaletteName())
+                    .paletteId(m.getPaletteId())
+                    .paletteCreatedAt(m.getPaletteCreatedAt().toString())
+                    .paletteModifiedTime(m.getPaletteLastModifiedTime().toString()) // 최종 수정 일자
+                    .paletteColorCode(m.getPaletteColorCode())
+                    .draftImage(m.getDraft().getDraftThumbnail())
+                    .build())
+                .toList())
+            .length(result.size())
+            .pageNum(pageable.getPageNumber() + 1)
+            .build();
+
+        return  ResponseEntity.ok(dto);
+    }
+
 
     @GetMapping("")
     public ResponseEntity<?> getPaletteList(PaletteListRequestDto requestDto, HttpServletRequest request) throws Exception{
@@ -68,6 +99,8 @@ public class PaletteController {
                 .paletteColorCode(result.getPaletteColorCode()) // 팔레트 색깔 코드
                 .paletteCreatedAt(result.getPaletteCreatedAt().toString()) // 팔레트 생성 일시
                 .paletteModifiedTime(result.getPaletteLastModifiedTime().toString()) // 팔레트 수정 일시
+                .isAdmin(result.getUser().getUserId().equals(userId) || result.getUser().isUserIsAdmin()) // TODO : admin 여부 확인
+                .nickName(result.getUser().getUserNickname()) // 사용자 닉네임
                 .build();
         return  ResponseEntity.ok(dto);
     }

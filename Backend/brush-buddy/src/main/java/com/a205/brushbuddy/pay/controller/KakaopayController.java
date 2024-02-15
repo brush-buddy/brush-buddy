@@ -4,6 +4,7 @@ import com.a205.brushbuddy.mileage.domain.MileageLog;
 import com.a205.brushbuddy.mileage.repository.MileageLogRepository;
 import com.a205.brushbuddy.mileage.service.MileageService;
 import com.a205.brushbuddy.pay.client.PayClient;
+import com.a205.brushbuddy.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -41,7 +42,7 @@ public class KakaopayController {
     private final KakaopayService kakaopayService;
     private final MileageRepository mileageRepository;
     private final MileageService mileageService;
-
+    private final UserRepository userRepository;
     //// 브러쉬버디 충전 내역용 workplaceid = 0, 갱신 필요시 참고
     @Value("${spring.kakao.pay.workplaceid}")
     private int workplaceId;
@@ -129,7 +130,12 @@ public class KakaopayController {
 
 
 
-        return kakaopayService.sendComplete(kakaopayApproveRequestDto);
+        ResponseEntity<?> sendData = kakaopayService.sendComplete(kakaopayApproveRequestDto);
+        if (sendData.getStatusCodeValue() == 200) {
+            mileageService.addMileage(userId, mileageLog.getMileageLogId());
+        }
+
+        return ResponseEntity.ok(sendData);
     }
 
 }
