@@ -85,7 +85,7 @@ import { useUserStore } from '@/stores/user'
 
 const printColor = async (color: String) => {
   const data = {
-    color: color
+    rgbcode: color
   }
 
   await printPaint(data)
