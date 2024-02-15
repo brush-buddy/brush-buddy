@@ -4,7 +4,6 @@ import os
 import uuid
 
 import numpy as np
-from dotenv import load_dotenv
 from models.awsS3 import AwsS3
 from openai import OpenAI
 from PIL import Image, ImageDraw, ImageFont
@@ -15,9 +14,6 @@ from pypipo.libs.utils import *
 class AiImage(BaseModel):
     # 프롬프트 받으면 생성형 ai 로 이미지 url(string)만들어주는 함수
     def createImage(self, prompt: str) -> str:
-
-        # openai api key
-        load_dotenv(verbose=True)
 
         # 환경변수 불러오기
         # OPEN_AI_KEY = os.getenv("OPEN_AI_KEY")
