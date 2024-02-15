@@ -1,17 +1,18 @@
 <script setup lang="ts">
 import { localAxios } from '../api/axios'
-import { usePayStore } from '@/stores/pay'
+import { usePayStore } from '../stores/pay'
 // import { storeToRefs } from 'pinia';
 import { ref } from 'vue'
-
+const { setTid } = usePayStore()
 const user = navigator.userAgent
-// const price = ref<Number>(1000)
+
 const purchase = (price: Number) => {
   localAxios()
     .post(`pay/makePayment?mileage=${price}`)
     .then((res) => {
       console.log('결제 요청 성공')
-      usePayStore().setTid(res.data.body.tid)
+      setTid(res.data.body.tid)
+      setTimeout(() => {}, 10000)
       if (user.indexOf('iPhone') > -1) {
         window.location.href = res.data.body.ios_app_scheme
       } else if (user.indexOf('Android') > -1) {
