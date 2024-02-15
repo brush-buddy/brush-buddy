@@ -4,7 +4,6 @@ import { localAxios } from '../../api/axios'
 import axios from 'axios'
 import { useRouter } from 'vue-router'
 import { useImageStore } from '../../stores/image'
-import { onMounted } from 'vue'
 
 const host = import.meta.env.VITE_APP_AI_SERVER_URL
 
@@ -104,9 +103,9 @@ onMounted(() => {
                 style="margin: 2rem; width: 10rem"
                 v-show="loadingState"
               />
-              <div class="">
+              <!-- <div class="">
                 <CButton :text="left_cnt + '/20'" :color="'#f6b4bf'" />
-              </div>
+              </div> -->
               <img
                 :src="imageSrc"
                 alt=""
