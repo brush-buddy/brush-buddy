@@ -62,16 +62,6 @@ class AiImage(BaseModel):
         input_image = Image.open(image_path)
         watermark_text = "BRUSH BUDDY"
 
-        # "Brush Buddy \t\t\t   Brush Buddy \t\t   Brush Buddy  \t\t\t  Brush Buddy\n\n\n \
-        # Brush Buddy \t\t Brush Buddy \t\t\t Brush Buddy \t\t Brush Buddy \n\n\n \
-        # Brush Buddy \t\t\t  Brush Buddy  \t\t  Brush Buddy  \t\t\t  Brush Buddy\n\n\n \
-        # Brush Buddy \t\t Brush Buddy \t\t\t Brush Buddy \t\t Brush Buddy \n\n\n \
-        # Brush Buddy \t\t\t  Brush Buddy  \t\t  Brush Buddy  \t\t\t  Brush Buddy\n\n\n \
-        # Brush Buddy \t\t Brush Buddy \t\t\t Brush Buddy \t\t Brush Buddy \n\n\n \
-        # Brush Buddy \t\t\t  Brush Buddy  \t\t  Brush Buddy  \t\t\t  Brush Buddy\n\n\n \
-        # Brush Buddy \t\t Brush Buddy \t\t\t Brush Buddy \t\t Brush Buddy \n\n\n \
-        # Brush Buddy \t\t\t  Brush Buddy  \t\t  Brush Buddy  \t\t\t  Brush Buddy\n\n\n "
-
         draw = ImageDraw.Draw(input_image)
         width, height = input_image.size
 
@@ -81,7 +71,6 @@ class AiImage(BaseModel):
 
         (left, top, right, bottom) = font.getbbox(watermark_text)
 
-        margin = 10
         x = (width - right + left) / 2
         y = (height - bottom + top) / 2
 
