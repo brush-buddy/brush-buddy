@@ -60,23 +60,73 @@ class AiImage(BaseModel):
 
     def add_watermark(self, image_path):
         input_image = Image.open(image_path)
-        watermark_text = "Brush Buddy"
+        watermark_text = "BRUSH BUDDY"
+
+        # "Brush Buddy \t\t\t   Brush Buddy \t\t   Brush Buddy  \t\t\t  Brush Buddy\n\n\n \
+        # Brush Buddy \t\t Brush Buddy \t\t\t Brush Buddy \t\t Brush Buddy \n\n\n \
+        # Brush Buddy \t\t\t  Brush Buddy  \t\t  Brush Buddy  \t\t\t  Brush Buddy\n\n\n \
+        # Brush Buddy \t\t Brush Buddy \t\t\t Brush Buddy \t\t Brush Buddy \n\n\n \
+        # Brush Buddy \t\t\t  Brush Buddy  \t\t  Brush Buddy  \t\t\t  Brush Buddy\n\n\n \
+        # Brush Buddy \t\t Brush Buddy \t\t\t Brush Buddy \t\t Brush Buddy \n\n\n \
+        # Brush Buddy \t\t\t  Brush Buddy  \t\t  Brush Buddy  \t\t\t  Brush Buddy\n\n\n \
+        # Brush Buddy \t\t Brush Buddy \t\t\t Brush Buddy \t\t Brush Buddy \n\n\n \
+        # Brush Buddy \t\t\t  Brush Buddy  \t\t  Brush Buddy  \t\t\t  Brush Buddy\n\n\n "
+
         draw = ImageDraw.Draw(input_image)
         width, height = input_image.size
-        font = ImageFont.load_default()  # 워터마크에 사용할 폰트 및 크기 설정
-        # text_width, text_height = draw.textsize(watermark_text, font)
-        # x = width - text_width - 10  # 워터마크 위치 (오른쪽 하단)
-        # y = height - text_height - 10
+
+        print(width, height)
+
+        font = ImageFont.load_default(size=32)  # 워터마크에 사용할 폰트 및 크기 설정
+
+        (left, top, right, bottom) = font.getbbox(watermark_text)
+
+        margin = 10
+        x = (width - right + left) / 2
+        y = (height - bottom + top) / 2
 
         # 텍스트를 이미지에 추가
         draw.text(
-            (10, 10),
+            (x, y),
             watermark_text,
             font=font,
-            font_size=60,
-            fill=(255, 255, 255, 128),
+            fill=(128, 128, 128, 0),
         )
 
+        # draw.text(
+        #     (width / 3, height / 3),
+        #     watermark_text,
+        #     font=font,
+        #     fill=(128, 128, 128, 10),
+        # )
+
+        # draw.text(
+        #     (x / 1.5, y / 1.5),
+        #     watermark_text,
+        #     font=font,
+        #     fill=(128, 128, 128, 10),
+        # )
+
+        # draw.text(
+        #     (x * 4, y * 4),
+        #     watermark_text,
+        #     font=font,
+        #     fill=(128, 128, 128, 50),
+        # )
+
+        # draw.text(
+        #     (x // 3, y // 3),
+        #     watermark_text,
+        #     font=font,
+        #     fill=(128, 128, 128, 50),
+        # )
+
+        # draw.text(
+        #     (x, y),
+        #     watermark_text,
+        #     font=font,
+        #     fill=(128, 128, 128, 100),
+        # )
         # upload_numpy_array_to_s3(bucket_name, file_key, numpy_array, content_type)
         # upload_Pillow_image_to_s3(bucket_name, file_key, pillow_image, content_type)
 
@@ -96,6 +146,6 @@ class AiImage(BaseModel):
         s3.upload_file(file_name, "brush-buddy", key)
 
         # 워터 마크 로컬 파일 지우기
-        os.remove(file_name)
+        # os.remove(file_name)
 
         return f"https://brush-buddy.s3.ap-northeast-2.amazonaws.com/{key}"
