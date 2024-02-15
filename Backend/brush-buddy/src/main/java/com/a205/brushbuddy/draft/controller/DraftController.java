@@ -3,10 +3,7 @@ package com.a205.brushbuddy.draft.controller;
 import com.a205.brushbuddy.board.domain.Board;
 import com.a205.brushbuddy.board.dto.BoardListRequestDto;
 import com.a205.brushbuddy.board.dto.BoardListResponseDto;
-import com.a205.brushbuddy.draft.dto.request.DraftCategoryModifyRequestDto;
-import com.a205.brushbuddy.draft.dto.request.DraftCreateRequestDto;
-import com.a205.brushbuddy.draft.dto.request.DraftListRequestDto;
-import com.a205.brushbuddy.draft.dto.request.DraftMakeRequestDto;
+import com.a205.brushbuddy.draft.dto.request.*;
 import com.a205.brushbuddy.draft.dto.response.DraftCreateResponseDto;
 import com.a205.brushbuddy.draft.dto.response.DraftDetailResponseDto;
 import com.a205.brushbuddy.draft.dto.response.DraftListResponseDto;
@@ -185,13 +182,13 @@ public class DraftController {
 	})
 	@ResponseBody
 	@PostMapping("/ai-generation")
-	public ResponseEntity<?> makeDraft(@RequestBody String prompt, HttpServletRequest request) throws Exception{
+	public ResponseEntity<?> makeDraft(@RequestBody DraftMakeRequestSpringDto prompt, HttpServletRequest request) throws Exception{
 		Integer userId = jwtUtil.getUserId(request)
 				.orElseThrow(() -> new BaseException(ErrorCode.INVALID_TOKEN)); // 헤더의 access token으로 userId 추출, null 반환시 유효하지 않은 토큰 오류 전송
 
-		URI uri = new URI("https://bb-ai.duckdns.org/api/v1/draft/ai-generation");
+		URI uri = new URI("https://bb-back.duckdns.org/api/v1/draft/ai-generation");
 
-		return ResponseEntity.ok(restTemplate.postForEntity(uri, new DraftMakeRequestDto(userId, prompt), DraftMakeResponseDto.class));
+		return ResponseEntity.ok(restTemplate.postForEntity(uri, new DraftMakeRequestDto(userId, prompt.getPrompt()), String.class));
 	}
 
 	@Operation(description = "북마크 여부 확인 ")

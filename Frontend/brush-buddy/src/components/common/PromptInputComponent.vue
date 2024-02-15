@@ -1,25 +1,36 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { localAxios } from '../../api/axios'
 import axios from 'axios'
 import { useRouter } from 'vue-router'
 import { useImageStore } from '../../stores/image'
+
 const host = import.meta.env.VITE_APP_AI_SERVER_URL
 
 const router = useRouter()
 const { setImage } = useImageStore()
-
+const leftCnt = ref(0)
 const prompt = ref<string>('')
 const dialog = ref(false)
+const leftcnt = ref(0)
 const loadingState = ref(true)
 const imageSrc = ref('../../assets/icon/loading.gif')
 const makeImage = () => {
   console.log(prompt.value)
+  if (prompt.value == '') {
+    alert('내용을 입력해주세요')
+    loadingState.value = false
+    dialog.value = false
+    return
+  }
+  dialog.value = true
+  loadingState.value = true
   localAxios()
     .post('/draft/ai-generation', { prompt: prompt.value })
     .then((response) => {
       console.log(response.data)
-      imageSrc.value = response.data['image_url']
+      imageSrc.value = JSON.parse(response.data.body).image_url
+      leftCnt.value = JSON.parse(response.data.body).left_cnt
       loadingState.value = false
     })
 }
@@ -39,12 +50,23 @@ const makePipo = () => {
     router.push('/draft/write')
   })
 }
+
+onMounted(() => {
+  localAxios()
+    .post('/draft/ai-generation', { prompt: prompt.value })
+    .then((response) => {
+      console.log(JSON.parse(response.data.body).left_cnt)
+      leftCnt.value = JSON.parse(response.data.body).left_cnt
+    })
+})
 //-그려줘라고 입력하면 그림을 만들어드려요
 </script>
 
 <template>
+  <div>호출 횟수가 {{ leftCnt }}번 남았어요!</div>
   <div class="input-box-container">
     <!-- <div class="input-container"> -->
+
     <input
       type="text"
       v-model="prompt"
@@ -54,7 +76,12 @@ const makePipo = () => {
       v-on:keyup.enter="makeImage()"
     />
     <div>
-      <v-btn @click="makeImage()" icon="mdi-arrow-up" size="x-small" color="success"></v-btn>
+      <v-btn
+        @click="prompt != '' ? makeImage() : (dialog = false)"
+        icon="mdi-arrow-up"
+        size="small"
+        color="success"
+      ></v-btn>
       <v-row justify="center">
         <v-dialog v-model="dialog" persistent width="auto">
           <v-card>
@@ -65,6 +92,9 @@ const makePipo = () => {
                 style="margin: 2rem; width: 10rem"
                 v-show="loadingState"
               />
+              <!-- <div class="">
+                <CButton :text="left_cnt + '/20'" :color="'#f6b4bf'" />
+              </div> -->
               <img
                 :src="imageSrc"
                 alt=""
@@ -101,6 +131,12 @@ const makePipo = () => {
 </template>
 
 <style scoped>
+.left_cnt {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin: 1rem;
+}
+
 .input-box-container {
   display: flex;
   width: 21.5rem;

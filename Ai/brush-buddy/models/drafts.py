@@ -23,7 +23,7 @@ class Drafts(BaseModel):
 
         # time stamp
         uuid_val = uuid.uuid1()
-        # t_stamp = time.strftime("%Y%m%d%H%M%S", time.localtime())
+        # uuid_val = time.strftime("%Y%m%d%H%M%S", time.localtime())
 
         aws = AwsS3()
 
@@ -46,7 +46,8 @@ class Drafts(BaseModel):
 
         # s3에 색칠된 도안 업로드 ========================================
         colored_file_name = f"colored_draft_{uuid_val}.png"  # 업로드할 파일 이름
-        bucket_name = "brush-buddy"
+        bucket_name = "brush-buddy-prod"
+        # "brush-buddy"
         # brushbuddy0  # 버켓 주소
         colored_key = f"draft/colored/{colored_file_name}"  # s3  내부 이미지 파일 이름
 
@@ -96,7 +97,7 @@ class Drafts(BaseModel):
         # output : numbering 된 np.array 형태의 도안
         numbering_img = numbering.run(img_lab, lab, color_label=color_label)
 
-        numbering_file_name = f"numbering_draft_{uuid_val}.PNG"  # 업로드할 파일 이름
+        numbering_file_name = f"{uuid_val}.PNG"  # 업로드할 파일 이름
 
         cv2.imwrite(numbering_file_name, numbering_img)
 
@@ -107,6 +108,8 @@ class Drafts(BaseModel):
         )
 
         # 워터마크 추가
+        #
+        # https://cdn-icons-png.flaticon.com/512/3214/3214746.png
         watermark_draft_url = aiImg.add_watermark(numbering_file_name)
 
         # aws s3에 색칠된 도안 "colored_draft_YYYYMMDDHH.png"로 저장
@@ -118,7 +121,7 @@ class Drafts(BaseModel):
             print(e)
 
         numbered_draft_url = (
-            f"https://brush-buddy.s3.ap-northeast-2.amazonaws.com/{numbered_key}"
+            f"https://{bucket_name}.s3.ap-northeast-2.amazonaws.com/{numbered_key}"
         )
 
         # # 파일 삭제
