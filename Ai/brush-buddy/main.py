@@ -2,8 +2,8 @@ import os
 
 import uvicorn
 from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
 from routes.drafts_route import draft_router
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
 
