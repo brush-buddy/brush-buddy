@@ -67,7 +67,7 @@ class AiImage(BaseModel):
 
         print(width, height)
 
-        font = ImageFont.load_default(size=32)  # 워터마크에 사용할 폰트 및 크기 설정
+        font = ImageFont.load_default(size=100)  # 워터마크에 사용할 폰트 및 크기 설정
 
         (left, top, right, bottom) = font.getbbox(watermark_text)
 
