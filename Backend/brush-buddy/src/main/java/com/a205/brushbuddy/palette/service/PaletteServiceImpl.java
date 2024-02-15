@@ -23,6 +23,11 @@ public class PaletteServiceImpl implements PaletteService {
     private final DraftRepository draftRepository;
 
     @Override
+    public List<Palette> getAllPaletteList(Pageable pageable) {
+        return paletteRepository.findAll(pageable).getContent(); // 리스트 조
+    }
+
+    @Override
     public List<Palette> getPaletteList(Integer userId, Pageable pageable) {
         return paletteRepository.findAllByUser_UserId(userId, pageable); // 리스트 조회
     }
@@ -34,11 +39,11 @@ public class PaletteServiceImpl implements PaletteService {
                 ()-> new BaseException(ErrorCode.NOT_FOUND_DATA)
         );
 
-        //사용자가 권한이 있는가
-        // TODO : Admin인지 확인하는 로직 필요
-        if(!result.getUser().getUserId().equals(userId)){ // UserId가 다르거나 admin이 아니면
-            throw new BaseException(ErrorCode.NOT_PRIVIEGED);
-        }
+        // //사용자가 권한이 있는가
+        // // TODO : Admin인지 확인하는 로직 필요
+        // if(!result.getUser().getUserId().equals(userId)){ // UserId가 다르거나 admin이 아니면
+        //     throw new BaseException(ErrorCode.NOT_PRIVIEGED);
+        // }
 
         return result;
     }
