@@ -50,10 +50,10 @@ const makePipo = () => {
     router.push('/draft/write')
   })
 }
-
+// ai 호출 횟수 가져오기
 onMounted(() => {
   localAxios()
-    .post('/draft/ai-generation', { prompt: prompt.value })
+    .post('/draft/get_cnt')
     .then((response) => {
       console.log(JSON.parse(response.data.body).left_cnt)
       leftCnt.value = JSON.parse(response.data.body).left_cnt

@@ -13,7 +13,14 @@ import redis
 import requests
 from fastapi import APIRouter, File, UploadFile
 from models import drafts, images
-from models.DTO import requestPrompt, requestUrl, responseImage, responsePipo
+from models.DTO import (
+    requestPrompt,
+    requestUrl,
+    requestUser,
+    responseImage,
+    responsePipo,
+    responseRedis,
+)
 from PIL import Image
 from starlette import status
 from starlette.responses import JSONResponse
@@ -21,6 +28,24 @@ from starlette.responses import JSONResponse
 draft_router = APIRouter(
     tags=["Draft"],
 )
+
+
+# ai 생성 화면 들어갔을 때 호출 횟수 확인용 api
+@draft_router.post("/get_cnt", status_code=200, response_model=responseRedis.Redis)
+async def redis_cnt(user: requestUser.User):
+
+    r = redis.StrictRedis(host="i10a205.p.ssafy.io", port=6379, db=0)
+
+    userid = user.user_id
+
+    # 초기화
+    if r.get(userid) is None:
+        r.set(userid, 0)
+
+    call_num = r.get(userid)
+    # print(call_num, "번 호출")
+
+    return responseRedis.Redis(left_cnt=20 - int(call_num))
 
 
 # 프롬프트 받아서, ai호출해서 이미지 url return 하는 api
@@ -36,26 +61,30 @@ async def ai_generate(resBody: requestPrompt.Prompt):
     if r.get(resBody.user_id) is None:
         r.set(resBody.user_id, 0)
 
-    call_num = r.get(user)
-
-    if resBody.prompt == "" or resBody.prompt == '""':
-        return responseImage.Img_url(image_url="", left_cnt=20 - int(call_num))
+    # if resBody.prompt == "" or resBody.prompt == '""':
+    #     return responseImage.Img_url(image_url="", left_cnt=20 - int(call_num))
 
     # prompt -> 이미지 url
     simplePrompt = "Super Simple"
     aigenerateimageurl = images.AiImage().createImage(simplePrompt + resBody.prompt)
 
-    r.incr(user, 1)
     # print(aigenerateimageurl)
 
     # cnt = db.redis.save_callnum(user)
 
-    if int(call_num) > 20:
+    cnt = r.get(user)
+
+    if int(cnt) >= 20:
         return JSONResponse(
             status_code=status.HTTP_429_TOO_MANY_REQUESTS,
             content={"error": "Too Many Requests"},
         )
     else:
+
+        r.incr(user, 1)
+
+        call_num = r.get(user)
+
         return responseImage.Img_url(
             image_url=aigenerateimageurl, left_cnt=20 - int(call_num)
         )
