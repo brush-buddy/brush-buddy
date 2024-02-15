@@ -16,8 +16,8 @@ class AiImage(BaseModel):
     def createImage(self, prompt: str) -> str:
 
         # 환경변수 불러오기
-        # OPEN_AI_KEY = os.getenv("OPEN_AI_KEY")
-        client = OpenAI(api_key="*")
+        OPEN_AI_KEY = os.getenv("OPEN_AI_KEY")
+        client = OpenAI(api_key=OPEN_AI_KEY)
 
         response = client.images.generate(
             model="dall-e-3",
@@ -95,9 +95,9 @@ class AiImage(BaseModel):
         # 로컬 디렉토리에 이미지 저장
         input_image.save(file_name)
 
-        s3.upload_file(file_name, "brushbucket", key)
+        s3.upload_file(file_name, "brush-buddy-prod", key)
 
         # 워터 마크 로컬 파일 지우기
         os.remove(file_name)
 
-        return f"https://brushbucket.s3.ap-northeast-2.amazonaws.com/{key}"
+        return f"https://brush-buddy-prod.s3.ap-northeast-2.amazonaws.com/{key}"

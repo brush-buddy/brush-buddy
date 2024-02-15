@@ -35,33 +35,34 @@ async def ai_generate(resBody: requestPrompt.Prompt):
 
     if r.get(resBody.user_id) is None:
         r.set(resBody.user_id, 0)
+
     print(r.get(user), "callnum")  # callnum 확인용
     call_num = r.get(user)
     print(resBody.prompt, "prompt")
     if resBody.prompt == "":
 
         return responseImage.Img_url(image_url="", left_cnt=20 - int(call_num))
-
-    print("체크체크")
-
-    # prompt -> 이미지 url
-    simplePrompt = "Simple Cute"
-    aigenerateimageurl = images.AiImage().createImage(simplePrompt + resBody.prompt)
-
-    r.incr(user, 1)
-    # print(aigenerateimageurl)
-
-    # cnt = db.redis.save_callnum(user)
-
-    if int(call_num) > 20:
-        return JSONResponse(
-            status_code=status.HTTP_429_TOO_MANY_REQUESTS,
-            content={"error": "Too Many Requests"},
-        )
     else:
-        return responseImage.Img_url(
-            image_url=aigenerateimageurl, left_cnt=20 - int(call_num)
-        )
+        print("체크체크")
+
+        # prompt -> 이미지 url
+        simplePrompt = "Simple Cute"
+        aigenerateimageurl = images.AiImage().createImage(simplePrompt + resBody.prompt)
+
+        r.incr(user, 1)
+        # print(aigenerateimageurl)
+
+        # cnt = db.redis.save_callnum(user)
+
+        if int(call_num) > 20:
+            return JSONResponse(
+                status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+                content={"error": "Too Many Requests"},
+            )
+        else:
+            return responseImage.Img_url(
+                image_url=aigenerateimageurl, left_cnt=20 - int(call_num)
+            )
 
 
 # base64 이미지 받아서, 팔레트 json 데이터 return 하는 api
