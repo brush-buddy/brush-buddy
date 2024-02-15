@@ -115,13 +115,14 @@ const modifyCategories = () => {
 
 const deleteDraft = () => {
   localAxios()
-  .delete('/draft/'+draftId)
-  .then((res) => {
-    alert("도안이 삭제 처리 되었습니다.")
-    router.push("/search")
-  }).catch((error) => {
-    alert("오류로 인해 삭제에 실패했습니다.")
-  })
+    .delete('/draft/' + draftId)
+    .then((res) => {
+      alert('도안이 삭제 처리 되었습니다.')
+      router.push('/search')
+    })
+    .catch((error) => {
+      alert('오류로 인해 삭제에 실패했습니다.')
+    })
 }
 </script>
 
@@ -295,7 +296,9 @@ const deleteDraft = () => {
                 >
               </div>
               <v-card-actions style="display: flex; justify-content: flex-end">
-                <v-btn color="primary" @click="charge = false">이동하기</v-btn>
+                <v-btn color="primary" @click="(charge = false), router.push('/charge')"
+                  >이동하기</v-btn
+                >
                 <v-btn color="primary" @click="charge = false">취소</v-btn>
               </v-card-actions>
             </v-card>

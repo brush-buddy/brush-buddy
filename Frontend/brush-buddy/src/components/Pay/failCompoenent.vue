@@ -11,7 +11,18 @@ onMounted(() => {
 </script>
 
 <template>
-  <div>결제 실패 되었습니다.</div>
+  <div
+    style="
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      margin-top: 3rem;
+    "
+  >
+    <h1>결제를 실패했습니다.</h1>
+    <img src="../../assets/images/fail.png" alt="" />
+  </div>
 </template>
 
 <style scoped></style>
