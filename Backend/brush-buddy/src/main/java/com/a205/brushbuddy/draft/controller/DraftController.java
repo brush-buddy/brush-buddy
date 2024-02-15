@@ -191,9 +191,6 @@ public class DraftController {
 
 		URI uri = new URI("https://bb-ai.duckdns.org/api/v1/draft/ai-generation");
 
-//		ResponseEntity<DraftMakeResponseDto> response =  restTemplate.postForEntity(uri, new DraftMakeRequestDto(userId, prompt), DraftMakeResponseDto.class);
-//		System.out.println(str.toString());
-		System.out.println("promt, userID"+prompt+" "+userId);
 		return ResponseEntity.ok(restTemplate.postForEntity(uri, new DraftMakeRequestDto(userId, prompt), DraftMakeResponseDto.class));
 	}
 
