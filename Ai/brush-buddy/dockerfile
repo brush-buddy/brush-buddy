@@ -5,12 +5,13 @@ RUN apt-get -y install libgl1-mesa-glx
 
 RUN pip install --upgrade pip
 
-COPY requirements.txt ./requirements.txt 
-
-RUN pip install -r requirements.txt 
 
 COPY . /brush-buddy
+WORKDIR /brush-buddy
+
+RUN mkdir -p ./assets
+RUN pip install -r requirements.txt 
+
 EXPOSE 8000
 
-RUN mkdir -p ./assets ./watermark ./numbering ./colored
-CMD [ "python", "/brush-buddy/main.py", "--host", "0.0.0.0", "--port", "8000"]
+CMD [ "python", "main.py"]

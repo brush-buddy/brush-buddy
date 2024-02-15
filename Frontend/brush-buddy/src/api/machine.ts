@@ -1,7 +1,7 @@
 import { localAxios } from "./axios";
 
 type MachineRequestType = {
-    "rgbcode" : String
+    rgbcode : String
 }
 
 export type {

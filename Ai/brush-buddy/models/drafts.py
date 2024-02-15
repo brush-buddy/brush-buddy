@@ -48,17 +48,15 @@ class Drafts(BaseModel):
         colored_file_name = f"colored_draft_{uuid_val}.png"  # 업로드할 파일 이름
         bucket_name = "brush-buddy"
         # brushbuddy0  # 버켓 주소
-        colored_key = (
-            f"draft/colored/{colored_file_name}.png"  # s3  내부 이미지 파일 이름
-        )
+        colored_key = f"draft/colored/{colored_file_name}"  # s3  내부 이미지 파일 이름
 
-        colored_file_path = f"./colored/{colored_file_name}"  # 업로드할 파일 이름
+        # colored_file_path = f"{colored_file_name}"  # 업로드할 파일 이름
 
-        cv2.imwrite(colored_file_path, painting_img)
+        cv2.imwrite(colored_file_name, painting_img)
 
         # aws s3에 색칠된 도안 "colored_draft_YYYYMMDDHH.png"로 저장
         try:
-            s3.upload_file(colored_file_path, bucket_name, colored_key)
+            s3.upload_file(colored_file_name, bucket_name, colored_key)
         except Exception as e:
             print(e)
 
@@ -100,9 +98,7 @@ class Drafts(BaseModel):
 
         numbering_file_name = f"numbering_draft_{uuid_val}.PNG"  # 업로드할 파일 이름
 
-        numbering_file_path = f"./numbering/{numbering_file_name}"  # 업로드할 파일 이름
-
-        cv2.imwrite(numbering_file_path, numbering_img)
+        cv2.imwrite(numbering_file_name, numbering_img)
 
         # s3에 numbering 된 도안 업로드 ========================================
 
@@ -111,20 +107,22 @@ class Drafts(BaseModel):
         )
 
         # 워터마크 추가
-        watermark_draft_url = aiImg.add_watermark(numbering_file_path)
+        watermark_draft_url = aiImg.add_watermark(numbering_file_name)
 
         # aws s3에 색칠된 도안 "colored_draft_YYYYMMDDHH.png"로 저장
         try:
 
-            s3.upload_file(numbering_file_path, bucket_name, numbered_key)
+            s3.upload_file(numbering_file_name, bucket_name, numbered_key)
 
         except Exception as e:
             print(e)
 
-        numbered_draft_url = f"https://brush-buddy.s3.ap-northeast-2.amazonaws.com/draft/numbering/{numbering_file_name}"
+        numbered_draft_url = (
+            f"https://brush-buddy.s3.ap-northeast-2.amazonaws.com/{numbered_key}"
+        )
 
         # # 파일 삭제
-        os.remove(colored_file_path)
-        os.remove(numbering_file_path)
+        os.remove(colored_file_name)
+        os.remove(numbering_file_name)
 
         return hexcode_json_string, watermark_draft_url, numbered_draft_url
