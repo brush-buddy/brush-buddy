@@ -41,7 +41,12 @@ const generateRandomColorWithSameTone = () => {
         </div>
       </div>
       <div>
-        <v-icon icon="mdi-trash-can" @click="(dialog = true), console.log('click')" color="red">
+        <v-icon
+          v-if="replyList.isMine"
+          icon="mdi-trash-can"
+          @click="(dialog = true), console.log('click')"
+          color="red"
+        >
         </v-icon>
         <v-dialog v-model="dialog" width="auto">
           <v-card>
