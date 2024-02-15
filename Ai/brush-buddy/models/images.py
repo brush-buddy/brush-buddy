@@ -67,9 +67,7 @@ class AiImage(BaseModel):
         watermark_text = "Brush Buddy"
         draw = ImageDraw.Draw(input_image)
         width, height = input_image.size
-        font = ImageFont.truetype(
-            "arial.ttf", 60
-        )  # 워터마크에 사용할 폰트 및 크기 설정
+        font = ImageFont.load_default()  # 워터마크에 사용할 폰트 및 크기 설정
         # text_width, text_height = draw.textsize(watermark_text, font)
         # x = width - text_width - 10  # 워터마크 위치 (오른쪽 하단)
         # y = height - text_height - 10
