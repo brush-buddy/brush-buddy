@@ -16,6 +16,7 @@ import java.sql.Timestamp;
 @Builder
 @AllArgsConstructor
 public class Mileage {
+
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Column(name = "mileage_id", nullable = false)
