@@ -231,6 +231,8 @@ const userStore = useUserStore()
         </v-btn>
       </div>
     </v-card>
+
+    <footer style="height: 10rem"></footer>
   </div>
 </template>
 
