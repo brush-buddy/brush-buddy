@@ -41,7 +41,7 @@
             stroke-linejoin="round"
           />
         </svg>
-        <p class="thumbnailUnder">{{ community.likeNumber }}</p>
+        <p class="thumbnailUnder">{{ likeNumber }}</p>
         <svg
           xmlns="http://www.w3 .org/2000/svg"
           width="14"
@@ -77,7 +77,8 @@
           v-for="(item, i) in community.photo"
           :key="i"
           :src="item.imgUrl"
-        >{{item.imgUrl}}</v-carousel-item>
+          cover
+        ></v-carousel-item>
       </v-carousel>
     </div>
     <div>
@@ -91,19 +92,28 @@
             </v-chip>
           </template>
         </div>
-
-        <v-icon
-          v-if="isLike"
-          icon="mdi-thumb-up"
-          @click="removeLikeState(Number(boardId))"
-          size="x-large"
-        ></v-icon>
-        <v-icon
-          v-if="!isLike"
-          icon="mdi-thumb-up-outline"
-          @click="addLikeState(Number(boardId))"
-          size="x-large"
-        ></v-icon>
+        <div style="width: 5rem; display: flex; justify-content: space-between">
+          <v-icon
+            v-if="community.isMine"
+            icon="mdi-trash-can"
+            color="red"
+            size="x-large"
+            @click="deleteCommunity()"
+          >
+          </v-icon>
+          <v-icon
+            v-if="isLike"
+            icon="mdi-thumb-up"
+            @click="removeLikeState(Number(boardId)), likeNumber--"
+            size="x-large"
+          ></v-icon>
+          <v-icon
+            v-if="!isLike"
+            icon="mdi-thumb-up-outline"
+            @click="addLikeState(Number(boardId)), likeNumber++"
+            size="x-large"
+          ></v-icon>
+        </div>
       </div>
     </div>
 
@@ -145,7 +155,7 @@ import { useLikeStore } from '../stores/boardlike'
 const { setLikeState, removeLikeState, addLikeState } = useLikeStore()
 const likeStore = useLikeStore()
 const { isLike } = storeToRefs(likeStore)
-
+const likeNumber = ref(0)
 function getRandomColor() {
   return '#' + Math.floor(Math.random() * 16777215).toString(16)
 }
@@ -182,6 +192,7 @@ onMounted(() => {
       console.log(response.data)
       community.value = response.data
       setLikeState(response.data.isHeart)
+      likeNumber.value = response.data.likeNumber
     })
 
   getReplyList(Number(boardId), params.value).then((res) => {
@@ -196,6 +207,18 @@ const reloadReplyList = () => {
     replyList.value = res.data.replyList
     console.log(replyList.value)
   })
+}
+
+// 삭제
+
+const deleteCommunity = () => {
+  localAxios()
+    .delete(`/board/${boardId}`)
+    .then(function (response: any) {
+      console.log(response.data)
+      alert('삭제되었습니다.')
+      location.href = '/community'
+    })
 }
 </script>
 

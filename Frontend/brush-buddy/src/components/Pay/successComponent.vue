@@ -19,6 +19,7 @@ for (const param of searchParams) {
   console.log(param)
 }
 onMounted(() => {
+  console.log(tid.value)
   localAxios()
     .post(`pay/complete?pg_token=${pg_token}&tid=${tid.value}`)
     .then((res) => {
