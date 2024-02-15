@@ -15,4 +15,6 @@ public class PaletteDetailResponseDto {
     private String paletteColorCode;
     private String paletteModifiedTime;
     private String paletteCreatedAt;
+    private Boolean isAdmin;
+    private String nickName;
 }

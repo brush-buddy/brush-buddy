@@ -30,6 +30,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -228,6 +229,7 @@ public class DraftServiceImpl implements DraftService{
     }
 
     @Override
+    @Transactional
     public void buyDraft(int userId, Long draftId) throws Exception {
         User user = userRepository.findById(userId).orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND_DATA));
         Draft draft = draftRepository.findByDraftId(draftId);
@@ -240,8 +242,18 @@ public class DraftServiceImpl implements DraftService{
             throw new BaseException(ErrorCode.NOT_ENOUGH_MILEAGE);
         }
 
+        Palette palette = Palette.builder()
+                .paletteName("구매한 도안의 팔레트")
+                .user(user)
+                .paletteColorCode(draft.getDraftColorCode())
+                .paletteCreatedAt(new Timestamp(System.currentTimeMillis()))
+                .paletteLastModifiedTime(new Timestamp(System.currentTimeMillis()))
+                .draft(draft).build();
+        paletteRepository.save(palette);
+
         user.setUserMileage(user.getUserMileage() - draft.getDraftPrice());
         purchaseRepository.insertPurchase(userId, draftId, draft.getDraftPrice());
+
         // purchaseRepository.save(null);
 
     }

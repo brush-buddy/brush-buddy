@@ -56,6 +56,8 @@ public class MileageServiceImpl implements MileageService {
         return mileageLogRepository.save(mileageLog).getMileageLogId();
     }
 
+
+    // db 마일리지 tid set
     @Override
     @Transactional
     public void setMileageTid(Long mileageLogId, String tid) {
@@ -65,10 +67,34 @@ public class MileageServiceImpl implements MileageService {
         mileageLogRepository.save(mileageLog);
     }
 
+
+    // Tid 기준으로 마일리지 로그 가져오기 -> 마일리지 번호적용
     @Override
     public MileageLog getMileageLog(String tid) {
         return mileageLogRepository.findByTid(tid)
             .orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND));
+    }
+
+
+    // 두번째 호출 이후에 결제 확정나면 db 적용
+    @Override
+    @Transactional
+    public void addMileage(int userId, Long mileageLogId) {
+        MileageLog mileageLog = mileageLogRepository.findByMileageLogId(mileageLogId)
+            .orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND));
+        User user = userRepository.findUserByUserId(userId);
+        mileageRepository.save(Mileage.builder()
+            .user(user)
+            .workplaceId(0)
+            .mileageBefore(user.getUserMileage())
+            .mileageAfter(user.getUserMileage() + mileageLog.getPrice())
+            .mileageAmount(mileageLog.getPrice())
+            .mileageContent("충전")
+            .build());
+        user.setUserMileage(user.getUserMileage() + mileageLog.getPrice());
+        userRepository.save(user);
+        mileageLog.setMileageLogStatus("충전완료");
+        mileageLogRepository.save(mileageLog);
     }
 
     @Override
