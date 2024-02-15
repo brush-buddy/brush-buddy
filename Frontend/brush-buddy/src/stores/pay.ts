@@ -15,7 +15,7 @@ const usePayStore = defineStore("pay", () => {
         tid,
         setTid
     }
-})
+}, { persist: true });
 
 
 export {usePayStore}
