@@ -54,7 +54,7 @@ const save = () => {
 const dialog = ref(false)
 
 const discard = () => {
-  console.log('취소')
+  router.push('/draft')
 }
 
 onMounted(() => {
