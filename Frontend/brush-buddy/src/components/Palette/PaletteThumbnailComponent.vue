@@ -13,7 +13,15 @@ onMounted(() => {
 
 <template>
   <div
-    style="width: 10; height: 13rem; margin-top: 1.5rem"
+    style="
+      width: 10;
+
+      margin-top: 1.5rem;
+      display: flex;
+      justify-content: center;
+      flex-direction: column;
+      align-items: center;
+    "
     @click="router.push(`/palette/${paletteInfo.paletteId}`)"
   >
     <div class="paletteThumbnail">
@@ -25,11 +33,19 @@ onMounted(() => {
       </div>
     </div>
     <div
-      style="margin-top: 1rem; display: flex; justify-content: space-between; margin: 1rem 0.5rem"
+      style="
+        margin-top: 1rem;
+        display: flex;
+        flex-direction: column;
+        margin: 1rem 0.5rem;
+        width: 10rem;
+        flex-wrap: wrap;
+      "
     >
-      <h3 style="">{{ paletteInfo.paletteName }}</h3>
-      <div>
-        <img src="" alt="" />
+      <div style="display: flex; justify-content: flex-start">
+        <p style="">{{ paletteInfo.paletteName }}</p>
+      </div>
+      <div style="display: flex; justify-content: flex-end">
         <p>{{ paletteInfo.nickName }}</p>
       </div>
     </div>
@@ -40,12 +56,15 @@ onMounted(() => {
 .paletteThumbnail {
   > img {
     max-width: 10rem;
-    max-height: 10rem;
+    /* max-height: 10rem; */
     border-radius: 1rem;
     position: relative;
     z-index: 0;
   }
   position: relative;
+  max-width: 10rem;
+  display: flex;
+  justify-content: center;
 }
 
 .paletteBg {

@@ -28,17 +28,26 @@ onMounted(() => {
 
 <template>
   <div style="display: flex; justify-content: space-evenly">
-    <div>
+    <div class="homecolumn">
       <template v-for="(paletteInfo, i) in firstColumn" :key="i">
         <PaletteThumbnailComponent :paletteInfo="paletteInfo" />
       </template>
     </div>
-    <div>
+    <div class="homecolumn">
       <template v-for="(paletteInfo, i) in secondColumn" :key="i">
         <PaletteThumbnailComponent :paletteInfo="paletteInfo" />
       </template>
     </div>
   </div>
+  <footer style="height: 10rem"></footer>
 </template>
 
-<style scoped></style>
+<style scoped>
+.homecolumn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1.5rem;
+}
+</style>
