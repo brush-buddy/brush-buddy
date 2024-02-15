@@ -75,16 +75,6 @@ public class BoardController {
         boardService.writeBoard(userId, requestDto);
         return ResponseEntity.ok().build();
     }
-//    @RequestMapping(value = "", method = RequestMethod.POST, produces = "application/json", consumes = "multipart/form-data")
-//    public ResponseEntity<?> writeBoard(
-//            @RequestParam(value = "title") String title,
-//            @RequestParam(value = "contents") String contents,
-//            @RequestParam(value = "hashtags") String hashtags,
-//            @RequestParam(value = "photo") MultipartFile photo,
-//            @RequestParam(value = "draftId") String draftId
-//            ) throws Exception{
-//        System.out.println();
-//    }
 
     // 게시판 상세조회
     @GetMapping("/{boardId}")

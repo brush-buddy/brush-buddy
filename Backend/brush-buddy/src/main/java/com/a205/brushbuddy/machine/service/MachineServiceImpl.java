@@ -90,9 +90,10 @@ public class MachineServiceImpl implements MachineService{
                 .build();
     }
 
-    private int[] rgbToCmyk(String color) {
+    // input - output 메소드
+    private static int[] rgbToCmyk(String color) {
         // data : 함수 사용을 위한 배열
-        int r, g, b, w, k, c, m, y, temp, data[];
+        int r, g, b, w, k, c, m, y, data[];
         // per를 위한 double
         double doubleR, doubleG, doubleB, doubleW, doubleK, doubleC, doubleM, doubleY;
 
@@ -112,23 +113,12 @@ public class MachineServiceImpl implements MachineService{
 
         // 무채색 (R = G = B) (C = M = Y = 0)
         if (r == g && g == b && b == r) {
-            System.out.println("-----WK data-----");
-            data = new int[] {w, k};
+            System.out.println("-----KW data-----");
+            data = new int[] {k, w};
             decPrint(data);
             PerPrint(data);
-            //// 따라서 CMY 계산 생략하고 리턴
-            //// return new int[] {0, 0, 0, toPercent(w), toPercent(k)};
-
-            //// K 변환 내용
-            temp = oneThird(k);
-            if (w != 255) {
-                System.out.println("-----K를 CMY에 3분할당 CMYW-----");
-                data = new int[] {temp, temp, temp, w};
-                decPrint(data);
-                PerPrint(data);
-            }
-            //// 추가적인 CMY 연산 불필요, 리턴
-            return new int[] {toPercent(temp), toPercent(temp), toPercent(temp), 0, toPercent(w)};
+            // 따라서 CMY 계산 생략하고 리턴
+            return new int[] {0, 0, 0, toPercent(k), toPercent(w)};
         }
 
         // 색상 + 검은색, W = 0일 경우만 유효
@@ -170,7 +160,6 @@ public class MachineServiceImpl implements MachineService{
             // 이전에 선언한 변수를 범위 수정 (0 - 255) -> (0 - 100)
             w = (int)(doubleW * 100 + 0.5);
             k = (int)(doubleK * 100 + 0.5);
-            temp = oneThird(k);
 
             if (w == 0) {
                 // W = 0 이면 CMY(+K)인 상태
@@ -178,14 +167,6 @@ public class MachineServiceImpl implements MachineService{
                 data = new int[] {c, m, y, k};
                 decPrint(data);
                 PerPrint(data);
-
-                //// K값 CMY로 3분할당
-                if (k != 0) {
-                    System.out.println("-----K를 CMY에 3분할당-----");
-                    data = new int[] {c + temp, m + temp, y + temp};
-                    decPrint(data);
-                    PerPrint(data);
-                }
             } else if (k == 0) {
                 // K = 0 이면 CMY(+W)인 상태
                 System.out.println("-----CMYW data-----");
@@ -193,21 +174,15 @@ public class MachineServiceImpl implements MachineService{
                 decPrint(data);
                 PerPrint(data);
             }
-            //// CMYKW 이용
-            //// return new int[] {c, m, y, k, w};
-
-            //// CMYKW에서 K 제외
-            return new int[] {c + temp, m + temp, y + temp, 0, w};
+            // CMYKW 이용
+            return new int[] {c, m, y, k, w};
         }
-        //// K 이용
-        //// return new int[] { 0, 0, 0, 255, 0 };
-
-        //// 추가 내용 K 제외
-        return new int[] {oneThird(100), oneThird(100), oneThird(100), 0, 0};
+        // K 이용
+        return new int[] {0, 0, 0, 255, 0};
     }
 
     // 수치 리턴 메소드
-    private String value(int[] arr, String form) {
+    private static String value(int[] arr, String form) {
         StringBuilder builder = new StringBuilder();
         if (form.startsWith("%3H")) {
             builder.append("Hex :\t");
@@ -219,7 +194,7 @@ public class MachineServiceImpl implements MachineService{
     }
 
     // 퍼센트 리턴 메소드
-    private String percent(int[] arr) {
+    private static String percent(int[] arr) {
         StringBuilder builder = new StringBuilder();
         int sum = Arrays.stream(arr).sum();
         builder.append("Per :\t");
@@ -234,39 +209,35 @@ public class MachineServiceImpl implements MachineService{
     }
 
     // 수치데이터 Hex 출력 메소드
-    private void hexPrint(int[] arr) {
+    private static void hexPrint(int[] arr) {
         StringBuilder sb = new StringBuilder();
         sb.append(value(arr, "%3H\t")).append('\n');
         System.out.print(sb.toString());
     };
 
     // 데이터데이터 Dec 출력 메소드
-    private void decPrint(int[] arr) {
+    private static void decPrint(int[] arr) {
         StringBuilder sb = new StringBuilder();
         sb.append(value(arr, "%03d\t")).append('\n');
         System.out.print(sb.toString());
     };
 
     // 데이터데이터 Per 출력 메소드
-    private void PerPrint(int[] arr) {
+    private static void PerPrint(int[] arr) {
         StringBuilder sb = new StringBuilder();
         sb.append(percent(arr)).append('\n');
         System.out.print(sb.toString());
     };
 
-    private int min(int i, int j, int k) {
+    private static int min(int i, int j, int k) {
         return Math.min(Math.min(i, j), k);
     }
 
-    private int max(int i, int j, int k) {
+    private static int max(int i, int j, int k) {
         return Math.max(Math.max(i, j), k);
     }
 
-    private int oneThird(int i) {
-        return (int)(i / 3.0 + 0.5);
-    }
-
-    private int toPercent(int i) {
+    private static int toPercent(int i) {
         return (int)(i * 100.0 / 255.0 + 0.5);
     }
 
