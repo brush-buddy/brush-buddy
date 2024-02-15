@@ -37,7 +37,7 @@
       </div>
     </div>
     <div style="display: flex; justify-content: center">
-      <label for="input-file" class="Btn" color="primary"
+      <label for="input-file" class="writeBtn" color="primary" style="width: 12rem"
         ><v-icon icon="mdi-camera"></v-icon>사진 업로드</label
       >
       <input
@@ -55,7 +55,7 @@
     <v-combobox v-model="chips" chips clearable label="set category" multiple variant="solo">
     </v-combobox>
     <div style="display: flex; justify-content: center">
-      <label class="Btn" @click="makeLink"
+      <label class="writeBtn" @click="makeLink"
         ><v-icon icon="mdi-image-album" />도안 지정
         <v-dialog v-model="dialog" activator="parent" style="width: 80vw; height: 60vh">
           <v-card style="padding: 2rem">
@@ -97,7 +97,9 @@
       </label>
     </div>
     <div style="display: flex; justify-content: center">
-      <label class="Btn" @click="submitForm"><v-icon icon="mdi-tray-arrow-down" />저장하기</label>
+      <label class="writeBtn" @click="submitForm"
+        ><v-icon icon="mdi-tray-arrow-down" />저장하기</label
+      >
     </div>
   </div>
 
@@ -254,13 +256,13 @@ const submitForm = async () => {
     margin: 1rem;
   }
 }
-.Btn {
+.writeBtn {
   display: flex;
   justify-content: center;
   padding: 0.875rem 1.25rem;
   border-radius: 0.475rem;
   border: 1px solid #e0e0e0;
-  width: 30vw;
+
   /* background: linear-gradient(180deg, #f6b4bf 0%, #dcc4ee 100%); */
   gap: 0.625rem;
   margin-bottom: 1rem;
