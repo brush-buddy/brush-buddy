@@ -35,7 +35,8 @@ const makeImage = () => {
     })
 }
 const makePipo = () => {
-  console.log(prompt.value)
+  loadingState.value = true
+
   axios.post(host + '/draft/pipo-s3', { url: imageSrc.value }).then((response) => {
     setImage(
       true,
@@ -106,7 +107,7 @@ onMounted(() => {
               <v-btn
                 color="green-darken-1"
                 variant="text"
-                @click="dialog = false"
+                @click="(dialog = false), (loadingState = false)"
                 prepend-icon="mdi-delete-empty"
               >
                 취소
@@ -115,6 +116,7 @@ onMounted(() => {
                 color="green-darken-1"
                 variant="text"
                 @click="(loadingState = true), makePipo()"
+                v-bind:disabled="loadingState"
                 prepend-icon="mdi-brush-variant"
               >
                 도안 만들기
