@@ -18,17 +18,18 @@ const login = () => {
 }
 const active = ref(false)
 const userStore = useUserStore()
-import {  isLogin } from "../api/user"
+import { isLogin } from '../api/user'
 
-import { onMounted } from 'vue'; 
-onMounted( async () => {
+import { onMounted } from 'vue'
+onMounted(async () => {
   await isLogin()
-  .then(({data}) => {
-    active.value = data 
-  }).catch((error) => {
-    console.log("isLogin error")
-  });;
-});
+    .then(({ data }) => {
+      active.value = data
+    })
+    .catch((error) => {
+      console.log('isLogin error')
+    })
+})
 </script>
 
 <template>
@@ -58,13 +59,13 @@ onMounted( async () => {
 
   display: flex;
   justify-content: center;
-  align-items: center;
+  /* align-items: center; */
 }
 #home {
   width: 18rem;
   height: 25rem;
   flex-shrink: 0;
-
+  margin-top: 6rem;
   border-radius: 20px;
   border: 1px solid #fff;
   background: linear-gradient(
