@@ -5,7 +5,14 @@ import { usePayStore } from '../stores/pay'
 import { ref } from 'vue'
 const { setTid } = usePayStore()
 const user = navigator.userAgent
-
+const colorItem = ref<any>({
+  100: '#efe5e4',
+  300: '#ddb4d4',
+  500: '#b765a8',
+  1000: '#ddb5d0',
+  3000: '#61478d',
+  5000: '#8d3195'
+})
 const purchase = (price: Number) => {
   localAxios()
     .post(`pay/makePayment?mileage=${price}`)
@@ -24,11 +31,13 @@ const purchase = (price: Number) => {
 
 <template>
   <div style="display: flex; flex-direction: column; align-items: center; margin-top: 2rem">
-    <h1 style="margin-bottom: 1rem">마일리지 충전</h1>
+    <div style="display: flex; justify-content: flex-start; width: 90vw; margin-bottom: 1rem">
+      <h1 style="margin-bottom: 1rem">마일리지 충전</h1>
+    </div>
     <template v-for="item in [100, 300, 500, 1000, 3000, 5000]" :key="item">
       <div class="buttonRow">
         <p>{{ item }} 마일리지</p>
-        <v-btn @click="purchase(item)">{{ item }}</v-btn>
+        <v-btn @click="purchase(item)" :color="colorItem[item]">{{ item }}</v-btn>
       </div>
     </template>
   </div>
