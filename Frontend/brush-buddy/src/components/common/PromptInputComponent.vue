@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { localAxios } from '../../api/axios'
 import axios from 'axios'
 import { useRouter } from 'vue-router'
 import { useImageStore } from '../../stores/image'
+import CButton from '../Community/CButton.vue'
 const host = import.meta.env.VITE_APP_AI_SERVER_URL
 
 const router = useRouter()
@@ -11,15 +12,17 @@ const { setImage } = useImageStore()
 
 const prompt = ref<string>('')
 const dialog = ref(false)
+const leftcnt = ref(0)
 const loadingState = ref(true)
 const imageSrc = ref('../../assets/icon/loading.gif')
 const makeImage = () => {
   console.log(prompt.value)
   localAxios()
-    .post('/draft/ai-generation', { prompt: prompt.value })
+    .post('/draft/ai-generation', prompt.value)
     .then((response) => {
       console.log(response.data)
       imageSrc.value = response.data['image_url']
+      leftcnt.value = response.data['left_cnt']
       loadingState.value = false
     })
 }
@@ -39,6 +42,18 @@ const makePipo = () => {
   })
 }
 //-그려줘라고 입력하면 그림을 만들어드려요
+
+// 첫 페이지 로딩 시에 데이터를 불러오는 함수
+onMounted(() => {
+  localAxios()
+    .post('/draft/ai-generation', prompt.value)
+    .then((response) => {
+      console.log(response.data)
+      imageSrc.value = response.data['image_url']
+      leftcnt.value = response.data['left_cnt']
+      loadingState.value = false
+    })
+})
 </script>
 
 <template>
@@ -72,6 +87,9 @@ const makePipo = () => {
                 style="margin: 2rem; width: 10rem"
                 v-show="loadingState"
               />
+              <div class="">
+                <CButton :text="left_cnt + '/20'" :color="'#f6b4bf'" />
+              </div>
               <img
                 :src="imageSrc"
                 alt=""
@@ -107,6 +125,12 @@ const makePipo = () => {
 </template>
 
 <style scoped>
+.left_cnt {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin: 1rem;
+}
+
 .input-box-container {
   display: flex;
   width: 21.5rem;

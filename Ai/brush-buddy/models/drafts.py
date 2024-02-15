@@ -46,7 +46,7 @@ class Drafts(BaseModel):
 
         # s3에 색칠된 도안 업로드 ========================================
         colored_file_name = f"colored_draft_{uuid_val}.png"  # 업로드할 파일 이름
-        bucket_name = "brushbucket"
+        bucket_name = "brush-buddy-prod"
         # "brush-buddy"
         # brushbuddy0  # 버켓 주소
         colored_key = f"draft/colored/{colored_file_name}"  # s3  내부 이미지 파일 이름
