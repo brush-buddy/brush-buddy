@@ -26,7 +26,7 @@ const makeImage = () => {
   dialog.value = true
   loadingState.value = true
   localAxios()
-    .post('/draft/ai-generation', prompt.value)
+    .post('/draft/ai-generation', { prompt: prompt.value })
     .then((response) => {
       console.log(response.data)
       imageSrc.value = JSON.parse(response.data.body).image_url
@@ -59,18 +59,6 @@ onMounted(() => {
     })
 })
 //-그려줘라고 입력하면 그림을 만들어드려요
-
-// 첫 페이지 로딩 시에 데이터를 불러오는 함수
-onMounted(() => {
-  localAxios()
-    .post('/draft/ai-generation', prompt.value)
-    .then((response) => {
-      console.log(response.data)
-      imageSrc.value = response.data['image_url']
-      leftcnt.value = response.data['left_cnt']
-      loadingState.value = false
-    })
-})
 </script>
 
 <template>
