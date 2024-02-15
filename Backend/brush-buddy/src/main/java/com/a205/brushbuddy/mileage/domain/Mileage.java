@@ -1,13 +1,13 @@
 package com.a205.brushbuddy.mileage.domain;
 
-import java.sql.Timestamp;
-
 import com.a205.brushbuddy.user.domain.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.sql.Timestamp;
 
 @Entity
 @Data
@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Mileage {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Column(name = "mileage_id", nullable = false)
     private Long mileageId;
 

@@ -11,7 +11,7 @@ import cv2
 import numpy as np
 import redis
 import requests
-from fastapi import APIRouter, File, HTTPException, UploadFile
+from fastapi import APIRouter, File, UploadFile
 from models import drafts, images
 from models.DTO import requestPrompt, requestUrl, responseImage, responsePipo
 from PIL import Image
@@ -27,11 +27,11 @@ draft_router = APIRouter(
 @draft_router.post(
     "/ai-generation", status_code=200, response_model=responseImage.Img_url
 )
-async def ai_generate(prompt: requestPrompt.Prompt, user_id: int = 1):
-    user = user_id
+async def ai_generate(resBody: requestPrompt.Prompt):
+    user = resBody.user_id
     # prompt -> 이미지 url
     simplePrompt = "Simple Cute"
-    aigenerateimageurl = images.AiImage().createImage(simplePrompt + prompt.prompt)
+    aigenerateimageurl = images.AiImage().createImage(simplePrompt + resBody.prompt)
     # print(aigenerateimageurl)
 
     r = redis.StrictRedis(host="i10a205.p.ssafy.io", port=6379, db=0)
@@ -48,7 +48,9 @@ async def ai_generate(prompt: requestPrompt.Prompt, user_id: int = 1):
             content={"error": "Too Many Requests"},
         )
     else:
-        return responseImage.Img_url(image_url=aigenerateimageurl)
+        return responseImage.Img_url(
+            image_url=aigenerateimageurl, left_cnt=20 - int(call_num)
+        )
 
 
 # base64 이미지 받아서, 팔레트 json 데이터 return 하는 api
