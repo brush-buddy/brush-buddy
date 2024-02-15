@@ -97,6 +97,14 @@ const printColor = async (color: String) => {
 }
 
 const userStore = useUserStore()
+
+const downloadPalette = () => {
+  localAxios()
+    .post(`palette/${paletteId}/duplicate`)
+    .then((res) => {
+      alert('팔레트 복사가 완료 되었습니다.')
+    })
+}
 </script>
 
 <template>
@@ -150,6 +158,7 @@ const userStore = useUserStore()
           </v-card>
         </v-dialog>
       </div>
+
       <div style="display: flex; justify-content: flex-end">
         <v-dialog width="400">
           <template v-slot:activator="{ props }">
@@ -178,64 +187,66 @@ const userStore = useUserStore()
           </template>
         </v-dialog>
       </div>
+      <div style="margin-top: 1rem; display: flex; justify-content: space-between">
+        <v-icon icon="mdi-tray-arrow-down" @click="downloadPalette()"></v-icon>
 
-      <div class="discardModify" style="display: flex; justify-content: flex-end; margin-top: 1rem">
-        <v-dialog v-model="removedialog" persistent width="auto">
-          <template v-slot:activator="{ props }">
-            <v-btn
-              v-if="paletteInfo.isAdmin"
-              class="buttonUnder"
-              color="red-darken-1"
-              size="small"
-              variant="tonal"
-              v-bind="props"
-              prepend-icon="mdi-trash-can"
-            >
-              삭제하기
-            </v-btn>
-          </template>
-          <v-card>
-            <v-card-text>정말 삭제하시겠습니까? 삭제하시면 복구가 불가능합니다.</v-card-text>
-            <v-card-actions>
-              <v-spacer></v-spacer>
-
-              <v-btn color="green-darken-1" variant="text" @click="removedialog = false">
-                취소
-              </v-btn>
+        <div class="discardModify" style="display: flex; justify-content: flex-end">
+          <v-dialog v-model="removedialog" persistent width="auto">
+            <template v-slot:activator="{ props }">
               <v-btn
+                v-if="paletteInfo.isAdmin"
+                class="buttonUnder"
                 color="red-darken-1"
-                variant="text"
-                @click="(removedialog = false), removeItem()"
+                size="small"
+                variant="tonal"
+                v-bind="props"
+                prepend-icon="mdi-trash-can"
               >
-                삭제
+                삭제하기
               </v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
+            </template>
+            <v-card>
+              <v-card-text>정말 삭제하시겠습니까? 삭제하시면 복구가 불가능합니다.</v-card-text>
+              <v-card-actions>
+                <v-spacer></v-spacer>
 
-        <v-btn
-          v-if="!modifyState && paletteInfo.isAdmin"
-          class="buttonUnder"
-          color="green-darken-1"
-          size="small"
-          variant="tonal"
-          prepend-icon="mdi-pencil"
-          @click="modifyState = true"
-        >
-          수정하기
-        </v-btn>
-        <v-btn
-          v-if="modifyState && paletteInfo.isAdmin"
-          class="buttonUnder"
-          color="purple-darken-1"
-          size="small"
-          variant="tonal"
-          prepend-icon="mdi-pencil"
-          @click="(modifyState = false), saveServer()"
-        >
-          수정 완료하기
-        </v-btn>
-        <v-btn v-if="!paletteInfo.isAdmin" prepend-icon="mdi-copy"> 내 팔레트에 복제하기 </v-btn>
+                <v-btn color="green-darken-1" variant="text" @click="removedialog = false">
+                  취소
+                </v-btn>
+                <v-btn
+                  color="red-darken-1"
+                  variant="text"
+                  @click="(removedialog = false), removeItem()"
+                >
+                  삭제
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+
+          <v-btn
+            v-if="!modifyState && paletteInfo.isAdmin"
+            class="buttonUnder"
+            color="green-darken-1"
+            size="small"
+            variant="tonal"
+            prepend-icon="mdi-pencil"
+            @click="modifyState = true"
+          >
+            수정하기
+          </v-btn>
+          <v-btn
+            v-if="modifyState && paletteInfo.isAdmin"
+            class="buttonUnder"
+            color="purple-darken-1"
+            size="small"
+            variant="tonal"
+            prepend-icon="mdi-pencil"
+            @click="(modifyState = false), saveServer()"
+          >
+            수정 완료하기
+          </v-btn>
+        </div>
       </div>
     </v-card>
   </div>
