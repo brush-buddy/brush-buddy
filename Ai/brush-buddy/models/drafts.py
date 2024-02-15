@@ -121,7 +121,7 @@ class Drafts(BaseModel):
             f"https://brush-buddy.s3.ap-northeast-2.amazonaws.com/{numbered_key}"
         )
 
-        # # 파일 삭제
+        # 파일 삭제
         os.remove(colored_file_name)
         os.remove(numbering_file_name)
 
