@@ -3,22 +3,11 @@ import os
 import uvicorn
 from fastapi import FastAPI
 from routes.drafts_route import draft_router
-from starlette.middleware.cors import CORSMiddleware
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
 
 app.include_router(draft_router, prefix="/api/v1/draft")
-
-# run : python main.py
-
-
-@app.get("/")
-def index():
-    return {
-        "Python": "Framework",
-    }
-
-
 # ============= CORS =============
 
 origins = [
@@ -42,5 +31,15 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# run : python main.py
+
+
+@app.get("/")
+def index():
+    return {
+        "Python": "Framework",
+    }
+
+
 if __name__ == "__main__":
-    uvicorn.run("main:app", host="0.0.0.0", port=8000)
+    uvicorn.run(app, host="0.0.0.0", port=8000)
