@@ -73,7 +73,7 @@ public class MachineServiceImpl implements MachineService{
 
     @Override
     public MachinePrintResponseDto convertRGB2CMYKW(Long machineId, MachinePrintRequestDto requestDto) {
-        String color = requestDto.getRGBCode()
+        String color = requestDto.getRgbcode()
                 .substring(1);
 
         int[] cmykw = rgbToCmyk(color);
