@@ -60,7 +60,7 @@
         <v-dialog v-model="dialog" activator="parent" style="width: 80vw; height: 60vh">
           <v-card style="padding: 2rem">
             <div v-if="madeList.length > 0">
-              <div style="margin-bottom: 1rem"><h1>만든 도안</h1></div>
+              <div style="margin-bottom: 1rem"><h3>만든 도안</h3></div>
               <div class="thumbnailWrapper">
                 <div v-for="(draft, idx) in madeList" :key="idx">
                   <img
@@ -74,7 +74,7 @@
               </div>
             </div>
             <div v-if="purchaseList.length > 0">
-              <div>구매한 도안</div>
+              <div style="margin-bottom: 1rem; margin-top: 1rem"><h3>구매한 도안</h3></div>
               <div class="thumbnailWrapper">
                 <div v-for="(draft, idx) in purchaseList" :key="idx">
                   <img
