@@ -39,7 +39,7 @@ async def ai_generate(resBody: requestPrompt.Prompt):
     print(r.get(user), "callnum")  # callnum 확인용
     call_num = r.get(user)
     print(resBody.prompt, "prompt")
-    if resBody.prompt == "" or resBody.prompt == "\"\"":
+    if resBody.prompt == "" or resBody.prompt == '""':
         return responseImage.Img_url(image_url="", left_cnt=20 - int(call_num))
     else:
         print("체크체크")
@@ -53,7 +53,7 @@ async def ai_generate(resBody: requestPrompt.Prompt):
 
         # cnt = db.redis.save_callnum(user)
 
-        if int(call_num) > 20:
+        if int(call_num) > 30:
             return JSONResponse(
                 status_code=status.HTTP_429_TOO_MANY_REQUESTS,
                 content={"error": "Too Many Requests"},
