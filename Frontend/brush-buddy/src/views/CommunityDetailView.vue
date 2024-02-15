@@ -76,7 +76,7 @@
         <v-carousel-item
           v-for="(item, i) in community.photo"
           :key="i"
-          :src="item.imgUrl"
+          :src="'item.imgUrl'"
           cover
         ></v-carousel-item>
       </v-carousel>
@@ -92,13 +92,23 @@
             </v-chip>
           </template>
         </div>
-        <div style="width: 5rem; display: flex; justify-content: space-between">
+        <div style="width: 5rem; display: flex; justify-content: flex-end">
           <v-icon
             v-if="community.isMine"
             icon="mdi-trash-can"
             color="red"
             size="x-large"
             @click="deleteCommunity()"
+            style="margin-right: 0.5rem"
+          >
+          </v-icon>
+          <v-icon
+            v-if="community.isMine"
+            icon="mdi-pencil"
+            color="yellow-darken-2"
+            size="x-large"
+            @click="modifyview = true"
+            style="margin-right: 0.5rem"
           >
           </v-icon>
           <v-icon
@@ -114,6 +124,25 @@
             size="x-large"
           ></v-icon>
         </div>
+        <v-dialog v-model="modifyview" width="auto">
+          <v-card>
+            <v-text-field v-model="titleModel" label="Title" variant="underlined"></v-text-field>
+            <TextAreaComponent style="height: 10rem; margin-top: 1rem" v-model="contentModel" />
+            <v-combobox
+              v-model="hashtagModel"
+              chips
+              clearable
+              label="set category"
+              multiple
+              variant="solo"
+            >
+            </v-combobox>
+            <v-card-actions>
+              <v-btn color="primary" @click="modifyview = false">취소</v-btn>
+              <v-btn color="pink-darken-2" @click="modifyview = false">수정</v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
       </div>
     </div>
 
@@ -150,12 +179,17 @@ import { storeToRefs } from 'pinia'
 import { getReplyList } from '../api/board'
 import type { ReplyListElement, BoardSearchParam } from '../api/board'
 import CReplyListComponent from '../components/DraftDetail/CReplyListComponent.vue'
+import { useRouter } from 'vue-router'
 
+const router = useRouter()
 import { useLikeStore } from '../stores/boardlike'
+
 const { setLikeState, removeLikeState, addLikeState } = useLikeStore()
 const likeStore = useLikeStore()
 const { isLike } = storeToRefs(likeStore)
 const likeNumber = ref(0)
+const modifyview = ref(false)
+
 function getRandomColor() {
   return '#' + Math.floor(Math.random() * 16777215).toString(16)
 }
@@ -178,6 +212,10 @@ const community = ref<any>({
   authorNickname: '-'
 })
 
+const hashtagModel = ref<string[]>([])
+const titleModel = ref<string>('')
+const contentModel = ref<string>('')
+
 const replyList = ref<ReplyListElement[]>([])
 
 const params = ref<BoardSearchParam>({
@@ -189,8 +227,10 @@ onMounted(() => {
   localAxios()
     .get(`/board/${boardId}`)
     .then(function (response: any) {
-      console.log(response.data)
       community.value = response.data
+      hashtagModel.value = response.data.hashtag
+      titleModel.value = response.data.title
+      contentModel.value = response.data.contents
       setLikeState(response.data.isHeart)
       likeNumber.value = response.data.likeNumber
     })
@@ -220,6 +260,20 @@ const deleteCommunity = () => {
       location.href = '/community'
     })
 }
+
+// const modifyCommunity = () => {
+//   localAxios()
+//     .put(`/board/${boardId}`, {
+//       title: titleModel.value,
+//       contents: contentModel.value,
+//       hashtag: hashtagModel.value
+//     })
+//     .then(function (response: any) {
+//       console.log(response.data)
+//       alert('수정되었습니다.')
+//       location.href = '/community'
+//     })
+// }
 </script>
 
 <style scoped>
