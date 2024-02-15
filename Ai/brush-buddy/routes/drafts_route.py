@@ -28,17 +28,25 @@ draft_router = APIRouter(
     "/ai-generation", status_code=200, response_model=responseImage.Img_url
 )
 async def ai_generate(resBody: requestPrompt.Prompt):
-    user = resBody.user_id
-    # prompt -> 이미지 url
-    simplePrompt = "Simple Cute"
-    aigenerateimageurl = images.AiImage().createImage(simplePrompt + resBody.prompt)
-    # print(aigenerateimageurl)
 
     r = redis.StrictRedis(host="i10a205.p.ssafy.io", port=6379, db=0)
 
-    r.incr(user, 1)
-    # print(r.get(user), "callnum")  # callnum 확인용
+    user = resBody.user_id
+
+    if r.get(resBody.user_id) is None:
+        r.set(resBody.user_id, 0)
+
     call_num = r.get(user)
+
+    if resBody.prompt == "" or resBody.prompt == '""':
+        return responseImage.Img_url(image_url="", left_cnt=20 - int(call_num))
+
+    # prompt -> 이미지 url
+    simplePrompt = "Super Simple"
+    aigenerateimageurl = images.AiImage().createImage(simplePrompt + resBody.prompt)
+
+    r.incr(user, 1)
+    # print(aigenerateimageurl)
 
     # cnt = db.redis.save_callnum(user)
 
@@ -56,13 +64,11 @@ async def ai_generate(resBody: requestPrompt.Prompt):
 # base64 이미지 받아서, 팔레트 json 데이터 return 하는 api
 @draft_router.post("/pipo-local", status_code=200, response_model=responsePipo.Pipo)
 async def to_pipo_savelocal(image: UploadFile = File(...)):
-    # try:
-    # UPLOAD_DIR = "./assets"  # 이미지를 저장할 서버 경로
 
     uuid_val = uuid.uuid1()
 
     content = await image.read()
-    filename = f"image_{uuid_val}.jpg"
+    filename = f"{uuid_val}.jpg"
     with open(filename, "wb") as fp:
         fp.write(content)  # 서버 로컬 스토리지에 이미지 저장 (쓰기)
 
@@ -85,7 +91,7 @@ async def to_pipo_savelocal(image: UploadFile = File(...)):
 async def to_pipo_saves3(url: requestUrl.Url):
 
     uuid_val = uuid.uuid1()
-    img_dest = f"tmp_{uuid_val}.jpg"
+    img_dest = f"{uuid_val}.png"
 
     urllib.request.urlretrieve(url.url, img_dest)
 
