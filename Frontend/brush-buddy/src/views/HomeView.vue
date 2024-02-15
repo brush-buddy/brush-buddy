@@ -65,7 +65,7 @@ onMounted(async () => {
   width: 18rem;
   height: 25rem;
   flex-shrink: 0;
-  margin-top: 6rem;
+  margin-top: 20vh;
   border-radius: 20px;
   border: 1px solid #fff;
   background: linear-gradient(

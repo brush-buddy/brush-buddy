@@ -24,7 +24,8 @@ const makeImage = () => {
     })
 }
 const makePipo = () => {
-  console.log(prompt.value)
+  loadingState.value = true
+
   axios.post(host + '/draft/pipo-s3', { url: imageSrc.value }).then((response) => {
     setImage(
       true,
@@ -53,17 +54,9 @@ const makePipo = () => {
       v-on:keyup.enter="makeImage()"
     />
     <div>
+      <v-btn @click="makeImage()" icon="mdi-arrow-up" size="x-small" color="success"></v-btn>
       <v-row justify="center">
         <v-dialog v-model="dialog" persistent width="auto">
-          <template v-slot:activator="{ props }">
-            <v-btn
-              @click="makeImage()"
-              icon="mdi-arrow-up"
-              size="small"
-              color="success"
-              v-bind="props"
-            ></v-btn>
-          </template>
           <v-card>
             <div style="display: flex; justify-content: center">
               <img
@@ -84,7 +77,7 @@ const makePipo = () => {
               <v-btn
                 color="green-darken-1"
                 variant="text"
-                @click="dialog = false"
+                @click="(dialog = false), (loadingState = false)"
                 prepend-icon="mdi-delete-empty"
               >
                 취소
@@ -93,6 +86,7 @@ const makePipo = () => {
                 color="green-darken-1"
                 variant="text"
                 @click="(loadingState = true), makePipo()"
+                v-bind:disabled="loadingState"
                 prepend-icon="mdi-brush-variant"
               >
                 도안 만들기
