@@ -60,8 +60,7 @@ public class MachineController {
                 .path("/ws/print/"+ machineId)
                 .port(3004)
                 .build().encode(StandardCharsets.UTF_8).toUri();
-
-
+        log.info(requestDto.toString());
 //        // 색깔을 String 형태로 변환
         MachinePrintResponseDto responseDto = machineService.convertRGB2CMYKW(machineId,requestDto);
         ObjectMapper objectMapper = new ObjectMapper();

@@ -18,7 +18,6 @@ import org.springframework.cloud.openfeign.FeignAutoConfiguration;
 		}
 )
 public class BrushBuddyApplication {
-
 	public static void main(String[] args) {
 		SpringApplication.run(BrushBuddyApplication.class, args);
 	}
