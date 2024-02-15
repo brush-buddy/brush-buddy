@@ -82,47 +82,10 @@ class AiImage(BaseModel):
             fill=(128, 128, 128, 0),
         )
 
-        # draw.text(
-        #     (width / 3, height / 3),
-        #     watermark_text,
-        #     font=font,
-        #     fill=(128, 128, 128, 10),
-        # )
-
-        # draw.text(
-        #     (x / 1.5, y / 1.5),
-        #     watermark_text,
-        #     font=font,
-        #     fill=(128, 128, 128, 10),
-        # )
-
-        # draw.text(
-        #     (x * 4, y * 4),
-        #     watermark_text,
-        #     font=font,
-        #     fill=(128, 128, 128, 50),
-        # )
-
-        # draw.text(
-        #     (x // 3, y // 3),
-        #     watermark_text,
-        #     font=font,
-        #     fill=(128, 128, 128, 50),
-        # )
-
-        # draw.text(
-        #     (x, y),
-        #     watermark_text,
-        #     font=font,
-        #     fill=(128, 128, 128, 100),
-        # )
-        # upload_numpy_array_to_s3(bucket_name, file_key, numpy_array, content_type)
-        # upload_Pillow_image_to_s3(bucket_name, file_key, pillow_image, content_type)
-
         aws = AwsS3()
         s3 = aws.s3_connection()
         uuid_val = uuid.uuid1()
-        file_name = f"watermark_{uuid_val}.png"
+        file_name = f"{uuid_val}.png"
 
         key = f"draft/watermark/{file_name}"
 
@@ -132,9 +95,9 @@ class AiImage(BaseModel):
         # 로컬 디렉토리에 이미지 저장
         input_image.save(file_name)
 
-        s3.upload_file(file_name, "brush-buddy", key)
+        s3.upload_file(file_name, "brushbucket", key)
 
         # 워터 마크 로컬 파일 지우기
-        # os.remove(file_name)
+        os.remove(file_name)
 
-        return f"https://brush-buddy.s3.ap-northeast-2.amazonaws.com/{key}"
+        return f"https://brushbucket.s3.ap-northeast-2.amazonaws.com/{key}"
