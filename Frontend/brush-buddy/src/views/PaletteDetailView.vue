@@ -48,13 +48,14 @@ const modifyState = ref(false)
 const appendColorCode = ref('')
 
 const iconPush = (key: string) => {
-  if (!modifyState.value) {
+  if (!modifyState.value && isAdmin.value) {
     dialog.value = true
     setColor(key)
-  } else {
+  } else if (modifyState.value) {
     paletteColorInfo.value = paletteColorInfo.value.filter(
       (element: string[]) => element[1] !== key
     )
+  } else {
   }
 }
 
@@ -94,6 +95,14 @@ const printColor = async (color: String) => {
   }
 
   await printPaint(data)
+    .then((res) => {
+      alert('출력이 완료되었습니다.')
+      dialog.value = false
+    })
+    .catch((err) => {
+      alert('기기정보를 입력하세요')
+      router.push('/diary/palette')
+    })
 }
 
 const userStore = useUserStore()
@@ -134,9 +143,9 @@ const downloadPalette = () => {
           </div>
         </template>
         <v-dialog v-model="dialog" width="auto">
-          <v-card v-if="!modifyState">
+          <v-card v-if="!modifyState && isAdmin">
             <v-card-text> 연결된 기기 {{}}</v-card-text>
-            {{ color }}
+
             <div style="padding: 1rem; display: flex; align-items: center">
               <v-btn
                 icon="mdi-format-color-fill"
@@ -188,7 +197,7 @@ const downloadPalette = () => {
         </v-dialog>
       </div>
       <div style="margin-top: 1rem; display: flex; justify-content: space-between">
-        <v-icon icon="mdi-tray-arrow-down" @click="downloadPalette()"></v-icon>
+        <v-icon v-if="!modifyState" icon="mdi-tray-arrow-down" @click="downloadPalette()"></v-icon>
 
         <div class="discardModify" style="display: flex; justify-content: flex-end">
           <v-dialog v-model="removedialog" persistent width="auto">

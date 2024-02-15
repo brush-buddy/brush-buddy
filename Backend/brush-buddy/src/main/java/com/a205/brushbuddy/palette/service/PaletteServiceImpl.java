@@ -9,6 +9,7 @@ import com.a205.brushbuddy.palette.dto.PaletteMakeRequestDto;
 import com.a205.brushbuddy.palette.dto.PaletteModifyRequestDto;
 import com.a205.brushbuddy.palette.repository.PaletteRepository;
 import com.a205.brushbuddy.user.domain.User;
+import com.a205.brushbuddy.user.repository.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -21,7 +22,7 @@ import java.util.List;
 public class PaletteServiceImpl implements PaletteService {
     private final PaletteRepository paletteRepository;
     private final DraftRepository draftRepository;
-
+    private final UserRepository userRepository;
     @Override
     public List<Palette> getAllPaletteList(Pageable pageable) {
         return paletteRepository.findAll(pageable).getContent(); // 리스트 조
@@ -78,16 +79,18 @@ public class PaletteServiceImpl implements PaletteService {
         );
 
         //사용자가 권한이 있는가
-        // TODO : Admin인지 확인하는 로직 필요
-        if(!originPalette.getUser().getUserId().equals(userId)){ // UserId가 다르거나 admin이 아니면
-            throw new BaseException(ErrorCode.NOT_PRIVIEGED);
+//        // TODO : Admin인지 확인하는 로직 필요
+//        if(!originPalette.getUser().getUserId().equals(userId)){ // UserId가 다르거나 admin이 아니면
+//            throw new BaseException(ErrorCode.NOT_PRIVIEGED);
+//        }
+        if(userRepository.findUserByUserId(userId) == null){
+            throw new BaseException(ErrorCode.NOT_FOUND_DATA);
         }
-
         //팔레트 복제
         Palette newPalette = Palette.builder()
                 .paletteName(originPalette.getPaletteName()+"_copy")
                 .paletteColorCode(originPalette.getPaletteColorCode())
-                .user(originPalette.getUser())
+                .user(userRepository.findUserByUserId(userId))
                 .draft(originPalette.getDraft())
                 .build();
 

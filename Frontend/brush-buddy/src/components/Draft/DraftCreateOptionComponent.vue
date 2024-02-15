@@ -42,7 +42,6 @@ const makeImage = () => {
         loadingState.value = false
         router.push('/draft')
       })
-    
   }
 }
 const preview = ref('../../assets/images/empty.png')
@@ -116,7 +115,9 @@ const previewFile = (e: any) => {
               </div>
               <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn color="pink-darken-1" variant="tonal" @click="dialog = false"> 취소 </v-btn>
+                <v-btn color="pink-darken-1" variant="tonal" @click="(dialog = false), (file = [])">
+                  취소
+                </v-btn>
                 <v-btn color="purple-darken-1" variant="tonal" @click="makeImage()"> 만들기 </v-btn>
               </v-card-actions>
             </v-card>
