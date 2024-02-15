@@ -109,6 +109,8 @@ public class MachineServiceImpl implements MachineService{
 
         // 0 - 255
         k = 255 - max(r, g, b);// 빛의 삼원색 최댓값을 제외한 값 = K 최대 경우
+        // k 값 조절
+        k /= 2;
         w = min(r, g, b); // 전체에서 RGB의 수치의 최소값 = W 최대 경우
 
         // 무채색 (R = G = B) (C = M = Y = 0)

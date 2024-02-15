@@ -83,14 +83,15 @@ public class MileageServiceImpl implements MileageService {
         MileageLog mileageLog = mileageLogRepository.findByMileageLogId(mileageLogId)
             .orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND));
         User user = userRepository.findUserByUserId(userId);
-        mileageRepository.save(Mileage.builder()
-            .user(user)
-            .workplaceId(0)
+        Mileage mileage = Mileage.builder()
+            .user(User.builder().userId(userId).build())
             .mileageBefore(user.getUserMileage())
             .mileageAfter(user.getUserMileage() + mileageLog.getPrice())
             .mileageAmount(mileageLog.getPrice())
             .mileageContent("충전")
-            .build());
+            .build();
+        mileageRepository.save(mileage);
+
         user.setUserMileage(user.getUserMileage() + mileageLog.getPrice());
         userRepository.save(user);
         mileageLog.setMileageLogStatus("충전완료");
