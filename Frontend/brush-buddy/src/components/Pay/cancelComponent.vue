@@ -1,7 +1,17 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { onMounted } from 'vue'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
+onMounted(() => {
+  setTimeout(() => {
+    router.push('/diary')
+  }, 3000)
+})
+</script>
 
 <template>
-  <div>취소</div>
+  <div>결제 취소 되었습니다.</div>
 </template>
 
 <style scoped></style>
