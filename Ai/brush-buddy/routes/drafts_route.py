@@ -32,17 +32,15 @@ draft_router = APIRouter(
 
 # ai 생성 화면 들어갔을 때 호출 횟수 확인용 api
 @draft_router.get("/get_cnt", status_code=200, response_model=responseRedis.Redis)
-async def redis_cnt(user: requestUser.User):
+async def redis_cnt(user_id: int):
 
     r = redis.StrictRedis(host="i10a205.p.ssafy.io", port=6379, db=0)
 
-    userid = user.user_id
-
     # 초기화
-    if r.get(userid) is None:
-        r.set(userid, 0)
+    if r.get(user_id) is None:
+        r.set(user_id, 0)
 
-    call_num = r.get(userid)
+    call_num = r.get(user_id)
     # print(call_num, "번 호출")
 
     return responseRedis.Redis(left_cnt=20 - int(call_num))
