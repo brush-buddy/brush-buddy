@@ -195,7 +195,6 @@ public class DraftController {
 	@ApiResponses({
 			@ApiResponse(responseCode = "200", description = "호출 횟수 반환 성공")
 	})
-	@ResponseBody
 	@GetMapping("/get_cnt")
 	public ResponseEntity<?> countRedis(HttpServletRequest request) throws Exception{
 		String user_id = jwtUtil.getUserId(request)
