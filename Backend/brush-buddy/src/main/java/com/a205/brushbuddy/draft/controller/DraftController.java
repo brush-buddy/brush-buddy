@@ -186,7 +186,7 @@ public class DraftController {
 		Integer userId = jwtUtil.getUserId(request)
 				.orElseThrow(() -> new BaseException(ErrorCode.INVALID_TOKEN)); // 헤더의 access token으로 userId 추출, null 반환시 유효하지 않은 토큰 오류 전송
 
-		URI uri = new URI("http://brush-buddy.duckdns.org/api/v1/draft/ai-generation");
+		URI uri = new URI("https://bb-ai.duckdns.org/api/v1/draft/ai-generation");
 
 		return ResponseEntity.ok(restTemplate.postForEntity(uri, new DraftMakeRequestDto(userId, prompt.getPrompt()), String.class));
 	}
@@ -198,12 +198,12 @@ public class DraftController {
 	@ResponseBody
 	@GetMapping("/get_cnt")
 	public ResponseEntity<?> countRedis(HttpServletRequest request) throws Exception{
-		Integer userId = jwtUtil.getUserId(request)
-				.orElseThrow(() -> new BaseException(ErrorCode.INVALID_TOKEN)); // 헤더의 access token으로 userId 추출, null 반환시 유효하지 않은 토큰 오류 전송
+		String user_id = jwtUtil.getUserId(request)
+				.orElseThrow(() -> new BaseException(ErrorCode.INVALID_TOKEN)).toString(); // 헤더의 access token으로 userId 추출, null 반환시 유효하지 않은 토큰 오류 전송
 
-		URI uri = new URI("http://brush-buddy.duckdns.org/api/v1/draft/get_cnt");
+		URI uri = new URI("https://bb-ai.duckdns.org/api/v1/draft/get_cnt?user_id=" + user_id);
 
-		return ResponseEntity.ok(restTemplate.postForEntity(uri, new DraftMakeCountRequestDto(userId), String.class));
+		return ResponseEntity.ok(restTemplate.getForEntity(uri, String.class));
 	}
 
 	@Operation(description = "북마크 여부 확인 ")
