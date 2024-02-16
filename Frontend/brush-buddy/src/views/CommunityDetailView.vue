@@ -66,20 +66,10 @@
         <p class="thumbnailUnder">{{ community.views }}</p>
       </div>
     </div>
-    <div>
-      <v-carousel
-        :show-arrows="false"
-        hide-delimiter-background
-        delimiter-icon="mdi-square"
-        class="elevation-2"
-      >
-        <v-carousel-item
-          v-for="(item, i) in community.photo"
-          :key="i"
-          :src="'item.imgUrl'"
-          cover
-        ></v-carousel-item>
-      </v-carousel>
+    <div id="carousel">
+      <template v-for="(item, i) in community.photo" :key="i">
+        <img :src="item.imgUrl" class="carouselImg" alt="" />
+      </template>
     </div>
     <div>
       <div
@@ -231,6 +221,7 @@ onMounted(() => {
       hashtagModel.value = response.data.hashtag
       titleModel.value = response.data.title
       contentModel.value = response.data.contents
+      console.log(response.data)
       setLikeState(response.data.isHeart)
       likeNumber.value = response.data.likeNumber
     })
@@ -294,5 +285,23 @@ const deleteCommunity = () => {
   margin-bottom: 0;
   display: flex;
   align-items: center;
+}
+
+.carouselImg {
+  height: 10rem;
+  margin: 0.5rem;
+}
+
+#carousel {
+  display: flex;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  .item.urlImg {
+    flex: 0 0 auto;
+  }
+}
+
+#carousel::-webkit-scrollbar {
+  display: none;
 }
 </style>
