@@ -253,7 +253,7 @@ const deleteDraft = () => {
             size="small"
             prepend-icon="mdi-bucket"
             v-bind:disabled="draft.isBuy"
-            v-bind:text="!draft.isBuy ? `${draft.draftPrice}$ 구매하기` : '구매한도안'"
+            v-bind:text="!draft.isBuy ? `${draft.draftPrice}M 구매하기` : '구매한도안'"
             @click="dialog = true"
           >
           </v-btn>
