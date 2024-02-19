@@ -12,7 +12,7 @@ const { setImage } = useImageStore()
 const leftCnt = ref(0)
 const prompt = ref<string>('')
 const dialog = ref(false)
-const leftcnt = ref(0)
+
 const loadingState = ref(true)
 const imageSrc = ref('../../assets/icon/loading.gif')
 const makeImage = () => {
@@ -51,8 +51,8 @@ const makePipo = () => {
   })
 }
 // ai 호출 횟수 가져오기
-onMounted(() => {
-  localAxios()
+onMounted(async () => {
+  await localAxios()
     .get('/draft/get_cnt')
     .then((response) => {
       console.log(JSON.parse(response.data.body).left_cnt)
