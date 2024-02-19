@@ -71,10 +71,10 @@ onMounted(() => {
   width: 10rem;
   height: 2rem;
   z-index: 1;
-  background-color: #ffffff;
+  background-color: #ffffff72;
   /* opacity: 0.5; */
   position: absolute;
-  border: 1px solid #e0e0e0;
+  border: 1px solid #e0e0e095;
   box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
   border-radius: 1rem;
   /* transition: 0.5s; */

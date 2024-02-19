@@ -93,11 +93,11 @@ const printColor = async (color: String) => {
   const data = {
     rgbcode: color
   }
-
+  dialog.value = false
   await printPaint(data)
     .then((res) => {
-      alert('출력이 완료되었습니다.')
       dialog.value = false
+      alert('출력이 완료되었습니다.')
     })
     .catch((err) => {
       alert('기기정보를 입력하세요')
@@ -139,6 +139,7 @@ const downloadPalette = () => {
             "
             @click="iconPush(value)"
           >
+            <p style="line-height: 100$">{{ key }}</p>
             <v-icon v-if="modifyState" icon="mdi-trash-can" color="grey" size="x-small"></v-icon>
           </div>
         </template>
