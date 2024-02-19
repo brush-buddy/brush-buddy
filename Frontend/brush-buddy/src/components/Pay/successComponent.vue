@@ -10,7 +10,7 @@
     v-if="successStatus"
   >
     <h1>결제 완료 되었습니다.</h1>
-    <img src="../../assets/images/success.png" alt="" />
+    <img src="../../assets/images/success.png" style="width: 10rem" alt="" />
   </div>
   <div
     style="
